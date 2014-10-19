@@ -1,4 +1,4 @@
-This project creates a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/), and walks you through the steps required to install it and get it running.
+`brwrt` is a project that creates a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/), and walks you through the steps required to install it and get it running.
 
 If you want to help, look at the current [roadmap](ROADMAP.md) for suggestions.  There is a list of aims, plans and thoughts on where the project is going.
 
@@ -71,9 +71,9 @@ To make amendments to the rootfs before it is converted to a binary blob you wil
 
 Building for specific physical hardware is available for:
 
- * [TP-Link TL-W8970](board/brwrt/tl-w870/README.md)
- * [Linksys WAG54G](board/brwrt/linksys-wag54g/README.md)
- * [TP-Link TL-MR3020](board/brwrt/tl-mr3020/README.md)
+ * [TP-Link TL-W8970](board/tp-link/tl-w8970/README.md)
+ * [Linksys WAG54G](board/linksys/wag54g/README.md)
+ * [TP-Link TL-MR3020](board/tp-link/tl-mr3020/README.md)
 
 # Extras
 
