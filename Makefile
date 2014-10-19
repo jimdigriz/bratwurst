@@ -4,12 +4,14 @@ ARCHS		:= $(foreach b, $(sort $(wildcard board/qemu/*)),$(subst board/qemu/,,$(b
 
 ARCH_NATIVE	:= $(shell uname -m)
 ifneq ($(filter $(ARCH_NATIVE), x86 x86_64),)
-	QEMU_ARCH := i386
-	ARCH_NATIVE := x86
+	QEMU_ARCH	:= i386
+	ARCH_NATIVE	:= x86
+	VMLINUX		:= bzImage
 endif
 
 ARCH		?= $(ARCH_NATIVE)
 QEMU_ARCH	?= $(ARCH)
+VMLINUX		?= vmlinux
 RAM		?= 16
 NAND		?= 4
 QEMUOPTS	?= 
@@ -76,7 +78,7 @@ brwrt: BOARD = qemu/$(ARCH)
 brwrt: buildroot/output/images/vmlinuz buildroot/output/images/pflash $(9P_SHARE)
 	qemu-system-$(QEMU_ARCH) -nographic -machine accel=kvm:tcg \
 		-m $(RAM) \
-		-kernel buildroot/output/images/vmlinuz \
+		-kernel buildroot/output/images/$(VMLINUX) \
 		-append "brwrtDEV $(FSAPPEND) $(APPEND)" \
 		-drive file=buildroot/output/images/pflash,if=pflash \
 		-net nic,model=virtio -net user \
