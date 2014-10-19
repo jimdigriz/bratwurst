@@ -3,11 +3,13 @@ VERSION		:= $(shell git rev-parse --short HEAD)$(shell git diff-files --quiet ||
 ARCHS		:= $(foreach b, $(sort $(wildcard board/qemu/*)),$(subst board/qemu/,,$(b)))
 
 ARCH_NATIVE	:= $(shell uname -m)
-ifeq ($(ARCH_NATIVE), x86_64)
+ifneq ($(filter $(ARCH_NATIVE), x86 x86_64),)
+	QEMU_ARCH := i386
 	ARCH_NATIVE := x86
 endif
 
 ARCH		?= $(ARCH_NATIVE)
+QEMU_ARCH	?= $(ARCH)
 RAM		?= 16
 NAND		?= 4
 QEMUOPTS	?= 
@@ -72,7 +74,7 @@ distclean: clean
 
 brwrt: BOARD = qemu/$(ARCH)
 brwrt: buildroot/output/images/vmlinuz buildroot/output/images/pflash $(9P_SHARE)
-	qemu-system-$(ARCH) -nographic -machine accel=kvm:tcg \
+	qemu-system-$(QEMU_ARCH) -nographic -machine accel=kvm:tcg \
 		-m $(RAM) \
 		-kernel buildroot/output/images/vmlinuz \
 		-append "brwrtDEV $(FSAPPEND) $(APPEND)" \
