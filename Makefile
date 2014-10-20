@@ -32,7 +32,7 @@ help:
 	@echo '  distclean              - delete all files created by build'
 	@echo
 	@echo 'Run:'
-	@echo '  brwrt                  - Spin up brwrt'
+	@echo '  bratwurst              - Spin up bratwurst'
 	@echo '    ARCH=<arch>                     (currently: $(ARCH))'
 	@echo '      Supported: $(ARCHS)'
 	@echo '    RAM=<size-in-megabytes>         (currently: $(RAM))'
@@ -74,12 +74,12 @@ clean: clean-brtarget
 distclean: clean
 	make -C buildroot distclean
 
-brwrt: BOARD = qemu/$(ARCH)
-brwrt: buildroot/output/images/vmlinuz buildroot/output/images/pflash $(9P_SHARE)
+bratwurst: BOARD = qemu/$(ARCH)
+bratwurst: buildroot/output/images/vmlinuz buildroot/output/images/pflash $(9P_SHARE)
 	qemu-system-$(QEMU_ARCH) -nographic -machine accel=kvm:tcg \
 		-m $(RAM) \
 		-kernel buildroot/output/images/$(VMLINUX) \
-		-append "brwrtDEV $(FSAPPEND) $(APPEND)" \
+		-append "bratwurstDEV $(FSAPPEND) $(APPEND)" \
 		-drive file=buildroot/output/images/pflash,snapshot=on,if=pflash \
 		-net nic,model=virtio -net user \
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
@@ -104,4 +104,4 @@ buildroot/output/images/%: buildroot/.config
 	make -C buildroot \
 		BR2_DL_DIR="$(CURDIR)/dl"
 
-.PHONY: all help clean distclean brwrt 9p $(BOARDS) $(PHONY_BOARD)
+.PHONY: all help clean distclean bratwurst 9p $(BOARDS) $(PHONY_BOARD)

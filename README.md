@@ -1,4 +1,4 @@
-brwrt (Buildroot-WRT) is a project that creates a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/), and walks you through the steps required to install it and get it running.
+BRatWuRsT (a la 'Buildroot WRT') is a project that creates a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/), and walks you through the steps required to install it and get it running.
 
 If you want to help, look at the current [roadmap](ROADMAP.md) for suggestions.  There is a list of aims, plans and thoughts on where the project is going.
 
@@ -6,8 +6,8 @@ If you want to help, look at the current [roadmap](ROADMAP.md) for suggestions. 
 
 You will need roughly 5GB of free disk space and to start off [have git installed on your system](http://git-scm.com/book/en/Getting-Started-Installing-Git).  Our first step is to run:
 
-    git clone https://github.com/jimdigriz/brwrt.git
-    cd brwrt
+    git clone https://github.com/jimdigriz/bratwurst.git
+    cd bratwurst
 
 ## Debian 'wheezy' 7
 
@@ -50,9 +50,9 @@ Development could be done directly on physical hardware, however:
 
 So instead we use QEMU.
 
-The following will spin up a QEMU instance of brwrt:
+The following will spin up a QEMU instance of BRatWuRsT:
 
-    make brwrt
+    make bratwurst
 
 After everything is built (about 30 minutes on an i7@3Ghz plus the time taken to download 250MB), you should see a typical Linux kernel boot up and then you will be dropped onto a login prompt; the username is `root` with no password.  Use `Ctrl-A ?` to get some QEMU usage information, `Ctrl-A x` will exit the emulator and there is of course the [QEMU Monitor Console](http://qemu.weilnetz.de/qemu-doc.html#pcsys_005fmonitor) instructions to help you out too.
 
@@ -61,9 +61,9 @@ The configuration (in the VM) uses a number of network interfaces (over the 'sta
  * wireless interface `wlan0` provided by `mac80211_hwsim` testing is performed on (as in the real world)
  * `eth0` (`-net user,vlan=0`)
 
-All the interesting bits live in `overlay`, and under `opt/brwrt` (which appears as `/opt/brwrt` on the target) you will find the `init` script which you can treat like you would `rc.local` for boottime customisations.
+All the interesting bits live in `overlay`, and under `opt/bratwurst` (which appears as `/opt/bratwurst` on the target) you will find the `init` script which you can treat like you would `rc.local` for boottime customisations.
 
-To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/brwrt/COMMON/post-build.sh`.  This is run after the overlay directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
+To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/bratwurst/COMMON/post-build.sh`.  This is run after the overlay directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
 
 # Building for Physical Targets
 

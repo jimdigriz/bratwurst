@@ -6,8 +6,8 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * straight forward means the documentation matches what needs to be done, also short and concise!  No need for a rambling description of why, or the design.  People use `grep` to find code entry points, but they need to know how to setup their development environment and how to test their changes
   * the size of the code change should be proportional to the time it takes to develop and test it.  A five liner change should *not* involve taking three days to prep an environment and then to spend a further week trying to figure out how to test that change.  Testing cycles should aim to be no more than *ten* minutes
  * development environment is regularly *destroyed* and started from scratch.  This exercises the documentation and helps to make sure that the build process (~30 minutes) and test cycle (minutes) do not creep up.  If it starts to become an inconvenience, it is a problem
- * as few differences as possible between the QEMU version of brwrt and what is actually run on the physical hardware.  Almost 100% development and testing should be possible on the QEMU version and the only differences really should be in the linux defconfig file for the physical hardware (which of course should be transparent to userspace)
- * root filesystem *must* always fit in a (jffs2) image no bigger than 3MB and the (xz) kernel to be no bigger than 1MB
+ * as few differences as possible between the QEMU version of BRatWuRsT and what is actually run on the physical hardware.  Almost 100% development and testing should be possible on the QEMU version and the only differences really should be in the linux defconfig file for the physical hardware (which of course should be transparent to userspace)
+ * root filesystem *must* always fit in a (JFFS2) image no bigger than 3MB and the (xz) kernel to be no bigger than 1MB
 
 # Plans
 
