@@ -1,3 +1,6 @@
 [submodule "buildroot"]
 	path = buildroot
 	url = git://git.buildroot.net/buildroot
+[submodule "py9p"]
+	path = py9p
+	url = https://github.com/svinota/py9p.git
