@@ -80,7 +80,7 @@ brwrt: buildroot/output/images/vmlinuz buildroot/output/images/pflash $(9P_SHARE
 		-m $(RAM) \
 		-kernel buildroot/output/images/$(VMLINUX) \
 		-append "brwrtDEV $(FSAPPEND) $(APPEND)" \
-		-drive file=buildroot/output/images/pflash,if=pflash \
+		-drive file=buildroot/output/images/pflash,snapshot=on,if=pflash \
 		-net nic,model=virtio -net user \
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
