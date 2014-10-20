@@ -5,7 +5,6 @@ ARCHS		:= $(foreach a, $(sort $(wildcard board/qemu/*/post-build.sh)),$(a:board/
 ARCH_NATIVE	:= $(shell uname -m)
 ifneq ($(filter $(ARCH_NATIVE), x86 x86_64),)
 	ARCH_NATIVE	:= i386
-	VMLINUX		:= bzImage
 endif
 ifeq ($(filter $(ARCHS), $(ARCH_NATIVE)),)
 	ARCH		?= NULL
@@ -13,7 +12,6 @@ else
 	ARCH		?= $(filter $(ARCHS), $(ARCH_NATIVE))
 endif
 
-VMLINUX		?= vmlinux
 RAM		?= 16
 NAND		?= 4
 QEMUOPTS	?= 
@@ -82,7 +80,7 @@ bratwurst: BOARD = qemu/$(ARCH)
 bratwurst: buildroot/output/images/vmlinuz buildroot/output/images/pflash $(9P_SHARE)
 	qemu-system-$(ARCH) -nographic -machine accel=kvm:tcg \
 		-m $(RAM) \
-		-kernel buildroot/output/images/$(VMLINUX) \
+		-kernel buildroot/output/images/vmlinuz \
 		-append "bratwurstDEV $(FSAPPEND) $(APPEND)" \
 		-drive file=buildroot/output/images/pflash,snapshot=on,if=pflash \
 		-net nic,model=virtio -net user \
