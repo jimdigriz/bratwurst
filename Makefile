@@ -4,20 +4,18 @@ ARCHS		:= $(foreach b, $(sort $(wildcard board/qemu/*)),$(subst board/qemu/,,$(b
 
 ARCH_NATIVE	:= $(shell uname -m)
 ifneq ($(filter $(ARCH_NATIVE), x86 x86_64),)
-	QEMU_ARCH	:= i386
-	ARCH_NATIVE	:= x86
+	ARCH_NATIVE	:= i386
 	VMLINUX		:= bzImage
 endif
 
 ARCH		?= $(ARCH_NATIVE)
-QEMU_ARCH	?= $(ARCH)
 VMLINUX		?= vmlinux
 RAM		?= 16
 NAND		?= 4
 QEMUOPTS	?= 
 MTDPARTS	?= 128k(boot),1024k(kernel),2880k(rootfs),64k(config)
 ROOTFSDEV	?= mtd$(shell echo "$(MTDPARTS)" | sed 's/(rootfs).*//' | awk -F, '{ print NF-1 }')
-FSAPPEND	?= mtdparts=physmap-flash.0:$(MTDPARTS) rootfstype=jffs2 root=$(ROOTFSDEV)
+FSAPPEND	:= mtdparts=physmap-flash.0:$(MTDPARTS) rootfstype=jffs2 root=$(ROOTFSDEV)
 APPEND		?=
 
 9P_SHARE	?= shared
@@ -76,7 +74,7 @@ distclean: clean
 
 bratwurst: BOARD = qemu/$(ARCH)
 bratwurst: buildroot/output/images/vmlinuz buildroot/output/images/pflash $(9P_SHARE)
-	qemu-system-$(QEMU_ARCH) -nographic -machine accel=kvm:tcg \
+	qemu-system-$(ARCH) -nographic -machine accel=kvm:tcg \
 		-m $(RAM) \
 		-kernel buildroot/output/images/$(VMLINUX) \
 		-append "bratwurstDEV $(FSAPPEND) $(APPEND)" \
