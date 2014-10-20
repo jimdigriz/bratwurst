@@ -1,14 +1,18 @@
 VERSION		:= $(shell git rev-parse --short HEAD)$(shell git diff-files --quiet || printf -- -dirty)
 
-ARCHS		:= $(foreach b, $(sort $(wildcard board/qemu/*)),$(subst board/qemu/,,$(b)))
+ARCHS		:= $(foreach a, $(sort $(wildcard board/qemu/*/post-build.sh)),$(a:board/qemu/%/post-build.sh=%))
 
 ARCH_NATIVE	:= $(shell uname -m)
 ifneq ($(filter $(ARCH_NATIVE), x86 x86_64),)
 	ARCH_NATIVE	:= i386
 	VMLINUX		:= bzImage
 endif
+ifeq ($(filter $(ARCHS), $(ARCH_NATIVE)),)
+	ARCH		?= NULL
+else
+	ARCH		?= $(filter $(ARCHS), $(ARCH_NATIVE))
+endif
 
-ARCH		?= $(ARCH_NATIVE)
 VMLINUX		?= vmlinux
 RAM		?= 16
 NAND		?= 4

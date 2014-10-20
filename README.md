@@ -52,7 +52,7 @@ So instead we use QEMU.
 
 The following will spin up a QEMU instance of BRatWuRsT:
 
-    make bratwurst
+    make bratwurst ARCH=mips
 
 On the first run, the build will take about 30 minutes (on an i7@3Ghz plus the time taken to download 250MB) whilst subsequent runs should take seconds.  Once built, you should see a typical Linux kernel boot up to then drop you into a login prompt; the username is `root` with no password.  Use `Ctrl-A ?` to get some QEMU usage information, `Ctrl-A x` will exit the emulator and there is of course the [QEMU Monitor Console](http://qemu.weilnetz.de/qemu-doc.html#pcsys_005fmonitor) instructions to help you out too.
 
