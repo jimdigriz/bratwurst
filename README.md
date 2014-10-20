@@ -1,4 +1,4 @@
-BRatWuRsT (a la 'Buildroot WRT') is a project that creates a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/), and walks you through the steps required to install it and get it running.
+BRatWuRsT (aka 'Buildroot WRT') is a project that creates a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/), and walks you through the steps required to install it and get it running.
 
 If you want to help, look at the current [roadmap](ROADMAP.md) for suggestions.  There is a list of aims, plans and thoughts on where the project is going.
 
