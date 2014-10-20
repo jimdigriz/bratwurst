@@ -54,7 +54,7 @@ The following will spin up a QEMU instance of BRatWuRsT:
 
     make bratwurst
 
-After everything is built (about 30 minutes on an i7@3Ghz plus the time taken to download 250MB), you should see a typical Linux kernel boot up and then you will be dropped onto a login prompt; the username is `root` with no password.  Use `Ctrl-A ?` to get some QEMU usage information, `Ctrl-A x` will exit the emulator and there is of course the [QEMU Monitor Console](http://qemu.weilnetz.de/qemu-doc.html#pcsys_005fmonitor) instructions to help you out too.
+On the first run, the build will take about 30 minutes (on an i7@3Ghz plus the time taken to download 250MB) whilst subsequent runs should take seconds.  Once built, you should see a typical Linux kernel boot up to then drop you into a login prompt; the username is `root` with no password.  Use `Ctrl-A ?` to get some QEMU usage information, `Ctrl-A x` will exit the emulator and there is of course the [QEMU Monitor Console](http://qemu.weilnetz.de/qemu-doc.html#pcsys_005fmonitor) instructions to help you out too.
 
 The configuration (in the VM) uses a number of network interfaces (over the 'standard' one wired and one wireless) like so:
 
