@@ -64,12 +64,14 @@ clean-brtarget:
 	mkdir -p buildroot/output/target/usr/bin
 	mkdir -p buildroot/output/target/usr/sbin
 	mkdir -p buildroot/output/target/usr/lib
-	find buildroot/output/staging/ ! -type d ! -path '*/include/*' | cut -d/ -f4- \
-		| tar c -C buildroot/output/staging -T - \
-		| tar x -C buildroot/output/target
+	test ! -d buildroot/output/staging \
+		|| find buildroot/output/staging ! -type d ! -path '*/include/*' \
+			| cut -d/ -f4- \
+			| tar c -C buildroot/output/staging -T - \
+			| tar x -C buildroot/output/target
 	rm -f buildroot/output/build/.root
-	find buildroot/output/images -type f | xargs rm -f
-	find buildroot/output/build -name .stamp_target_installed -o -name .stamp_images_installed | xargs rm -f
+	test ! -d buildroot/output/images || find buildroot/output/images ! -type d | xargs rm -f
+	test ! -d buildroot/output/build || find buildroot/output/build -name .stamp_target_installed -o -name .stamp_images_installed | xargs rm -f
 
 clean: clean-brtarget
 
@@ -97,7 +99,14 @@ py9p/9pfs/9pfs:
 	PYTHONPATH=$(CURDIR)/py9p python py9p/9pfs/9pfs -p 5564 -r $(9P_SHARE)
 
 buildroot/.config:
-	@[ "$(BOARD)" ] || { echo something went wrong and BOARD is not defined; false; }
+ifeq ($(ARCH), NULL)
+	@echo need to pass in a suitable 'ARCH=...'
+	@false
+endif
+ifeq ($(BOARD), NULL)
+	@echo something went wrong and BOARD is not defined
+	@false
+endif
 	git submodule update --init buildroot
 	make -C buildroot defconfig \
 		BR2_DEFCONFIG="$(CURDIR)/board/$(BOARD)/buildroot.config"
