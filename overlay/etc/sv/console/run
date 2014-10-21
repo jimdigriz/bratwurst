@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -eu
+
+DEV=ttyS0
+BAUD=38400
+
+exec </dev/$DEV >/dev/$DEV 2>&1
+
+# reset
+stty sane; stty ispeed $BAUD; stty ospeed $BAUD
+
+printf "%s login: " "$(hostname)"
+read -r login
+
+exec setsid sh -c "exec /bin/login '$login' </dev/$DEV >/dev/$DEV 2>&1"

@@ -2,6 +2,9 @@
 
 set -eu
 
-echo hello world
+/bin/mkdir -p /dev/shm
 
-exit 0
+/bin/mount -a
+/bin/hostname -F /etc/hostname
+
+exec /bin/runsvdir -s /sbin/siginit /var/service

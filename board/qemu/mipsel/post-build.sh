@@ -2,7 +2,11 @@
 
 set -eu
 
-TARGET="$1"
+cd "$1"
+
+rm root/.bash_history
+rm root/.bash_logout
+rm root/.bash_profile
 
 exit 0
 
