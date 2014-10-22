@@ -7,4 +7,6 @@ set -eu
 /bin/mount -a
 /bin/hostname -F /etc/hostname
 
+/sbin/ifup -a
+
 exec /bin/runsvdir -s /sbin/siginit /var/service
