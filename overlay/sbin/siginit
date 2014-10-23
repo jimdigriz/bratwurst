@@ -16,7 +16,7 @@ shutitdown () {
 	/bin/mount /proc
 }
 
-printf siginit: received signal $1... >&2
+printf "siginit: received signal $1..." >&2
 
 case "$1" in
 1)		# HUP -> restart all runsv processes
