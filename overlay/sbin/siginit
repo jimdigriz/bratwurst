@@ -7,15 +7,16 @@ shutitdown () {
 	kill 1
 	for I in $(seq 1 3); do
 		ls -1 /var/service | xargs sv stop || true
-		[ -n "$(ls -1 /var/service | xargs sv status)" ] || break
+		[ -n "$(ls -1 /var/service | xargs sv status | grep ^run:)" ] || break
 	done
-	if [ -n "$(ls -1 /var/service | xargs sv status)" ]; then
+	if [ -n "$(ls -1 /var/service | xargs sv status | grep ^run:)" ]; then
 		ls -1 /var/service | xargs sv kill || true
 	fi
 	/bin/umount -a -r || true
+	/bin/mount /proc
 }
 
-printf "siginit: received signal '${1:-UNKNOWN}'..." >&2
+printf siginit: received signal $1... >&2
 
 case "$1" in
 1)		# HUP -> restart all runsv processes
@@ -26,7 +27,7 @@ case "$1" in
 15)		# TERM -> reboot
 		echo rebooting >&2
 		shutitdown
-		echo b > /proc/sysrq_trigger
+		echo b > /proc/sysrq-trigger
 		;;
 30|10|16)	# USR1 -> halt
 		echo halting >&2
@@ -36,7 +37,7 @@ case "$1" in
 31|12|17)	# USR2 -> poweroff
 		echo powering off >&2
 		shutitdown
-		echo o > /proc/sysrq_trigger
+		echo o > /proc/sysrq-trigger
 		;;
 *)		echo ignoring >&2
 		exit 0
