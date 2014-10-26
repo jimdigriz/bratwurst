@@ -113,6 +113,6 @@ endif
 buildroot/output/images/%: buildroot/.config
 	make -C buildroot \
 		BR2_EXTERNAL="$(CURDIR)" \
-		BR2_DL_DIR="$(CURDIR)/dl"
+		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)"
 
 .PHONY: all help clean distclean bratwurst 9p $(BOARDS) $(PHONY_BOARD)
