@@ -67,6 +67,28 @@ All the interesting bits live in `overlay`, and under `opt/bratwurst` (which app
 
 To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/bratwurst/COMMON/post-build.sh`.  This is run after the overlay directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
 
+## Configuration Files
+
+When amending some configurations, to put a suitable file into `board` you should use the following methods.
+
+### Buildroot
+
+    make -C buildroot menuconfig
+    make -C buildroot savedefconfig
+
+### Busybox
+
+There is no 'savedefconfig' for busybox, so all we can do is copy it in:
+
+    make -C buildroot busybox-menuconfig
+    cp buildroot/output/build/busybox-1.22.1/.config board/qemu/mipsel/busybox.config
+
+### Linux
+
+    make -C buildroot linux-menuconfig
+    ARCH=mips make -C buildroot/output/build/linux-3.16.1 savedefconfig
+    cp buildroot/output/build/linux-3.16.1/defconfig board/qemu/mipsel/linux.config
+
 # Building for Physical Targets
 
 **N.B.** Work-In-Progress
