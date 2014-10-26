@@ -2,6 +2,20 @@
 
 set -eu
 
+SELF="$(basename "$0")"
+
+case "$SELF" in
+reboot)		kill -TERM 1
+		exit 0
+		;;
+poweroff)	kill -USR1 1
+		exit 0
+		;;
+halt)		kill -USR2 1
+		exit 0
+		;;
+esac
+
 shutitdown () {
 	echo killing tasks >&2
 	kill 1
@@ -12,8 +26,8 @@ shutitdown () {
 	if [ -n "$(ls -1 /var/service | xargs sv status | grep ^run:)" ]; then
 		ls -1 /var/service | xargs sv kill || true
 	fi
-	/bin/umount -a -r || true
-	/bin/mount /proc
+	umount -a -r || true
+	mount /proc
 }
 
 printf "siginit: received signal $1..." >&2
@@ -22,7 +36,6 @@ case "$1" in
 1)		# HUP -> restart all runsv processes
 		# - handled directly by runsvdir
 		echo noop >&2
-		exit 0
 		;;
 15)		# TERM -> reboot
 		echo rebooting >&2
@@ -40,7 +53,6 @@ case "$1" in
 		echo o > /proc/sysrq-trigger
 		;;
 *)		echo ignoring >&2
-		exit 0
 esac
 
 exit 0
