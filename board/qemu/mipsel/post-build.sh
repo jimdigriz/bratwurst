@@ -19,6 +19,6 @@ rm "$1/root/.bash_profile"
 
 find "$1/var" -depth -mindepth 1 | xargs -r rm -r
 
-rm -rf "$1/etc/nftables"
+find "$1/etc/nftables" -type f ! -name inet-filter -delete
 
 exit 0
