@@ -1,4 +1,3 @@
 auto lo
 iface lo inet loopback
-	pre-up	modprobe ipv6
-	#up	grep '^[^$#]' /etc/network/bogons | xargs -n1 ip route add unreachable
+	up	grep '^[^$#]' /etc/network/bogons | xargs -n1 /sbin/ip route add unreachable

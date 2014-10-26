@@ -7,8 +7,10 @@ mount -o remount,rw /
 
 hostname -F /etc/hostname
 
+grep '^[^$#]' /etc/modules | xargs -n1 /sbin/modprobe
+
 ifup -a
 
-find /etc/sysctl.conf.d -type f | xargs -n1 sysctl -q -p
+find /etc/sysctl.conf.d -type f | xargs -n1 /sbin/sysctl -q -p
 
 exec runsvdir -s /sbin/siginit /var/service
