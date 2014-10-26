@@ -2,9 +2,16 @@
 
 set -eu
 
+if [ $# -ne 1 ] || [ -z "$1" ]; then
+	echo "no" >&2
+	exit 1
+fi
+
 rm "$1/root/.bash_history"
 rm "$1/root/.bash_logout"
 rm "$1/root/.bash_profile"
+
+find "$1/var" -depth -mindepth 1 | xargs -r rm -r
 
 # musl bugs
 ln -f -s /lib/libc.so "$1/lib/ld-musl-mipsel.so.1"
