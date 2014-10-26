@@ -2,11 +2,13 @@
 
 set -eu
 
-/bin/mount -a
-/bin/mount -o remount,rw /
+mount -a
+mount -o remount,rw /
 
-/bin/hostname -F /etc/hostname
+hostname -F /etc/hostname
 
-/sbin/ifup -a
+ifup -a
 
-exec /bin/runsvdir -s /sbin/siginit /var/service
+find /etc/sysctl.conf.d -type f | xargs -n1 sysctl -q -p
+
+exec runsvdir -s /sbin/siginit /var/service
