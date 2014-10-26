@@ -2,8 +2,6 @@
 
 set -eu
 
-set -x
-
 mount -a
 mount -o remount,rw /
 
@@ -20,15 +18,15 @@ ifup -a
 find /etc/sysctl.conf.d -type f | xargs -n1 /sbin/sysctl -q -p
 
 mkdir /var/run/sv
-find /etc/sv -type d -name supervise | xargs -t -r /bin/rm -rf
+find /etc/sv -type d -name supervise | xargs -r rm -rf
 find /etc/sv -mindepth 1 -maxdepth 1 -type d \
 	| xargs -r -n1 basename \
 	| sed 's~.*~/var/run/sv/&\n/etc/sv/&/supervise~' \
-	| xargs -r -n2 /bin/ln -f -s
+	| xargs -r -n2 ln -f -s
 find /etc/sv -mindepth 2 -maxdepth 2 -type d -name log \
 	| xargs -r -n1 dirname \
 	| xargs -r -n1 basename \
 	| sed 's~.*~/var/run/sv/&.log\n/etc/sv/&/log/supervise~' \
-	| xargs -r -n2 /bin/ln -f -s
+	| xargs -r -n2 ln -f -s
 
 exec runsvdir -s /sbin/siginit /etc/service
