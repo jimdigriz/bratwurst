@@ -107,10 +107,12 @@ ifeq ($(BOARD), NULL)
 endif
 	git submodule update --init buildroot
 	make -C buildroot defconfig \
+		BR2_EXTERNAL="$(CURDIR)" \
 		BR2_DEFCONFIG="$(CURDIR)/board/$(BOARD)/buildroot.config"
 
 buildroot/output/images/%: buildroot/.config
 	make -C buildroot \
+		BR2_EXTERNAL="$(CURDIR)" \
 		BR2_DL_DIR="$(CURDIR)/dl"
 
 .PHONY: all help clean distclean bratwurst 9p $(BOARDS) $(PHONY_BOARD)
