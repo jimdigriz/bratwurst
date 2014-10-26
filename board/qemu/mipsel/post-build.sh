@@ -2,11 +2,15 @@
 
 set -eu
 
-cd "$1"
+rm "$1/root/.bash_history"
+rm "$1/root/.bash_logout"
+rm "$1/root/.bash_profile"
 
-rm root/.bash_history
-rm root/.bash_logout
-rm root/.bash_profile
+# musl bugs
+ln -f -s /lib/libc.so "$1/lib/ld-musl-mipsel.so.1"
+cp output/host/usr/mipsel-buildroot-linux-musl/sysroot/lib/libgcc_s.so.1 "$1/lib"
+./output/host/usr/mipsel-buildroot-linux-musl/bin/strip "$1/lib/libgcc_s.so.1"
+ln -f -s libgcc_s.so.1 "$1/lib/libgcc_s.so"
 
 exit 0
 
