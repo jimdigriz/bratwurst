@@ -20,11 +20,11 @@ shutitdown () {
 	echo killing tasks >&2
 	kill 1
 	for I in $(seq 1 3); do
-		ls -1 /var/service | xargs sv stop || true
-		[ -n "$(ls -1 /var/service | xargs sv status | grep ^run:)" ] || break
+		ls -1 /etc/service | xargs sv stop || true
+		[ -n "$(ls -1 /etc/service | xargs sv status | grep ^run:)" ] || break
 	done
-	if [ -n "$(ls -1 /var/service | xargs sv status | grep ^run:)" ]; then
-		ls -1 /var/service | xargs sv kill || true
+	if [ -n "$(ls -1 /etc/service | xargs sv status | grep ^run:)" ]; then
+		ls -1 /etc/service | xargs sv kill || true
 	fi
 	umount -a -r || true
 	mount /proc
