@@ -13,4 +13,4 @@ stty sane; stty ispeed $BAUD; stty ospeed $BAUD
 printf "%s login: " "$(hostname)"
 read -r login
 
-exec setsid sh -c "exec /bin/login '$login' </dev/$DEV >/dev/$DEV 2>&1"
+exec chpst -P login "$login" </dev/$DEV >/dev/$DEV 2>&1
