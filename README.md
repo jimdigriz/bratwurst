@@ -69,6 +69,8 @@ To make amendments to the rootfs before it is converted to a binary blob you wil
 
 ## Configuration Files
 
+The project structure tries to follow [buildroot's project-specific customization](http://buildroot.uclibc.org/downloads/manual/manual.html#_project_specific_customization) recommendations.
+
 When amending some configurations, to put a suitable file into `board` you should use the following methods.
 
 ### Buildroot
