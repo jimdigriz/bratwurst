@@ -8,24 +8,18 @@ case "$SELF" in
 reboot)		kill -TERM 1
 		exit 0
 		;;
-poweroff)	kill -USR1 1
+halt)		kill -USR1 1
 		exit 0
 		;;
-halt)		kill -USR2 1
+poweroff)	kill -USR2 1
 		exit 0
 		;;
 esac
 
 shutitdown () {
 	echo killing tasks >&2
-	kill 1
-	for I in $(seq 1 3); do
-		ls -1 /etc/service | xargs sv stop || true
-		[ -n "$(ls -1 /etc/service | xargs sv status | grep ^run:)" ] || break
-	done
-	if [ -n "$(ls -1 /etc/service | xargs sv status | grep ^run:)" ]; then
-		ls -1 /etc/service | xargs sv kill || true
-	fi
+        ls -1 /etc/service | xargs sv force-stop || true
+        ls -1 /etc/service | xargs sv exit || true
 	umount -a -r || true
 	mount /proc
 }
@@ -45,6 +39,7 @@ case "$1" in
 30|10|16)	# USR1 -> halt
 		echo halting >&2
 		shutitdown
+		echo System Halted >&2
 		kill -9 1
 		;;
 31|12|17)	# USR2 -> poweroff
