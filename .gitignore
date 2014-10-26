@@ -3,4 +3,5 @@
 !.gitmodules
 
 dl
+ccache
 shared
