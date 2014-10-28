@@ -112,6 +112,8 @@ endif
 
 buildroot/output/images/%: buildroot/.config
 	make -C buildroot \
-		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)"
+		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
+		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
+		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
 
 .PHONY: all help clean distclean bratwurst 9p $(BOARDS) $(PHONY_BOARD)

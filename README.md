@@ -75,8 +75,16 @@ When amending some configurations, to put a suitable file into `board` you shoul
 
 ### Buildroot
 
+    ARCH=mipsel BOARD=qemu/mipsel make buildroot/.config
     make -C buildroot menuconfig
     make -C buildroot savedefconfig
+
+### uClibc
+
+There is no 'savedefconfig' for uClibc, so all we can do is copy it in:
+
+    make -C buildroot uclibc-menuconfig
+    cp buildroot/output/build/uclibc-0.9.33.2/.config board/qemu/mipsel/uclibc.config
 
 ### Busybox
 
