@@ -12,9 +12,9 @@ cp output/host/usr/mipsel-buildroot-linux-uclibc/sysroot/lib/libgcc_s.so.1 "$1/l
 output/host/usr/mipsel-buildroot-linux-uclibc/bin/strip "$1/lib/libgcc_s.so.1"
 ln -f -s libgcc_s.so.1 "$1/lib/libgcc_s.so"
 
-rm "$1/root/.bash_history"
-rm "$1/root/.bash_logout"
-rm "$1/root/.bash_profile"
+rm -f "$1/root/.bash_history"
+rm -f "$1/root/.bash_logout"
+rm -f "$1/root/.bash_profile"
 
 find "$1/var" -depth -mindepth 1 | xargs -r rm -r
 
