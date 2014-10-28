@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+exec 2>&1
+
+[ -d /etc/dropbear ] || mkdir -p /etc/dropbear
+
+# Check for the Dropbear RSA key
+if [ ! -f /etc/dropbear/dropbear_rsa_host_key ]; then
+	echo "generating rsa key... "
+	/usr/bin/dropbearkey -t rsa -f /etc/dropbear/dropbear_rsa_host_key > /dev/null 2>&1
+fi
+
+# Check for the Dropbear DSS key
+if [ ! -f /etc/dropbear/dropbear_dss_host_key ]; then
+	echo "generating dsa key... "
+	/usr/bin/dropbearkey -t dss -f /etc/dropbear/dropbear_dss_host_key > /dev/null 2>&1
+fi
+
+umask 077
+
+exec /usr/sbin/dropbear -F -w -s
