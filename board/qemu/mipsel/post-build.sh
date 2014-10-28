@@ -19,7 +19,6 @@ find "$ROOTDIR/usr/lib/pppd/2.4.7" -type f ! -name pppoatm.so ! -name rp-pppoe.s
 FILES="	sbin/hediag
 	sbin/lecs
 	sbin/atmsigd
-	sbin/pppoe-discovery
 	sbin/zntune
 	sbin/pppstats
 	sbin/atmarp
