@@ -9,6 +9,10 @@ You will need roughly 5GB of free disk space and to start off [have git installe
     git clone https://github.com/jimdigriz/bratwurst.git
     cd bratwurst
 
+To get some help to kick start you off on the build:
+
+    make help
+
 ## Debian 'wheezy' 7
 
 You will need to be plumbed into [Debian Backports](http://backports.debian.org/), which if you have not done already is just a case of running:
