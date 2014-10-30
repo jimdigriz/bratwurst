@@ -54,7 +54,8 @@ help:
 	  printf "  %-22s - Build for %s\\n" $(board) "$(NAME-$(board))";)
 	@echo
 	@echo 'Misc:'
-	@echo '  9p                     - Export 'shared' over 9P/TCP'
+	@echo '  fakeisp                - Spin up a fake ISP'
+	@echo '  9p                     - Export a share over 9P/TCP'
 	@echo '    9P_SHARE=<directory>         (currently: "$(9P_SHARE)")'
 	@echo
 	@echo 'See README.md for further details'
@@ -78,6 +79,8 @@ clean-brtarget:
 	test ! -d buildroot/output/build || find buildroot/output/build -name .stamp_target_installed -o -name .stamp_images_installed | xargs rm -f
 
 clean: clean-brtarget
+	rm -f fakeisp.vmlinuz fakeisp.initrd*
+	test ! -d fakeisp.rootfs || sudo rm -rf fakeisp.rootfs
 
 distclean: clean
 	make -C buildroot distclean
@@ -89,8 +92,10 @@ bratwurst: buildroot/output/images/vmlinuz buildroot/output/images/pflash $(9P_S
 		-kernel buildroot/output/images/vmlinuz \
 		-append "bratwurstDEV $(FSAPPEND) $(APPEND)" \
 		-drive file=buildroot/output/images/pflash,snapshot=on,if=pflash \
-		-net nic,model=virtio -net user \
-		-net nic,vlan=1,model=virtio -net socket,vlan=1,listen=127.0.0.1:5541 \
+		-net nic,vlan=1,model=virtio \
+			-net socket,listen=127.0.0.1:5541 \
+		-net nic,vlan=2,model=virtio,restrict=on \
+			-net dump,vlan=2,file=bratwurst.pcap \
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
@@ -165,7 +170,6 @@ endif
 	sudo chroot .$@ apt-get -yy autoremove
 	sudo chroot .$@ apt-get clean
 	sudo find .$@/var/lib/apt/lists -type f -delete
-	sudo ln -s /sbin/init .$@/init
 	mv .$@ $@
 
 fakeisp.initrd.base.diy: fakeisp.rootfs
@@ -184,12 +188,10 @@ fakeisp.initrd.base:
 	ln -f -s "dl/$(shell basename $(FAKEISP_INITRD))" $@
 
 fakeisp.initrd.overlay: overlay.fakeisp fakeisp.initrd.base
-	#cd overlay.fakeisp; gunzip -c $(CURDIR)/fakeisp.initrd.base | cpio -iv --make-directories etc/init.d/.depend.boot
-	#sed -i -e '/^TARGETS = / s/$$/ bratwurst.sh/; /^networking: / s/$$/ monitorProbe.sh/; $$a monitorProbe.sh: urandom' overlay.fakeisp/etc/init.d/.depend.boot
-	#cd overlay.fakeisp; find . | cpio --create --format='newc' -R root:root | gzip -c > '$(CURDIR)/.$@'
-	#rm overlay.fakeisp/etc/init.d/.depend.boot
-	#mv .$@ $@
-	touch $@
+	cd overlay.fakeisp; gunzip -c $(CURDIR)/fakeisp.initrd.base | cpio -iv --make-directories etc/init.d/.depend.boot
+	cd overlay.fakeisp; find . | cpio --create --format='newc' -R root:root | gzip -c > '$(CURDIR)/.$@'
+	rm overlay.fakeisp/etc/init.d/.depend.boot
+	mv .$@ $@
 
 fakeisp.initrd: DDPARAMS = status=noxfer of=.fakeisp.initrd ibs=4
 fakeisp.initrd: fakeisp.initrd.base fakeisp.initrd.overlay
