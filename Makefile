@@ -70,8 +70,8 @@ clean: clean-brtarget
 distclean: clean
 	make -C buildroot distclean
 
-bratwurst: VMLINUZ	?= $(BR_OUTPUT)/images/qemu/$(ARCH)/vmlinuz
-bratwurst: PFLASH	?= $(BR_OUTPUT)/images/qemu/$(ARCH)/pflash
+VMLINUZ	:= $(BR_OUTPUT)/images/qemu/$(ARCH)/vmlinuz
+PFLASH	:= $(BR_OUTPUT)/images/qemu/$(ARCH)/pflash
 bratwurst: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 	qemu-system-$(ARCH) -nographic -machine accel=kvm:tcg \
 		-m $(RAM) \
