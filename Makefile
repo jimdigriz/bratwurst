@@ -89,7 +89,7 @@ py9p/9pfs/9pfs:
 	git submodule update --init py9p
 
 9p: py9p/9pfs/9pfs $(9P_SHARE)
-	test -d $(9P_SHARE) || mkdir -p $(9P_SHARE)
+	mkdir -p $(9P_SHARE)
 	PYTHONPATH=$(CURDIR)/py9p python py9p/9pfs/9pfs -p 5564 -r $(9P_SHARE)
 
 buildroot/.config:
@@ -106,6 +106,6 @@ buildroot menuconfig %-menuconfig: buildroot/.config
 
 $(BR_OUTPUT)/images/$(PLAT)/$(ARCH)/%: buildroot
 	mkdir -p $(BR_OUTPUT)/images/$(PLAT)/$(ARCH)
-	mv $@ $(BR_OUTPUT)/images/$(PLAT)/$(ARCH)
+	mv $(BR_OUTPUT)/images/$(notdir $@) $(BR_OUTPUT)/images/$(PLAT)/$(ARCH)
 
 .PHONY: all help clean distclean bratwurst buildroot menuconfig %-menuconfig 9p $(BOARDS) $(PHONY_BOARD) $(PHONY_FAKEISP)
