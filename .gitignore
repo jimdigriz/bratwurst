@@ -6,4 +6,8 @@ dl
 ccache
 shared
 
-fakeisp*
+fakeisp/vmlinuz
+fakeisp/initrd
+fakeisp/rootfs
+fakeisp/initrd.base
+fakeisp/initrd.overlay
