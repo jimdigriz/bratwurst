@@ -56,7 +56,7 @@ So instead we use QEMU.
 
 The following will spin up a QEMU instance of BRatWuRsT:
 
-    ARCH=mipsel make bratwurst
+    make bratwurst
 
 **N.B.** do *not* put the `ARCH` at the end, otherwise the variable cascades through the build and breaks it
 
@@ -79,7 +79,6 @@ When amending some configurations, to put a suitable file into `board` you shoul
 
 ### Buildroot
 
-    ARCH=mipsel BOARD=qemu/mipsel make buildroot/.config
     make menuconfig
     make savedefconfig
 
