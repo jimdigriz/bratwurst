@@ -47,21 +47,21 @@ help:
 
 # http://lists.busybox.net/pipermail/buildroot/2012-September/058323.html
 clean-brtarget:
-	rm -rf $(BR_OUTPUT)/target
-	mkdir -p $(BR_OUTPUT)/target/bin
-	mkdir -p $(BR_OUTPUT)/target/sbin
-	mkdir -p $(BR_OUTPUT)/target/lib
-	mkdir -p $(BR_OUTPUT)/target/usr/bin
-	mkdir -p $(BR_OUTPUT)/target/usr/sbin
-	mkdir -p $(BR_OUTPUT)/target/usr/lib
-	test ! -d $(BR_OUTPUT)/staging \
-		|| find $(BR_OUTPUT)/staging ! -type d ! -path '*/include/*' \
+	rm -rf buildroot/output/target
+	mkdir -p buildroot/output/target/bin
+	mkdir -p buildroot/output/target/sbin
+	mkdir -p buildroot/output/target/lib
+	mkdir -p buildroot/output/target/usr/bin
+	mkdir -p buildroot/output/target/usr/sbin
+	mkdir -p buildroot/output/target/usr/lib
+	test ! -d buildroot/output/staging \
+		|| find buildroot/output/staging ! -type d ! -path '*/include/*' \
 			| cut -d/ -f4- \
-			| tar c -C $(BR_OUTPUT)/staging -T - \
-			| tar x -C $(BR_OUTPUT)/target
-	rm -f $(BR_OUTPUT)/build/.root
-	test ! -d $(BR_OUTPUT)/images || find $(BR_OUTPUT)/images ! -type d | xargs rm -f
-	test ! -d $(BR_OUTPUT)/build || find $(BR_OUTPUT)/build -name .stamp_target_installed -o -name .stamp_images_installed | xargs rm -f
+			| tar c -C buildroot/output/staging -T - \
+			| tar x -C buildroot/output/target
+	rm -f buildroot/output/build/.root
+	test ! -d buildroot/output/images || find buildroot/output/images ! -type d | xargs rm -f
+	test ! -d buildroot/output/build || find buildroot/output/build -name .stamp_target_installed -o -name .stamp_images_installed | xargs rm -f
 
 clean: clean-brtarget
 	rm -f fakeisp/vmlinuz fakeisp/initrd*
@@ -70,8 +70,8 @@ clean: clean-brtarget
 distclean: clean
 	make -C buildroot distclean
 
-VMLINUZ	:= $(BR_OUTPUT)/images/qemu/$(ARCH)/vmlinuz
-PFLASH	:= $(BR_OUTPUT)/images/qemu/$(ARCH)/pflash
+VMLINUZ	:= buildroot/output/images/vmlinuz
+PFLASH	:= buildroot/output/images/pflash
 bratwurst: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 	qemu-system-$(ARCH) -nographic -machine accel=kvm:tcg \
 		-m $(RAM) \
@@ -80,17 +80,10 @@ bratwurst: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 		-drive file=$(PFLASH),snapshot=on,if=pflash \
 		-net nic,vlan=1,model=virtio \
 			-net socket,listen=127.0.0.1:5541 \
-		-net nic,vlan=2,model=virtio,restrict=on \
+		-net nic,vlan=2,model=virtio \
 			-net dump,vlan=2,file=bratwurst.pcap \
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
-
-py9p/9pfs/9pfs:
-	git submodule update --init py9p
-
-9p: py9p/9pfs/9pfs $(9P_SHARE)
-	mkdir -p $(9P_SHARE)
-	PYTHONPATH=$(CURDIR)/py9p python py9p/9pfs/9pfs -p 5564 -r $(9P_SHARE)
 
 buildroot/.config:
 	git submodule update --init buildroot
@@ -104,8 +97,13 @@ buildroot menuconfig %-menuconfig: buildroot/.config
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
 		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
 
-$(BR_OUTPUT)/images/$(PLAT)/$(ARCH)/%: buildroot
-	mkdir -p $(BR_OUTPUT)/images/$(PLAT)/$(ARCH)
-	mv $(BR_OUTPUT)/images/$(notdir $@) $(BR_OUTPUT)/images/$(PLAT)/$(ARCH)
+$(VMLINUZ) $(PFLASH): buildroot
+
+py9p/9pfs/9pfs:
+	git submodule update --init py9p
+
+9p: py9p/9pfs/9pfs $(9P_SHARE)
+	mkdir -p $(9P_SHARE)
+	PYTHONPATH=$(CURDIR)/py9p python py9p/9pfs/9pfs -p 5564 -r $(9P_SHARE)
 
 .PHONY: all help clean distclean bratwurst buildroot menuconfig %-menuconfig 9p $(BOARDS) $(PHONY_BOARD) $(PHONY_FAKEISP)
