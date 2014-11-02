@@ -11,11 +11,9 @@ APPEND		?=
 
 9P_SHARE	?= shared
 
-BR_OUTPUT	?= buildroot/output
-
 all: help
 
-#include fakeisp/Makefile.inc
+include fakeisp/Makefile.inc
 include $(wildcard board/*/*/board.mk)
 
 help:
