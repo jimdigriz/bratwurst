@@ -116,6 +116,7 @@ $(9P_SHARE):
 
 py9p/9pfs/9pfs:
 	git submodule update --init py9p
+	make -C py9p dist
 
 .PHONY: 9p
 9p: py9p/9pfs/9pfs $(9P_SHARE)
