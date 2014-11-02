@@ -12,4 +12,4 @@ fakeisp/rootfs
 fakeisp/initrd.base
 fakeisp/initrd.overlay
 
-bratwurst.pcap
+*.pcap

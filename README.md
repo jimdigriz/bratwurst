@@ -80,27 +80,27 @@ When amending some configurations, to put a suitable file into `board` you shoul
 ### Buildroot
 
     ARCH=mipsel BOARD=qemu/mipsel make buildroot/.config
-    make -C buildroot menuconfig
-    make -C buildroot savedefconfig
+    make menuconfig
+    make savedefconfig
 
 ### uClibc
 
 There is no 'savedefconfig' for uClibc, so all we can do is copy it in:
 
-    make -C buildroot uclibc-menuconfig
+    make uclibc-menuconfig
     cp buildroot/output/build/uclibc-0.9.33.2/.config board/qemu/mipsel/uclibc.config
 
 ### Busybox
 
 There is no 'savedefconfig' for busybox, so all we can do is copy it in:
 
-    make -C buildroot busybox-menuconfig
+    make busybox-menuconfig
     cp buildroot/output/build/busybox-1.22.1/.config board/qemu/mipsel/busybox.config
 
 ### Linux
 
-    make -C buildroot linux-menuconfig
-    ARCH=mips make -C buildroot/output/build/linux-3.16.1 savedefconfig
+    make linux-menuconfig
+    make linux-savedefconfig
     cp buildroot/output/build/linux-3.16.1/defconfig board/qemu/mipsel/linux.config
 
 # Building for Physical Targets

@@ -6,6 +6,7 @@ ARCH_NATIVE	:= i386
 ARCH_NATIVE_KEB	:= 486
 endif
 
+.PHONY: fakeisp
 fakeisp: fakeisp/vmlinuz fakeisp/initrd $(9P_SHARE)
 	qemu-system-$(ARCH_NATIVE) -nographic -machine accel=kvm:tcg \
 		-m 512 \
@@ -46,6 +47,7 @@ endif
 	sudo find fakeisp/.rootfs/var/lib/apt/lists -type f -delete
 	mv fakeisp/.rootfs $@
 
+.PHONY: fakeisp-diy
 fakeisp-diy: fakeisp/rootfs
 	sudo sh -c "cd fakeisp/rootfs; find . | cpio --create --format='newc' | gzip -c > ../.initrd.base"
 	sudo chown --reference=Makefile fakeisp/.initrd.base
@@ -72,5 +74,3 @@ fakeisp/initrd: fakeisp/initrd.base fakeisp/initrd.overlay
 	dd $(DDPARAMS) conv=sync                      if=fakeisp/initrd.base
 	dd $(DDPARAMS) conv=sync,notrunc oflag=append if=fakeisp/initrd.overlay
 	mv fakeisp/.initrd $@
-
-PHONY_FAKEISP := fakeisp fakeisp-diy

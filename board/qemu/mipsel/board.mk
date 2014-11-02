@@ -3,6 +3,7 @@ A	:= mipsel
 B	:= $(P)/$(A)
 ARCHS	+= $(A)
 BOARDS	+= $(B)
+.PHONY:	$(B)
 
 NAME-$(B)	:= $(B) system
 
