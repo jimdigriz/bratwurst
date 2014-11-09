@@ -11,9 +11,6 @@ APPEND		?=
 
 9P_SHARE	?= shared
 
-MAKEFLAGS	+= --no-builtin-rules
-.SUFFIXES:
-
 .PHONY: all
 all: help
 
