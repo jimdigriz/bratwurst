@@ -9,11 +9,6 @@ fi
 
 ROOTDIR="$1"
 
-# workaround missing libgcc_s.so
-cp output/host/usr/mipsel-buildroot-linux-uclibc/sysroot/lib/libgcc_s.so.1 "$ROOTDIR/lib"
-output/host/usr/mipsel-buildroot-linux-uclibc/bin/strip "$ROOTDIR/lib/libgcc_s.so.1"
-ln -f -s libgcc_s.so.1 "$ROOTDIR/lib/libgcc_s.so"
-
 find "$ROOTDIR/usr/lib/pppd/2.4.7" -type f ! -name pppoatm.so ! -name rp-pppoe.so -delete
 
 FILES="	sbin/hediag

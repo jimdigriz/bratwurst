@@ -65,8 +65,12 @@ clean-brtarget:
 		|| find buildroot/output/images ! -type d \
 			| xargs rm -f
 	test ! -d buildroot/output/build \
-		|| find buildroot/output/build -name .stamp_target_installed -o -name .stamp_images_installed \
-			| xargs rm -f
+		|| { \
+			find buildroot/output/build -name .stamp_target_installed -o -name .stamp_images_installed \
+				| xargs rm -f; \
+			find buildroot -name .stamp_host_installed -path '*/host-gcc-final-*' \
+				| xargs rm -f; \
+		}
 
 .PHONY: clean
 clean: clean-brtarget
