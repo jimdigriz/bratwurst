@@ -2,6 +2,8 @@
 
 /sbin/modprobe virtio_net
 
+/sbin/modprobe atmtcp
+
 # 9p shared mount
 /sbin/modprobe 9pnet_virtio
 mkdir /tmp/shared
