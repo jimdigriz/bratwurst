@@ -18,6 +18,11 @@ fakeisp: fakeisp/vmlinuz fakeisp/initrd $(9P_SHARE)
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
+.PHONY: clean-fakeisp
+clean-fakeisp:
+	rm -f fakeisp/vmlinuz fakeisp/initrd*
+	test ! -d fakeisp/rootfs || sudo rm -rf fakeisp/rootfs
+
 FAKEISP_PKGS := linux-image-$(ARCH_NATIVE_KEB)
 FAKEISP_PKGS += netbase ifupdown iproute dhcpcd runit
 FAKEISP_PKGS += iptables unbound isc-dhcp-server

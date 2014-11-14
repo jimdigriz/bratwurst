@@ -73,9 +73,7 @@ clean-brtarget:
 		}
 
 .PHONY: clean
-clean: clean-brtarget
-	rm -f fakeisp/vmlinuz fakeisp/initrd*
-	test ! -d fakeisp/rootfs || sudo rm -rf fakeisp/rootfs
+clean: clean-brtarget clean-fakeisp
 
 .PHONY: distclean
 distclean: clean
