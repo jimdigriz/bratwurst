@@ -55,12 +55,12 @@ fakeisp-diy: fakeisp/rootfs
 
 FAKEISP_KERNEL := http://http.debian.net/debian/dists/wheezy/main/installer-$(ARCH_NATIVE)/current/images/netboot/debian-installer/$(ARCH_NATIVE)/linux
 fakeisp/vmlinuz:
-	curl -L --create-dirs -o dl/$@ $(FAKEISP_KERNEL)
+	curl -f -L --create-dirs -o dl/$@ $(FAKEISP_KERNEL)
 	ln -f -s ../dl/$@ $@
 
 FAKEISP_INITRD := http://digriz.downloads.s3-website-eu-west-1.amazonaws.com/bratwurst/fakeisp.initrd.base.$(ARCH_NATIVE)
 fakeisp/initrd.base:
-	curl -L --create-dirs -o dl/$@ $(FAKEISP_INITRD)
+	curl -f -L --create-dirs -o dl/$@ $(FAKEISP_INITRD)
 	ln -f -s ../dl/$@ $@
 
 fakeisp/initrd.overlay: fakeisp/overlay fakeisp/initrd.base
