@@ -58,15 +58,14 @@ fakeisp-diy: fakeisp/rootfs
 	sudo chown --reference=Makefile fakeisp/.initrd.base
 	mv fakeisp/.initrd.base fakeisp/initrd.base
 
-FAKEISP_KERNEL := http://http.debian.net/debian/dists/wheezy/main/installer-$(ARCH_NATIVE)/current/images/netboot/debian-installer/$(ARCH_NATIVE)/linux
-fakeisp/vmlinuz:
-	curl -f -L --create-dirs -o dl/$@ $(FAKEISP_KERNEL)
-	ln -f -s ../dl/$@ $@
+fakeisp/vmlinuz: fakeisp/initrd.base
+	gunzip -c fakeisp/initrd.base | cpio -i --to-stdout 'boot/vmlinuz-*' > dl/$@.$(ARCH_NATIVE)
+	ln -f -s ../dl/$@.$(ARCH_NATIVE) $@
 
 FAKEISP_INITRD := http://digriz.downloads.s3-website-eu-west-1.amazonaws.com/bratwurst/fakeisp.initrd.base.$(ARCH_NATIVE)
 fakeisp/initrd.base:
-	curl -f -L --create-dirs -o dl/$@ $(FAKEISP_INITRD)
-	ln -f -s ../dl/$@ $@
+	curl -f -L --create-dirs -o dl/$@.$(ARCH_NATIVE) $(FAKEISP_INITRD)
+	ln -f -s ../dl/$@.$(ARCH_NATIVE) $@
 
 fakeisp/initrd.overlay: fakeisp/overlay fakeisp/initrd.base
 	cd fakeisp/overlay; gunzip -c ../initrd.base | cpio -iv --make-directories etc/init.d/.depend.boot
