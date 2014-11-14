@@ -13,8 +13,10 @@ fakeisp: fakeisp/vmlinuz fakeisp/initrd $(9P_SHARE)
 		-kernel fakeisp/vmlinuz \
 		-initrd fakeisp/initrd \
 		-append "console=ttyS0" \
-		-net nic,model=virtio -net user \
-		-net nic,vlan=1,macaddr=52:54:00:22:34:56,model=virtio -net socket,vlan=1,connect=127.0.0.1:5541 \
+		-net nic,model=virtio,macaddr=0a:de:ad:00:be:ef \
+			-net user \
+		-net nic,vlan=1,model=virtio \
+			-net socket,vlan=1,mcast=239.69.69.69:5541,localaddr=127.0.0.1 \
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
