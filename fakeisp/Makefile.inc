@@ -31,7 +31,7 @@ DEBSITE ?= http://http.debian.net/debian
 dl/debs.tar:
 	/usr/sbin/debootstrap --arch=$(ARCH_NATIVE) --variant=minbase \
 		--include=$(shell printf "$(FAKEISP_PKGS)" | tr ' ' ,) \
-		--make-tarball="$(CURDIR)/$@" wheezy fakeisp/.rootfs $(DEBSITE)
+		--make-tarball="$(CURDIR)/$@" wheezy fakeisp/.rootfs.debs $(DEBSITE)
 
 fakeisp/rootfs: dl/debs.tar
 ifeq (,$(filter $(shell uname -s),Linux))
