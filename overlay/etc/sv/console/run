@@ -13,4 +13,5 @@ stty sane; stty ispeed $BAUD; stty ospeed $BAUD
 printf "%s login: " "$(hostname)"
 read -r login
 
-exec chpst -P login "$login"
+# http://www.busybox.net/FAQ.html#job_control
+exec chpst -P sh -c "exec login '$login' </dev/$DEV >/dev/$DEV 2>&1"
