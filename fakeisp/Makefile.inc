@@ -1,9 +1,9 @@
 ARCH_NATIVE	:= $(shell uname -m)
 ARCH_NATIVE_KEB	:= $(ARCH_NATIVE)
 
-ifneq ($(filter $(ARCH_NATIVE),x86 x86_64),)
+ifneq ($(filter $(ARCH_NATIVE),i386 i486 i586 i686 x86_64),)
 ARCH_NATIVE	:= i386
-ARCH_NATIVE_KEB	:= 486
+ARCH_NATIVE_KEB	:= 686
 endif
 
 .PHONY: fakeisp
