@@ -1,0 +1,13 @@
+/sbin/modprobe virtio_pci
+
+/sbin/modprobe virtio_net
+
+# 9p shared mount
+/sbin/modprobe 9pnet_virtio
+mkdir /tmp/shared
+mount -t 9p -o version=9p2000.L,trans=virtio shared /tmp/shared
+
+# qemu mcast socket
+/sbin/sysctl -q -w net.ipv6.conf.default.accept_dad=0
+/sbin/sysctl -q -w net.ipv6.conf.all.accept_dad=0
+/sbin/sysctl -q -w net.ipv6.conf.eth0.accept_dad=0

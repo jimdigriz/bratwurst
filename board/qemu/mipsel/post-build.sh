@@ -9,6 +9,8 @@ fi
 
 ROOTDIR="$1"
 
+rsync -r ../board/qemu/mipsel/overlay/ "$ROOTDIR/"
+
 find "$ROOTDIR/usr/lib/pppd/2.4.7" -type f ! -name pppoatm.so ! -name rp-pppoe.so -delete
 
 FILES="	sbin/hediag
