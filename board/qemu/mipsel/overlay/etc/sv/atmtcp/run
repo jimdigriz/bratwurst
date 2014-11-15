@@ -2,4 +2,9 @@
 
 set -eu
 
-exec atmtcp virtual connect 192.0.2.0
+SERVER=192.0.2.0
+
+# wait for the remote end to become available
+echo | nc $SERVER 2812 2>/dev/null || exit 0
+
+exec atmtcp virtual connect $SERVER

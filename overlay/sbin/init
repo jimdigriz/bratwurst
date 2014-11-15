@@ -13,7 +13,7 @@ hostname -F /etc/hostname
 
 grep '^[^$#]' /etc/modules | xargs -n1 /sbin/modprobe
 
-test ! -f /opt/bratwurst/rc || . /opt/bratwurst/rc
+run-parts /opt/bratwurst/rc.d
 
 grep '^[^$#]' /etc/network/bogons | xargs -n1 /sbin/ip route add unreachable
 run-parts /etc/nftables

@@ -2,16 +2,21 @@
 
 set -eu
 
-VPI=8
-VCI=35
+[ -t 0 -a -t 1 ] || sv once .
+touch down
 
-# 0:llc 1:vcmux
-ENCAP=1
+. /opt/bratwurst/config
 
-# 0:routed 1:bridged
-PAYLOAD=1
+TYPE=$(awk 'NR > 1 { print $2 }' /proc/net/atm/devices)
 
 # wait for the ATM interface to become available
-[ $(wc -l /proc/net/atm/devices) -ne 2 ] || exit 0
+[ -n "$TYPE" ] || exit 0
+# wait for carrier, do nothing (HACK: assume '0')
+grep -q 1 /sys/class/atm/${TYPE}0/carrier || exit 0
 
-exec br2684ctl -c 0 -e $ENCAP -p $PAYLOAD -a 0.$VPI.$VCI
+case $ATM_ENCAP in
+llc)		ENCAP=0;;
+vcmux)		ENCAP=1;;
+esac
+
+exec /usr/sbin/br2684ctl -c $UPLINK_PORT -e $ENCAP -a $UPLINK_PORT.$ATM_VPI.$ATM_VCI

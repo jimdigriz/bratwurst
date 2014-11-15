@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+# no IPv6 on point to point link
+# N.B. side steps QEMU multicast socket DAD problems too
+/sbin/sysctl -q -w net.ipv6.conf.eth0.disable_ipv6=1
+
+exit 0

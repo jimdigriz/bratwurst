@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -eu
+
+MODULES="	virtio_pci
+		virtio_net
+		atmtcp"
+
+for M in $MODULES; do
+	/sbin/modprobe $M
+done
+
+exit 0

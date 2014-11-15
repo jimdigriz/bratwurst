@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -eu
+
+. /opt/bratwurst/config
+
+[ "$UPLINK_TYPE" = "atm" -a "$NETWORK" = "pppoe" ] && sv start br2684ctl
+
+PPP_OPTIONS="	nodetach
+		debug
+		lock
+		defaultroute
+		noipdefault
+		noauth
+		lcp-echo-failure 3
+		lcp-echo-interval 1
+		user $PPP_USER
+		password $PPP_PASS"
+
+case $NETWORK in
+pppoa)	/sbin/modprobe pppoatm
+	exec /usr/sbin/pppd $PPP_OPTIONS plugin pppoatm.so $UPLINK_PORT.$ATM_VPI.$ATM_VCI
+	;;
+pppoe)	/sbin/modprobe pppoe
+	/sbin/ip link set dev nas0 up
+	exec /usr/sbin/pppd $PPP_OPTIONS plugin rp-pppoe.so nas$UPLINK_PORT
+	;;
+udhcpc)	exec /sbin/udhcpc -f -n -R -t 3 -i $UPLINK_TYPE$UPLINK_PORT
+	;;
+esac
