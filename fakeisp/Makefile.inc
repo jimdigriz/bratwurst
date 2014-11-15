@@ -15,20 +15,20 @@ fakeisp: fakeisp/vmlinuz fakeisp/initrd $(9P_SHARE)
 		-append "console=ttyS0" \
 		-net nic,model=virtio \
 			-net user \
-		-net nic,vlan=1,model=virtio,macaddr=0a:de:ad:00:be:ef \
+		-net nic,vlan=1,model=virtio \
 			-net socket,vlan=1,mcast=239.69.69.69:5541,localaddr=127.0.0.1 \
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
-.PHONY: clean-fakeisp
-clean-fakeisp:
+.PHONY: fakeisp-clean
+fakeisp-clean:
 	rm -f fakeisp/vmlinuz fakeisp/initrd*
 	test ! -d fakeisp/rootfs || sudo rm -rf fakeisp/rootfs
 
 FAKEISP_PKGS := linux-image-$(ARCH_NATIVE_KEB)
 FAKEISP_PKGS += netbase ifupdown iproute dhcpcd runit
 FAKEISP_PKGS += iptables unbound isc-dhcp-server
-FAKEISP_PKGS += ppp atm-tools
+FAKEISP_PKGS += ppp atm-tools iptables-persistent
 DEBSITE ?= http://http.debian.net/debian
 dl/debs.tar:
 	/usr/sbin/debootstrap --arch=$(ARCH_NATIVE) --variant=minbase \
@@ -52,7 +52,7 @@ endif
 	sudo chroot fakeisp/.rootfs apt-get -yy autoremove
 	sudo chroot fakeisp/.rootfs apt-get clean
 	sudo find fakeisp/.rootfs/var/lib/apt/lists -type f -delete
-	sudo find fakeisp/.rootfs/etc/unbound -type f -name '*.key' -o -name '*.pem' -delete
+	sudo find fakeisp/.rootfs/etc/unbound -type f \( -name '*.key' -o -name '*.pem' \) -delete
 	mv fakeisp/.rootfs $@
 
 .PHONY: fakeisp-diy
