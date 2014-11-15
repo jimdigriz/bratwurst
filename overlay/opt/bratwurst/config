@@ -9,7 +9,7 @@ ATM_VCI=35
 ATM_ENCAP=vcmux
 
 # {pppoa,pppoe,dhcp}
-NETWORK=pppoe
+NETWORK=pppoa
 
 PPP_USER=test123
 PPP_PASS=test456
