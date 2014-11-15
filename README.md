@@ -50,6 +50,7 @@ Development could be done directly on physical hardware, however:
 
  1. it takes *forever*
  1. QEMU supports simulating different architectures and platforms
+ 1. we can fake ATM connections with [ATM over TCP (`atmtcp`)](http://tldp.org/HOWTO/ATM-Linux-HOWTO/device-setup.html#DEVICE-SETUP.ATM-OVER-TCP-SETUP)
  1. there is magic lurking in [`mac80211_hwsim`](https://www.kernel.org/doc/Documentation/networking/mac80211_hwsim/README) and in the [`hwsim`](http://hostap.epitest.fi/cgit/hostap/tree/tests/hwsim) directory
 
 So instead we use QEMU.
