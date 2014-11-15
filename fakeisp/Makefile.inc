@@ -52,6 +52,7 @@ endif
 	sudo chroot fakeisp/.rootfs apt-get -yy autoremove
 	sudo chroot fakeisp/.rootfs apt-get clean
 	sudo find fakeisp/.rootfs/var/lib/apt/lists -type f -delete
+	sudo find fakeisp/.rootfs/etc/unbound -type f -name '*.key' -o -name '*.pem' -delete
 	mv fakeisp/.rootfs $@
 
 .PHONY: fakeisp-diy
