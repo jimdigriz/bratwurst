@@ -17,7 +17,7 @@ test ! -f /opt/bratwurst/rc || . /opt/bratwurst/rc
 
 ifup -a
 
-find /etc/sysctl.conf.d -type f | xargs -n1 /sbin/sysctl -q -p
+find /etc/sysctl.d -type f -name '*.conf' | xargs -n1 /sbin/sysctl -q -p
 
 run-parts /etc/nftables
 

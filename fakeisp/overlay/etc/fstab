@@ -1,0 +1,4 @@
+# /etc/fstab: static file system information.
+#
+# <file system> <mount pt>      <type>  <options>   				<dump>  <pass>
+shared		/tmp/shared	9p	version=9p2000.L,trans=virtio,noauto	0	0
