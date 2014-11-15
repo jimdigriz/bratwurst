@@ -88,10 +88,10 @@ bratwurst: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 		-kernel $(VMLINUZ) \
 		-append "$(FSAPPEND) $(APPEND)" \
 		-drive file=$(PFLASH),snapshot=on,if=pflash \
-		-net nic,vlan=1,model=virtio,macaddr=0a:de:ad:01:be:ef \
+		-net nic,vlan=1,model=virtio \
 			-net socket,vlan=1,mcast=239.69.69.69:5541,localaddr=127.0.0.1 \
 		-net nic,vlan=2,model=virtio \
-			-net dump,vlan=2,file=$@.pcap \
+			-net none,vlan=2 \
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
