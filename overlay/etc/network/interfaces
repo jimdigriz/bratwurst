@@ -1,3 +1,0 @@
-auto lo
-iface lo inet loopback
-	up	grep '^[^$#]' /etc/network/bogons | xargs -n1 /sbin/ip route add unreachable

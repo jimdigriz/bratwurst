@@ -15,11 +15,11 @@ grep '^[^$#]' /etc/modules | xargs -n1 /sbin/modprobe
 
 test ! -f /opt/bratwurst/rc || . /opt/bratwurst/rc
 
+grep '^[^$#]' /etc/network/bogons | xargs -n1 /sbin/ip route add unreachable
+run-parts /etc/nftables
 ifup -a
 
 find /etc/sysctl.d -type f -name '*.conf' | xargs -n1 /sbin/sysctl -q -p
-
-run-parts /etc/nftables
 
 mkdir /var/run/sv
 find /etc/sv -type d -name supervise | xargs -r rm -rf
