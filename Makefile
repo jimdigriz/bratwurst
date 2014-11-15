@@ -45,9 +45,9 @@ help:
 	@echo
 	@echo 'See README.md for further details'
 
-# http://lists.busybox.net/pipermail/buildroot/2012-September/058323.html
-.PHONY: clean-brtarget
-clean-brtarget:
+.PHONY: clean
+clean:
+	# http://lists.busybox.net/pipermail/buildroot/2012-September/058323.html
 	rm -rf buildroot/output/target
 	mkdir -p buildroot/output/target/bin
 	mkdir -p buildroot/output/target/sbin
@@ -68,12 +68,10 @@ clean-brtarget:
 		|| { \
 			find buildroot/output/build -name .stamp_target_installed -o -name .stamp_images_installed \
 				| xargs rm -f; \
+			# otherwise libgcc_s.so is lost \
 			find buildroot -name .stamp_host_installed -path '*/host-gcc-final-*' \
 				| xargs rm -f; \
 		}
-
-.PHONY: clean
-clean: clean-brtarget clean-fakeisp
 
 .PHONY: distclean
 distclean: clean
