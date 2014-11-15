@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -eu
+
+VPI=8
+VCI=35
+
+# 0:llc 1:vcmux
+ENCAP=1
+
+# 0:routed 1:bridged
+PAYLOAD=1
+
+# wait for the ATM interface to become available
+[ $(wc -l /proc/net/atm/devices) -ne 2 ] || exit 0
+
+exec br2684ctl -c 0 -e $ENCAP -p $PAYLOAD -a 0.$VPI.$VCI

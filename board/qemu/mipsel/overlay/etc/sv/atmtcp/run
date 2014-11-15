@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+exec atmtcp virtual connect 192.0.2.0

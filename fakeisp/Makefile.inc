@@ -27,8 +27,9 @@ fakeisp-clean:
 
 FAKEISP_PKGS := linux-image-$(ARCH_NATIVE_KEB)
 FAKEISP_PKGS += netbase ifupdown iproute dhcpcd runit
-FAKEISP_PKGS += iptables unbound isc-dhcp-server
-FAKEISP_PKGS += ppp atm-tools iptables-persistent
+FAKEISP_PKGS += iptables iptables-persistent
+FAKEISP_PKGS += unbound isc-dhcp-server
+FAKEISP_PKGS += ppp atm-tools br2684ctl
 DEBSITE ?= http://http.debian.net/debian
 dl/debs.tar:
 	/usr/sbin/debootstrap --arch=$(ARCH_NATIVE) --variant=minbase \
