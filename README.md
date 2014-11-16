@@ -55,7 +55,7 @@ Development could be done directly on physical hardware, however:
  1. it takes *forever*
  1. QEMU supports simulating different architectures and platforms
  1. of course QEMU handles Ethernet interfaces, however Linux also supports simulating:
-     * ATM connections with [ATM over TCP (`atmtcp`)](http://tldp.org/HOWTO/ATM-Linux-HOWTO/device-setup.html#DEVICE-SETUP.ATM-OVER-TCP-SETUP)
+     * ATM connections with [ATM over TCP](http://tldp.org/HOWTO/ATM-Linux-HOWTO/device-setup.html#DEVICE-SETUP.ATM-OVER-TCP-SETUP) using `atmtcp`
      * wireless interfaces using [`mac80211_hwsim`](https://www.kernel.org/doc/Documentation/networking/mac80211_hwsim/README) and palming hints from [`hwsim`](http://hostap.epitest.fi/cgit/hostap/tree/tests/hwsim)
 
 So instead we use QEMU.
