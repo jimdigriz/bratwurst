@@ -63,8 +63,9 @@ fakeisp-diy: fakeisp/rootfs
 	mv fakeisp/.initrd.base fakeisp/initrd.base
 
 fakeisp/vmlinuz: fakeisp/initrd.base
-	gunzip -c fakeisp/initrd.base | cpio -i --to-stdout 'boot/vmlinuz-*' > dl/$@.$(ARCH_NATIVE)
-	ln -f -s ../dl/$@.$(ARCH_NATIVE) $@
+	gunzip -c fakeisp/initrd.base | cpio -i --to-stdout 'boot/vmlinuz-*' > fakeisp/.vmlinuz.$(ARCH_NATIVE)
+	mv fakeisp/.vmlinuz.$(ARCH_NATIVE) $@.$(ARCH_NATIVE)
+	ln -f -s vmlinuz.$(ARCH_NATIVE) $@
 
 FAKEISP_INITRD := http://digriz.downloads.s3-website-eu-west-1.amazonaws.com/bratwurst/fakeisp.initrd.base.$(ARCH_NATIVE)
 fakeisp/initrd.base:
