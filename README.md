@@ -80,7 +80,7 @@ Building for specific physical hardware is available for:
 
 To help with development it is handy to have some network filesystem capabilities so you can quickly edit scripts on your side of the fence and use them instantly from inside the VM.  NFS and CIFS though is too big for our target so we use [9P](https://www.kernel.org/doc/Documentation/filesystems/9p.txt) instead which in total weighs in at about 100kB worth of kernel modules.
 
-There are two methods avaliable to mount the 9P export, you of course only need to use one.  For QEMU, the virtio transport is automatically setup for you by [90_shared](board/qemu/mipsel/overlay/opt/bratwurst/rc.d/90_shared) on boot and mounted at `/tmp/shared` (sharing `shared` at the top level directory).
+There are two methods available to mount the 9P export, you of course only need to use one.  For QEMU, the virtio transport is automatically setup for you by [90_shared](board/qemu/mipsel/overlay/opt/bratwurst/rc.d/90_shared) on boot and mounted at `/tmp/shared` (sharing `shared` at the top level directory).
 
 **N.B.** the variable `9P_SHARE` (default: `shared`) can be used to specify the directory you wish to export
 
