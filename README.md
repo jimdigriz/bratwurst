@@ -34,7 +34,7 @@ Afterwards, you can get everything you need with:
     	build-essential perl \
     	wget ca-certificates cpio rsync vim-common
     sudo apt-get install --no-install-recommends -t wheezy-backports \
-    	qemu-system-$(uname -m | sed 's/_64//')
+    	qemu-system-$(uname -m | sed 's/\(i[3456]86\|x86_64\)/x86/')
 
 ## Fedora 20
 
