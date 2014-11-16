@@ -75,8 +75,9 @@ fakeisp/initrd.base:
 		}
 	ln -f -s ../dl/$@.$(ARCH_NATIVE) $@
 
-fakeisp/initrd.overlay: fakeisp/overlay fakeisp/initrd.base
+fakeisp/initrd.overlay: fakeisp/initrd.base
 	cd fakeisp/overlay; gunzip -c ../initrd.base | cpio -iv --make-directories etc/init.d/.depend.boot
+	sed -i -e '/^TARGETS = / s/$$/ bratwurst.sh/; /^networking: / s/$$/ bratwurst.sh/; $$a bratwurst.sh: urandom' fakeisp/overlay/etc/init.d/.depend.boot
 	cd fakeisp/overlay; find . | cpio --create --format='newc' -R root:root | gzip -c > ../.initrd.overlay
 	rm fakeisp/overlay/etc/init.d/.depend.boot
 	mv fakeisp/.initrd.overlay $@

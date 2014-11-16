@@ -2,9 +2,11 @@
 
 set -eu
 
-SERVER=192.0.2.0
+SERVER=172.21.0.0
 
 # wait for the remote end to become available
 echo | nc -w 3 $SERVER 2812 2>/dev/null || exit 0
+
+/sbin/modprobe atmtcp
 
 exec atmtcp virtual connect $SERVER

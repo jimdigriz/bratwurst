@@ -2,4 +2,6 @@
 
 set -eu
 
+/sbin/modprobe atmtcp
+
 exec atmtcp virtual listen

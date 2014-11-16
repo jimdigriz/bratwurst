@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -eu
+
+runit () {
+	update-rc.d unbound remove				>/dev/null
+	update-rc.d isc-dhcp-server remove			>/dev/null
+
+	for S in $(ls -1 /opt/bratwurst/runit); do
+		update-service --add /opt/bratwurst/runit/$S	>/dev/null
+	done
+}
+
+shared () {
+	modprobe 9p
+	modprobe 9pnet_virtio
+
+	mkdir /tmp/shared
+	mount -t 9p -o version=9p2000.L,trans=virtio shared /tmp/shared
+}
+
+passwd -q -d root
+modprobe virtio_pci
+runit
+shared
+
+exit 0
