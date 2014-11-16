@@ -60,9 +60,11 @@ Development could be done directly on physical hardware, however:
 
 So instead we use QEMU.
 
-The following will spin up a QEMU instance of BRatWuRsT:
+The following will spin up a QEMU instance of BRatWuRsT (`ARCH` defaults to `mipsel` so can be dropped):
 
-    make bratwurst
+    ARCH=mipsel make bratwurst
+
+**N.B.** do *not* put the `ARCH` at the end, otherwise the variable cascades through the build and breaks it
 
 On the first run, the build will take about 30 minutes (on an i7@3Ghz plus the time taken to download 250MB) whilst subsequent runs should take seconds.  Once built, you should see a typical Linux kernel boot up to then drop you into a login prompt; the username is `root` with no password.  Use `Ctrl-A ?` to get some QEMU usage information, `Ctrl-A x` will exit the emulator and there is of course the [QEMU Monitor Console](http://wiki.qemu.org/download/qemu-doc.html#pcsys_005fmonitor) instructions to help you out too.
 
@@ -86,7 +88,7 @@ There are two methods available to mount the 9P export, you of course only need 
 
 For real hardware, you will have to use a userland TCP based server.  To aid you, plumbed into the project, we use a [fork of py9p](https://github.com/svinota/py9p) (there are other [9p server implementation](http://9p.cat-v.org/implementations) you can use) which should work everywhere that has python available (`{apt-get,yum} install python`), you can run a 9P server by just typing into a spare terminal:
 
-    make 9p 9P_SHARE=shared
+    9P_SHARE=shared make 9p
 
 Then from your router:
 
