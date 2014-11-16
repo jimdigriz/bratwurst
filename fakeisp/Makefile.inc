@@ -70,8 +70,8 @@ fakeisp/vmlinuz: fakeisp/initrd.base
 FAKEISP_INITRD := http://digriz.downloads.s3-website-eu-west-1.amazonaws.com/bratwurst/fakeisp.initrd.base.$(ARCH_NATIVE)
 fakeisp/initrd.base:
 	test -f dl/$@.$(ARCH_NATIVE) || { \
-			curl -f -L --create-dirs -o dl/.$@.$(ARCH_NATIVE) $(FAKEISP_INITRD); \
-			mv dl/.$@.$(ARCH_NATIVE) dl/$@.$(ARCH_NATIVE); \
+			curl -f -L --create-dirs -o dl/fakeisp/.initrd.base.$(ARCH_NATIVE) $(FAKEISP_INITRD); \
+			mv dl/fakeisp/.initrd.base.$(ARCH_NATIVE) dl/$@.$(ARCH_NATIVE); \
 		}
 	ln -f -s ../dl/$@.$(ARCH_NATIVE) $@
 
