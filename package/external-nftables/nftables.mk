@@ -29,6 +29,6 @@ endif
 
 EXTERNAL_NFTABLES_CONF_ENV = \
 	ac_cv_prog_CONFIG_PDF=no \
-	LIBS="$(EXTERNAL_NFTABLES_LIBS)
+	LIBS="$(EXTERNAL_NFTABLES_LIBS)"
 
 $(eval $(autotools-package))
