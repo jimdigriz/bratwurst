@@ -19,7 +19,7 @@ ifeq ($(BR2_PACKAGE_EXTERNAL_NFTABLES_INTERACTIVE),y)
 EXTERNAL_NFTABLES_DEPENDENCIES += readline
 EXTERNAL_NFTABLES_CONF_ENV += LIBS="-lncurses"
 else
-EXTERNAL_NFTABLES_CONF_OPT = --disable-cli
+EXTERNAL_NFTABLES_CONF_OPT = --without-cli
 endif
 
 $(eval $(autotools-package))
