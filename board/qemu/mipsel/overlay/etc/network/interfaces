@@ -2,14 +2,13 @@ auto lo
 iface lo inet loopback
 
 auto eth0
-iface eth0 inet manual
-	pre-up /sbin/ip addr add 172.21.0.1 peer 172.21.0.0 dev eth0
-	up /sbin/ip link set dev eth0 up
+iface eth0 inet static
+	address 172.21.0.1
+	netmask 255.255.255.255
+	pointopoint 172.21.0.0
 
-#auto gre0
-iface gre0 inet tunnel
-	mode gre
-	address 172.21.1.1
-	dstaddr 172.21.1.0
-	endpoint 172.21.0.0
-	local 172.21.0.1
+auto gre0
+iface gre0 inet manual
+	pre-up /sbin/ip tunnel add mode gre local 172.21.0.1 remote 172.21.0.0 dev gre0
+	up /sbin/ip address add 172.21.1.1 peer 172.21.1.0 dev gre0
+	up /sbin/ip link set dev gre0 up
