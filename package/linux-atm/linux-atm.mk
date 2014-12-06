@@ -11,6 +11,6 @@ LINUX_ATM_DEPENDENCIES = flex
 LINUX_ATM_LICENSE = GPLv2
 LINUX_ATM_LICENSE_FILES = COPYING
 
-IPSEC_TOOLS_CONF_OPT = --with-kernel-headers=$(STAGING_DIR)/usr/include
+IPSEC_TOOLS_CONF_OPTS = --with-kernel-headers=$(STAGING_DIR)/usr/include
 
 $(eval $(autotools-package))
