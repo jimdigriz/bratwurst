@@ -60,7 +60,7 @@ Development could be done directly on physical hardware, however:
 
 So instead we use QEMU.
 
-The following will spin up a QEMU instance of BRatWuRsT (`ARCH` defaults to `mipsel` so can be dropped):
+The following will spin up a QEMU instance of BRatWuRsT (`ARCH` defaults to `mipsel` so can be omitted):
 
     ARCH=mipsel make bratwurst
 
