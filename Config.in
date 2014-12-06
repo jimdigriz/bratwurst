@@ -1,2 +1,3 @@
 source "$BR2_EXTERNAL/package/external-nftables/Config.in"
 source "$BR2_EXTERNAL/package/linux-atm/Config.in"
+source "$BR2_EXTERNAL/package/ar7-atm/Config.in"
