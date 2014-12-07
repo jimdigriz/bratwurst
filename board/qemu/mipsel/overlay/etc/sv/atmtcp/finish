@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+SERVER=172.21.0.0
+
+exec timeout -t 3 nc $SERVER 2813 </dev/null 2>/dev/null

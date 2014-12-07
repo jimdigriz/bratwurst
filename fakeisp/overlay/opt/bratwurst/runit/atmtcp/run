@@ -4,4 +4,4 @@ set -eu
 
 /sbin/modprobe atmtcp
 
-exec atmtcp virtual listen
+exec /usr/sbin/atmtcp virtual listen
