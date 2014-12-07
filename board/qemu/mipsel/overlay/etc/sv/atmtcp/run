@@ -11,7 +11,10 @@ CLIENT=172.21.0.1
 /sbin/ip link set dev eth0 up
 
 # wait for the remote end to become available
-echo | timeout -t 3 nc $SERVER 2812 2>/dev/null || exit 0
+echo | timeout -t 3 nc $SERVER 2812 2>/dev/null || exit 1
+
+# wait for runit to restart atmtcp
+sleep 3
 
 /sbin/modprobe atmtcp
 
