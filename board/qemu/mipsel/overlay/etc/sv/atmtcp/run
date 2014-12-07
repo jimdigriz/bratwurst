@@ -11,8 +11,8 @@ CLIENT=172.21.0.1
 /sbin/ip link set dev eth0 up
 
 # wait for the remote end to become available
-echo | nc -w 3 $SERVER 2812 2>/dev/null || exit 0
+echo | timeout -t 3 nc $SERVER 2812 2>/dev/null || exit 0
 
 /sbin/modprobe atmtcp
 
-exec atmtcp virtual connect $SERVER
+exec /usr/sbin/atmtcp virtual connect $SERVER
