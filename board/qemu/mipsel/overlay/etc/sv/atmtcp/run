@@ -2,7 +2,13 @@
 
 set -eu
 
+. /opt/bratwurst/config
+
 SERVER=172.21.0.0
+CLIENT=172.21.0.1
+
+/sbin/ip addr add $CLIENT peer $SERVER dev eth0 2>/dev/null || true
+/sbin/ip link set dev eth0 up
 
 # wait for the remote end to become available
 echo | nc -w 3 $SERVER 2812 2>/dev/null || exit 0

@@ -4,9 +4,9 @@ NETWORK=pppoa
 PPP_USER=test123
 PPP_PASS=test456
 
-# {eth,atm,wan0}
+# 'eth' (cable) or 'atm' (xDSL)
 UPLINK_TYPE=atm
-# 0..9, eg. 0 -> eth0, atm0, wan0, ...
+# 0..9, eg. 0 -> eth0/atm0
 UPLINK_PORT=0
 
 ATM_VPI=8

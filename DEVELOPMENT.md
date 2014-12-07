@@ -8,7 +8,7 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist:
 
 `eth0` is multi-purpose and used to provide emulation of typical cable and xDSL configurations (plumbing into fakeisp):
 
- * **ethernet (cable modem):** GRE tunnel (`gre0`) <- dhcp
+ * **ethernet (cable modem):** eth0 <- dhcp
  * **xDSL:**
      * **PPPoA:** ATM-over-TCP (`atmtcp`) <- ppp
      * **PPPoE:** ATM-over-TCP (`atmtcp`) <- RFC2684 (`br2684ctl`) <- ppp

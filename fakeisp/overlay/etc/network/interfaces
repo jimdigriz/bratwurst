@@ -7,13 +7,7 @@ iface eth0 inet dhcp
 
 auto eth1
 iface eth1 inet static
-	address 172.21.0.0
-	pointopoint 172.21.0.1
-
-auto tun0
-iface tun0 inet tunnel
-	address 172.21.1.1
+	address 172.20.0.1
 	netmask 255.255.255.0
-	mode gre
-	local 172.21.0.0
-	endpoint 172.21.0.1
+	
+	up /sbin/ip addr add 172.21.0.0 peer 172.21.0.1 dev eth1

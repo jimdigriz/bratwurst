@@ -25,6 +25,6 @@ pppoe)	/sbin/modprobe pppoe
 	/sbin/ip link set dev nas0 up
 	exec /usr/sbin/pppd $PPP_OPTIONS plugin rp-pppoe.so nas$UPLINK_PORT
 	;;
-udhcpc)	exec /sbin/udhcpc -f -n -R -t 3 -i $UPLINK_TYPE$UPLINK_PORT
+dhcp)	exec /sbin/udhcpc -f -n -R -t 3 -i $UPLINK_TYPE$UPLINK_PORT
 	;;
 esac
