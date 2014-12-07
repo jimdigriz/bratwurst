@@ -2,17 +2,19 @@
 
 set -eu
 
-[ -t 0 -a -t 1 ] || sv once .
-touch down
-
 . /opt/bratwurst/config
+
+if [ "$NETWORK" != "pppoe" ]; then
+	sv once .
+	exit 0
+fi
 
 TYPE=$(awk 'NR > 1 { print $2 }' /proc/net/atm/devices)
 
 # wait for the ATM interface to become available
-[ -n "$TYPE" ] || exit 0
+[ -n "$TYPE" ] || exit 1
 # wait for carrier, do nothing (HACK: assume '0')
-grep -q 1 /sys/class/atm/${TYPE}0/carrier || exit 0
+grep -q 1 /sys/class/atm/${TYPE}0/carrier || exit 1
 
 case $ATM_ENCAP in
 llc)		ENCAP=0;;
