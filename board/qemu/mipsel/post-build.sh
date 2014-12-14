@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -eu
-
+set -x
 if [ $# -ne 1 ] || [ -z "$1" ]; then
 	echo "no" >&2
 	exit 1
@@ -51,7 +51,7 @@ echo "$FILES" | xargs -I{} rm -f "$ROOTDIR/usr/{}"
 
 find "$ROOTDIR/var" -depth -mindepth 1 | xargs -r rm -r
 
-find "$ROOTDIR/etc/nftables" -type f ! -name inet-filter -delete
+find "$ROOTDIR/etc/nftables" -type f ! -name '[0-9]*' -delete
 
 rm -rf "$ROOTDIR/usr/lib32"
 rm -rf "$ROOTDIR/usr/share/locale"

@@ -1,0 +1,36 @@
+#!/usr/sbin/nft -f
+
+table inet filter {
+	chain input	{
+		type filter hook input priority 0;
+
+		iif lo accept;
+
+		ct state established,related counter accept;
+		ct state invalid drop;
+
+		# https://tools.ietf.org/html/draft-ietf-opsec-icmp-filtering
+		# N.B. http://www.spinics.net/lists/netfilter/msg55433.html
+		meta nfproto ipv6 icmpv6 type {
+				nd-neighbor-advert,
+				nd-neighbor-solicit,
+				nd-router-advert
+			} ip6 hoplimit 255 accept;
+		meta nfproto ipv6 icmpv6 type { echo-request } limit rate 10/second accept;
+		meta nfproto ipv4 icmp   type { echo-request } limit rate 10/second accept;
+
+		tcp dport 22 ct state new tcp flags & (syn | ack) == syn limit rate 10/minute accept;
+
+		tcp dport 0-65535 counter reject with tcp reset;
+		udp dport 0-65535 counter drop;
+		counter drop;
+	}
+
+	chain forward	{
+		type filter hook forward priority 0;
+	}
+
+	chain output	{
+		type filter hook output priority 0;
+	}
+}

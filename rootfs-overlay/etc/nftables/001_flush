@@ -1,0 +1,3 @@
+#!/usr/sbin/nft -f
+
+flush table inet filter;

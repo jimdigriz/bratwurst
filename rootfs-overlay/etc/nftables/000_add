@@ -1,0 +1,3 @@
+#!/usr/sbin/nft -f
+
+add table inet filter;
