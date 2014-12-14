@@ -1,25 +1,79 @@
 #!/usr/sbin/nft -f
 
+# http://www.spinics.net/lists/netfilter/msg55433.html
+# https://tools.ietf.org/html/draft-ietf-opsec-icmp-filtering
+
 table inet filter {
 	chain input	{
 		type filter hook input priority 0;
 
 		iif lo accept;
 
+		meta nfproto ipv6 icmpv6 type {
+				nd-router-solicit,
+				nd-router-advert,
+				nd-neighbor-solicit,
+				nd-neighbor-advert,
+			} ip6 hoplimit 255 accept;
+
+		meta nfproto ipv6 icmpv6 type {
+				echo-request
+			} limit rate 10/second accept;
+		meta nfproto ipv6 icmpv6 type {
+				destination-unreachable,
+				packet-too-big,
+				time-exceeded,
+				echo-reply,
+			} ct state established,related accept;
+		meta nfproto ipv6 icmpv6 type {
+				mld-listener-query,
+				mld-listener-report,
+				mld-listener-reduction,
+				nd-redirect,
+				router-renumbering
+			} limit rate 10/second log prefix "bad icmp: ";
+		meta nfproto ipv6 icmpv6 type {
+				mld-listener-query,
+				mld-listener-report,
+				mld-listener-reduction,
+				nd-redirect,
+				router-renumbering
+			} limit rate 10/second drop;
+		meta nfproto ipv6 icmpv6 type 0-255 limit rate 10/minute log prefix "unknown icmp: ";
+		meta nfproto ipv6 icmpv6 type 0-255 drop;
+
+		meta nfproto ipv4 icmp   type {
+				echo-request,
+				timestamp-request,
+				address-mask-request
+			} limit rate 10/second accept;
+		meta nfproto ipv4 icmp   type {
+				echo-reply,
+				destination-unreachable,
+				time-exceeded,
+				parameter-problem,
+				timestamp-reply,
+				address-mask-reply
+			} ct state established,related accept;
+		meta nfproto ipv4 icmp   type {
+				source-quench,
+				5,	# HACK: nft cannot parse 'redirect'
+				info-request,
+				info-reply
+			} limit rate 10/second counter log prefix "bad icmp: ";
+		meta nfproto ipv4 icmp   type {
+				source-quench,
+				5,
+				info-request,
+				info-reply
+			} limit rate 10/second counter drop;
+		meta nfproto ipv4 icmp   type 0-255 limit rate 10/minute counter log prefix "unknown icmp: ";
+		meta nfproto ipv4 icmp   type 0-255 counter drop;
+
 		ct state established,related counter accept;
 		ct state invalid drop;
 
-		# https://tools.ietf.org/html/draft-ietf-opsec-icmp-filtering
-		# N.B. http://www.spinics.net/lists/netfilter/msg55433.html
-		meta nfproto ipv6 icmpv6 type {
-				nd-neighbor-advert,
-				nd-neighbor-solicit,
-				nd-router-advert
-			} ip6 hoplimit 255 accept;
-		meta nfproto ipv6 icmpv6 type { echo-request } limit rate 10/second accept;
-		meta nfproto ipv4 icmp   type { echo-request } limit rate 10/second accept;
-
-		tcp dport 22 ct state new tcp flags & (syn | ack) == syn limit rate 10/minute accept;
+		tcp dport 22 ct state new limit rate 10/minute accept;
 
 		tcp dport 0-65535 counter reject with tcp reset;
 		udp dport 0-65535 counter drop;
@@ -28,9 +82,13 @@ table inet filter {
 
 	chain forward	{
 		type filter hook forward priority 0;
+
+		counter accept;
 	}
 
 	chain output	{
 		type filter hook output priority 0;
+
+		counter accept;
 	}
 }
