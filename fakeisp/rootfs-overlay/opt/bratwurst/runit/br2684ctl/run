@@ -12,6 +12,6 @@ ENCAP=1
 PAYLOAD=1
 
 # wait for the ATM interface to become available
-[ $(wc -l /proc/net/atm/devices) -ne 2 ] || exit 0
+[ -f /proc/net/atm/devices ] && [ $(cat /proc/net/atm/devices | wc -l) -eq 2 ] || exit 0
 
 exec br2684ctl -c 0 -e $ENCAP -p $PAYLOAD -a 0.$VPI.$VCI
