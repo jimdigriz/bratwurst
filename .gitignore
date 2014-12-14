@@ -9,5 +9,6 @@ shared
 fakeisp/vmlinuz*
 fakeisp/initrd*
 fakeisp/rootfs
+fakeisp/rootfs-overlay/etc/init.d/.depend.boot
 
 *.pcap
