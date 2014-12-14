@@ -111,9 +111,9 @@ include buildroot/package/busybox/busybox.mk
 busybox-update-defconfig:
 	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config $(CURDIR)/config/busybox
 
-.PHONY: buildroot menuconfig savedefconfig %-menuconfig %-savedefconfig linux-update-defconfig
-buildroot menuconfig savedefconfig %-menuconfig %-savedefconfig %-update-defconfig: buildroot/.config
-	make -C buildroot $(subst buildroot,,$@) \
+.PHONY: %-menuconfig %-update-defconfig
+buildroot %-menuconfig %-update-defconfig: buildroot/.config
+	make -C buildroot $(subst buildroot-,,$(subst buildroot-update-defconfig,savedefconfig,$@)) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
 		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
