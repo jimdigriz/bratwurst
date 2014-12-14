@@ -4,6 +4,11 @@ set -eu
 
 . /opt/bratwurst/config
 
+if [ "$NETWORK" = "dhcp" ]; then
+	sv once .
+	exit 0
+fi
+
 SERVER=172.21.0.0
 CLIENT=172.21.0.1
 
@@ -11,9 +16,9 @@ CLIENT=172.21.0.1
 /sbin/ip link set dev eth0 up
 
 # wait for the remote end to become available
-echo | timeout -t 3 nc $SERVER 2812 2>/dev/null || exit 1
+timeout -t 3 -s INT nc 172.21.0.1 2812 </dev/null >/dev/null 2>/dev/null || exit 1
 
-# wait for runit to restart atmtcp
+# wait for runit to respawn atmtcp on the server side
 sleep 3
 
 /sbin/modprobe atmtcp
