@@ -38,9 +38,9 @@ table inet filter {
 				mld-listener-reduction,
 				nd-redirect,
 				router-renumbering
-			} limit rate 10/second drop;
+			} counter drop;
 		meta nfproto ipv6 icmpv6 type 0-255 limit rate 10/minute log prefix "unknown icmp: ";
-		meta nfproto ipv6 icmpv6 type 0-255 drop;
+		meta nfproto ipv6 icmpv6 type 0-255 counter drop;
 
 		meta nfproto ipv4 icmp   type {
 				echo-request,
@@ -57,7 +57,7 @@ table inet filter {
 			} ct state established,related accept;
 		meta nfproto ipv4 icmp   type {
 				source-quench,
-				5,	# HACK: nft cannot parse 'redirect'
+				5,		# HACK: nft cannot parse 'redirect'
 				info-request,
 				info-reply
 			} limit rate 10/second counter log prefix "bad icmp: ";
@@ -66,12 +66,12 @@ table inet filter {
 				5,
 				info-request,
 				info-reply
-			} limit rate 10/second counter drop;
+			} counter drop;
 		meta nfproto ipv4 icmp   type 0-255 limit rate 10/minute counter log prefix "unknown icmp: ";
 		meta nfproto ipv4 icmp   type 0-255 counter drop;
 
 		ct state established,related counter accept;
-		ct state invalid drop;
+		ct state invalid counter drop;
 
 		tcp dport 22 ct state new limit rate 10/minute accept;
 
