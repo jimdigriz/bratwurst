@@ -83,7 +83,7 @@ fakeisp/initrd.rootfs-overlay: fakeisp/initrd.base
 	rm fakeisp/rootfs-overlay/etc/init.d/.depend.boot
 	mv fakeisp/.initrd.rootfs-overlay $@
 
-fakeisp/initrd: DDPARAMS = status=noxfer of=fakeisp/.initrd ibs=4
+fakeisp/initrd: DDPARAMS = status=noxfer of=fakeisp/.initrd bs=4k ibs=4
 fakeisp/initrd: fakeisp/initrd.base fakeisp/initrd.rootfs-overlay
 	dd $(DDPARAMS) conv=sync                      if=fakeisp/initrd.base
 	dd $(DDPARAMS) conv=sync,notrunc oflag=append if=fakeisp/initrd.rootfs-overlay
