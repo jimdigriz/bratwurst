@@ -15,6 +15,6 @@ EOF
 [ "$(ss -tpn sport = :2812 | sed -n '/^ESTAB.*"atmtcp"/ p')" ] || exit 1
 
 sv start br2684ctl
-/sbin/ip link set dev nas0 up
+/sbin/ip link set address 00:00:01:00:00:57 dev nas0 up
 
 exec /usr/sbin/pppoe-server -F -L 172.20.2.1 -R 172.20.2.128 -N 1 -I nas0

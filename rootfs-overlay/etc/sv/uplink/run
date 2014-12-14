@@ -34,7 +34,7 @@ pppoa)	/sbin/modprobe pppoatm
 	;;
 pppoe)	/sbin/modprobe pppoe
 	sv start br2684ctl
-	/sbin/ip link set dev nas0 up
+	/sbin/ip link set address 00:00:01:00:00:56 dev nas0 up
 	exec /usr/sbin/pppd $PPP_OPTIONS plugin rp-pppoe.so nas$UPLINK_PORT
 	;;
 dhcp)	exec /sbin/udhcpc -f -n -R -t 3 -i $UPLINK_TYPE$UPLINK_PORT
