@@ -61,14 +61,14 @@ table inet filter {
 				5,		# HACK: nft cannot parse 'redirect'
 				info-request,
 				info-reply
-			} limit rate 10/second counter log prefix "bad icmp: ";
+			} limit rate 10/second log prefix "bad icmp: ";
 		meta nfproto ipv4 icmp   type {
 				source-quench,
 				5,
 				info-request,
 				info-reply
 			} counter drop;
-		meta nfproto ipv4 icmp   type 0-255 limit rate 10/minute counter log prefix "unknown icmp: ";
+		meta nfproto ipv4 icmp   type 0-255 limit rate 10/minute log prefix "unknown icmp: ";
 		meta nfproto ipv4 icmp   type 0-255 counter drop;
 
 		ct state established,related counter accept;
