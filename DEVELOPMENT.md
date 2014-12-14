@@ -1,3 +1,9 @@
+# Layout
+
+All the interesting bits live in `rootfs-overlay`, and under `opt/bratwurst` (which appears as `/opt/bratwurst` on the target) you will find the `init` script which you can treat like you would `rc.local` for boot time customisations.
+
+To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/.../.../post-build.sh`.  This is run after the `rootfs-overlay` directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
+
 # Networking
 
 For the BRatWuRsT QEMU VM, a number of network interfaces exist:
@@ -13,11 +19,7 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist:
      * **PPPoA:** ATM-over-TCP (`atmtcp`) <- ppp
      * **PPPoE:** ATM-over-TCP (`atmtcp`) <- RFC2684 (`br2684ctl`) <- ppp
 
-All the interesting bits live in `rootfs-overlay`, and under `opt/bratwurst` (which appears as `/opt/bratwurst` on the target) you will find the `init` script which you can treat like you would `rc.local` for boot time customisations.
-
-To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/.../.../post-build.sh`.  This is run after the `rootfs-overlay` directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
-
-## Using a Network Filesystem
+# Using a Network Filesystem
 
 To help with development it is handy to have some network filesystem capabilities so you can quickly edit scripts on your side of the fence and use them instantly from inside the VM.  NFS and CIFS though is too big for our target so we use [9P](https://www.kernel.org/doc/Documentation/filesystems/9p.txt) instead which in total weighs in at about 100kB worth of kernel modules.
 
