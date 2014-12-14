@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+exec sv force-stop br2684ctl

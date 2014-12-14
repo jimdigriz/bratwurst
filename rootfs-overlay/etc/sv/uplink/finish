@@ -1,0 +1,5 @@
+#!/bin/sh
+
+sv status br2684ctl | grep -q ^run: && sv force-stop br2684ctl
+
+exit 0

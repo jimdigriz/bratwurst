@@ -4,8 +4,6 @@ set -eu
 
 . /opt/bratwurst/config
 
-[ "$UPLINK_TYPE" = "atm" -a "$NETWORK" = "pppoe" ] && sv start br2684ctl
-
 PPP_OPTIONS="	nodetach
 		debug
 		lock
@@ -15,13 +13,27 @@ PPP_OPTIONS="	nodetach
 		lcp-echo-failure 3
 		lcp-echo-interval 1
 		user $PPP_USER
-		password $PPP_PASS"
+		password $PPP_PASS
+		+ipv6"
+
+if [ "${NETWORK#ppp}" != "$NETWORK" ]; then
+	[ -f /proc/net/atm/devices ] || exit 1
+
+	TYPE=$(awk 'NR > 1 { print $2 }' /proc/net/atm/devices)
+
+	# wait for the ATM interface to become available
+	[ -n "$TYPE" ] || exit 1
+
+	# wait for carrier, do nothing
+	grep -q 1 /sys/class/atm/$TYPE$UPLINK_PORT/carrier || exit 1
+fi
 
 case $NETWORK in
 pppoa)	/sbin/modprobe pppoatm
 	exec /usr/sbin/pppd $PPP_OPTIONS plugin pppoatm.so $UPLINK_PORT.$ATM_VPI.$ATM_VCI
 	;;
 pppoe)	/sbin/modprobe pppoe
+	sv start br2684ctl
 	/sbin/ip link set dev nas0 up
 	exec /usr/sbin/pppd $PPP_OPTIONS plugin rp-pppoe.so nas$UPLINK_PORT
 	;;

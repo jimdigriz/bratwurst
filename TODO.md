@@ -13,10 +13,9 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Required
 
- * figure out how to fake an ATM or Ethernet and test:
-  * PPPoA
-  * PPPoE
-  * straight Ethernet with DHCP (a la cable)
+ * figure out:
+  * default route IPv6 over PPP
+  * supporting straight Ethernet with DHCP (a la cable)
  * get some initial hardware support rolling
   * Linksys WAG54G
   * TP-Link TL-W8970
@@ -25,13 +24,12 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 ## Wishlist
 
  * support more hardware; should be easy as we use buildroot
- * development instructions to be expanded to work under
-  * Mac OS X - buildroot should work
+ * development instructions to be expanded to work under Mac OS X
  * add wifi
 
 # Links
 
  * Keeping Linux small:
-     * [Spreading the disease: Linux on microcontrollers](http://elinux.org/images/c/ca/Spreading.pdf)
-     * [microYocto and the Internet of Tiny](http://elinux.org/images/5/54/Tom.zanussi-elc2014.pdf)
-     * [Networking on tiny machines](http://lwn.net/Articles/597529/) with related [git tree](https://git.kernel.org/cgit/linux/kernel/git/ak/linux-misc.git/?h=net/debloat)
+  * [Spreading the disease: Linux on microcontrollers](http://elinux.org/images/c/ca/Spreading.pdf)
+  * [microYocto and the Internet of Tiny](http://elinux.org/images/5/54/Tom.zanussi-elc2014.pdf)
+  * [Networking on tiny machines](http://lwn.net/Articles/597529/) with related [git tree](https://git.kernel.org/cgit/linux/kernel/git/ak/linux-misc.git/?h=net/debloat)

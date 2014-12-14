@@ -1,5 +1,5 @@
 # {pppoa,pppoe,dhcp}
-NETWORK=pppoa
+NETWORK=pppoe
 
 PPP_USER=test123
 PPP_PASS=test456
@@ -9,6 +9,7 @@ UPLINK_TYPE=atm
 # 0..9, eg. 0 -> eth0/atm0
 UPLINK_PORT=0
 
+# pppoa:0,32 pppoe:8,35
 ATM_VPI=8
 ATM_VCI=35
 # {llc,vcmux}

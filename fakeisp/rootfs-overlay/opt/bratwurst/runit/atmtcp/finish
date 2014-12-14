@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -eu
+
+sv status pppoa | grep -q ^run: && sv restart pppoa || true
+sv status pppoe | grep -q ^run: && sv restart pppoe || true
+
+exit 0

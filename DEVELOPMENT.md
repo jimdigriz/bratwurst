@@ -34,11 +34,11 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist:
  * **`eth0`:** link into fakeisp for uplink
      * [IPv6 DAD is disabled](board/qemu/mipsel/rootfs-overlay/opt/bratwurst/rc.d/20_ptp_no_v6_dad) as [QEMU mcast socket](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html) causes it problems
  * **`eth1`:** LAN interface
- * **`wlan0` [currently not used]:** provided by `mac80211_hwsim` testing is performed on (as in the real world)
+ * **`wlan0` [not supported]:** provided by `mac80211_hwsim` testing is performed on (as in the real world)
 
 `eth0` is multi-purpose and used to provide emulation of typical cable and xDSL configurations (plumbing into fakeisp):
 
- * **ethernet (cable modem):** eth0 <- dhcp
+ * **ethernet (cable modem) [not supported]:** eth0 <- dhcp
  * **xDSL:**
      * **PPPoA:** ATM-over-TCP (`atmtcp`) <- ppp
      * **PPPoE:** ATM-over-TCP (`atmtcp`) <- RFC2684 (`br2684ctl`) <- ppp
