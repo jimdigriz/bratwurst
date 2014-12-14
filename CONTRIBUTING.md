@@ -6,10 +6,10 @@ When amending some configurations, to put a suitable file into `board` you shoul
 
  * Buildroot:
 
-      make menuconfig
-      make savedefconfig
+        make menuconfig
+        make savedefconfig
 
  * uClibc, Busybox, Linux:
 
-      make {uclibc,busybox,linux}-menuconfig
-      make {uclibc,busybox,linux}-update-config 
+        make {uclibc,busybox,linux}-menuconfig
+        make {uclibc,busybox,linux}-update-config 
