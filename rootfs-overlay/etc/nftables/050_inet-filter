@@ -2,6 +2,7 @@
 
 # http://www.spinics.net/lists/netfilter/msg55433.html
 # https://tools.ietf.org/html/draft-ietf-opsec-icmp-filtering
+# http://tools.ietf.org/html/rfc4890
 
 table inet filter {
 	chain input	{
