@@ -2,8 +2,7 @@
 
 set -eu
 
-# no IPv6 on point to point link
-# N.B. side steps QEMU multicast socket DAD problems too
+# QEMU mcast socket causes problems for IPv6 DAD
 /sbin/sysctl -q -w net.ipv6.conf.eth0.accept_dad=0
 
 exit 0

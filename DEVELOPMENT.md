@@ -31,8 +31,8 @@ As before, the interesting bits live in `fakeisp/rootfs-overlay/opt/bratwurst`.
 
 For the BRatWuRsT QEMU VM, a number of network interfaces exist:
 
- * **`eth0`:** link into fakeisp (used to build uplink)
-     * [IPv6 DAD is disabled](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html)
+ * **`eth0`:** link into fakeisp for uplink
+     * [IPv6 DAD is disabled](board/qemu/mipsel/rootfs-overlay/opt/bratwurst/rc.d/20_ptp_no_v6_dad) as [QEMU mcast socket](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html) causes it problems
  * **`eth1`:** LAN interface
  * **`wlan0` [currently not used]:** provided by `mac80211_hwsim` testing is performed on (as in the real world)
 
@@ -47,7 +47,7 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist:
 
  * **`eth0`:** uplink to the outside world
  * **`eth1`:** link into BRatWuRsT QEMU VM
-     * [IPv6 DAD is disabled](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html)
+     * [IPv6 DAD is disabled](fakeisp/rootfs-overlay/etc/sysctl.d/ptp_no_v6_dad.conf)
 
 # Using a Network Filesystem
 
