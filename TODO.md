@@ -13,19 +13,21 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Required
 
- * figure out:
-  * default route IPv6 over PPP
-  * supporting straight Ethernet with DHCP (a la cable)
+ * default route IPv6 over PPP (radvd it seems)
+ * DHCPv6-PD support
+ * supporting straight Ethernet with DHCP (a la cable)
  * get some initial hardware support rolling
   * Linksys WAG54G
   * TP-Link TL-W8970
   * TP-Link TL-MR3020
+ * firewalling
 
 ## Wishlist
 
  * support more hardware; should be easy as we use buildroot
  * development instructions to be expanded to work under Mac OS X
  * add wifi
+ * QoS
 
 # Links
 
