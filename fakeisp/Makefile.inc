@@ -76,15 +76,15 @@ fakeisp/initrd.base:
 		}
 	ln -f -s ../dl/fakeisp.initrd.base.$(ARCH_NATIVE) $@
 
-fakeisp/initrd.overlay: fakeisp/initrd.base
-	cd fakeisp/overlay; gunzip -c ../initrd.base | cpio -iv --make-directories etc/init.d/.depend.boot
-	sed -i -e '/^TARGETS = / s/$$/ bratwurst.sh/; /^networking: / s/$$/ bratwurst.sh/; $$a bratwurst.sh: urandom' fakeisp/overlay/etc/init.d/.depend.boot
-	cd fakeisp/overlay; find . | cpio --create --format='newc' -R root:root | gzip -c > ../.initrd.overlay
-	rm fakeisp/overlay/etc/init.d/.depend.boot
-	mv fakeisp/.initrd.overlay $@
+fakeisp/initrd.rootfs-overlay: fakeisp/initrd.base
+	cd fakeisp/rootfs-overlay; gunzip -c ../initrd.base | cpio -iv --make-directories etc/init.d/.depend.boot
+	sed -i -e '/^TARGETS = / s/$$/ bratwurst.sh/; /^networking: / s/$$/ bratwurst.sh/; $$a bratwurst.sh: urandom' fakeisp/rootfs-overlay/etc/init.d/.depend.boot
+	cd fakeisp/rootfs-overlay; find . | cpio --create --format='newc' -R root:root | gzip -c > ../.initrd.rootfs-overlay
+	rm fakeisp/rootfs-overlay/etc/init.d/.depend.boot
+	mv fakeisp/.initrd.rootfs-overlay $@
 
 fakeisp/initrd: DDPARAMS = status=noxfer of=fakeisp/.initrd ibs=4
-fakeisp/initrd: fakeisp/initrd.base fakeisp/initrd.overlay
+fakeisp/initrd: fakeisp/initrd.base fakeisp/initrd.rootfs-overlay
 	dd $(DDPARAMS) conv=sync                      if=fakeisp/initrd.base
-	dd $(DDPARAMS) conv=sync,notrunc oflag=append if=fakeisp/initrd.overlay
+	dd $(DDPARAMS) conv=sync,notrunc oflag=append if=fakeisp/initrd.rootfs-overlay
 	mv fakeisp/.initrd $@

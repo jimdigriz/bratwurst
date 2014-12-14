@@ -101,8 +101,18 @@ buildroot/.config:
 
 $(VMLINUZ) $(PFLASH): buildroot
 
-.PHONY: buildroot menuconfig savedefconfig %-menuconfig %-savedefconfig
-buildroot menuconfig savedefconfig %-menuconfig %-savedefconfig: buildroot/.config
+.PHONY: uclibc-update-defconfig
+include buildroot/.config
+uclibc-update-defconfig:
+	cp buildroot/output/build/uclibc-$(subst ",,$(BR2_UCLIBC_VERSION_STRING))/.config $(CURDIR)/board/$(BOARD)/uclibc.config
+
+.PHONY: busybox-update-defconfig
+include buildroot/package/busybox/busybox.mk
+busybox-update-defconfig:
+	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config $(CURDIR)/config/busybox
+
+.PHONY: buildroot menuconfig savedefconfig %-menuconfig %-savedefconfig linux-update-defconfig
+buildroot menuconfig savedefconfig %-menuconfig %-savedefconfig %-update-defconfig: buildroot/.config
 	make -C buildroot $(subst buildroot,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
