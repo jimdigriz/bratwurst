@@ -9,21 +9,21 @@ BRatWuRsT tries to follow [buildroot's customisation recommendations](http://bui
 
 All the interesting bits live in `rootfs-overlay`, and under `opt/bratwurst` (which appears as `/opt/bratwurst` on the target) you will find the `init` script which you can treat like you would `rc.local` for boot time customisations.
 
-To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/.../.../post-build.sh`.  This is run after the `rootfs-overlay` directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
+To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/<company>/<boardname>/post-build.sh`.  This is run after the `rootfs-overlay` directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
 
 ## fakeisp
 
 This sub-project is what makes up emulating everything beyond your router, from the DSLAM (ATM layer) to the ISP (authentication) and beyond onto the Internet (access):
 
  * based on [Debian's debootstrap](https://wiki.debian.org/Debootstrap)
- * builds a large [initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt) (`fakeisp/initrd.base.<arch>`)
+ * builds a large [initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt) (`fakeisp/initrd.base`)
  * takes advantage that the [initramfs image can be a chain](https://www.kernel.org/doc/Documentation/early-userspace/buffer-format.txt) of overlay images, so `rootfs-overlay` is appended as a second initramfs
 
-In practice the `initrd.base' debootstrap does not change, so you can just use the automatically download prepared image I have make available.  Alternatively you can build your own by typing:
+In practice `initrd.base` does not change, so you can just use the prepared image I have made available (`dl/fakeisp.initrd.base.<arch>`).  Alternatively you can build your own by typing:
 
     make fakeisp-diy
 
-**N.B.** this calls `sudo` as `debootstrap` has to be run as root
+**N.B.** this calls `sudo` as `debootstrap` has to be run as root plus you also need to make sure the mountpoint you have checked out on is *not* mounted `nodev`
 
 As before, the interesting bits live in `fakeisp/rootfs-overlay/opt/bratwurst`.
 
