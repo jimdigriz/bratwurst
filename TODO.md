@@ -14,20 +14,29 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 ## Required
 
  * default route IPv6 over PPP (radvd it seems)
- * DHCPv6-PD support
- * supporting straight Ethernet with DHCP (a la cable)
- * get some initial hardware support rolling
-  * Linksys WAG54G
-  * TP-Link TL-W8970
-  * TP-Link TL-MR3020
+ * get this working on Linksys WAG54G
  * firewalling
+ * remote logins
+  * `users` directory (`.gitignore`'d)
+  * contains files named after usernames containing SSH public keys
+  * no direct root login, except over serial (`sudo` up)
+  * passwordless root account, if you really insist `passwd` is available
+ * v6 on LAN
 
 ## Wishlist
 
- * support more hardware; should be easy as we use buildroot
- * development instructions to be expanded to work under Mac OS X
- * add wifi
+ * supporting straight Ethernet with DHCP (a la cable)
+ * support more hardware
+  * TP-Link TL-W8970
+  * TP-Link TL-MR3020
+ * wireless
  * QoS
+ * 6to4 when necessary automatically
+ * DHCPv6-PD support
+ * in place firmware upgrade
+  * ...without losing config and customisations?
+  * "OTA"?
+ * development instructions to be expanded to work under Mac OS X
 
 # Links
 
