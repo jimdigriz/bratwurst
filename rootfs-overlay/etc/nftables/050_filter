@@ -5,7 +5,7 @@
 # http://tools.ietf.org/html/rfc4890
 
 table inet filter {
-	chain input	{
+	chain input {
 		type filter hook input priority 0;
 
 		iif lo accept;
@@ -81,13 +81,13 @@ table inet filter {
 		counter drop;
 	}
 
-	chain forward	{
+	chain forward {
 		type filter hook forward priority 0;
 
 		counter accept;
 	}
 
-	chain output	{
+	chain output {
 		type filter hook output priority 0;
 
 		counter accept;

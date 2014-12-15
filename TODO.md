@@ -22,6 +22,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * no direct root login, except over serial (`sudo` up)
   * passwordless root account, if you really insist `passwd` is available
  * v6 on LAN
+ * v4 NAT with SNAT
 
 ## Wishlist
 
@@ -29,6 +30,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * support more hardware
   * TP-Link TL-W8970
   * TP-Link TL-MR3020
+ * better use of the nftables run-parts, flush to only cleans its own sections
  * wireless
  * QoS
  * 6to4 when necessary automatically

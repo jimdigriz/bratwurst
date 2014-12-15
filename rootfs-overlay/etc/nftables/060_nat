@@ -1,0 +1,10 @@
+#!/usr/sbin/nft -f
+
+table ip nat {
+	chain postrouting {
+		type nat hook postrouting priority 0;
+
+		ip saddr 192.168.1.0/24 ip daddr 192.168.1.0/24 accept;
+		#ip saddr 192.168.1.0/24 snat 1.2.3.4;
+	}
+}
