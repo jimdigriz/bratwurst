@@ -2,5 +2,7 @@
 
 set -eu
 
+/sbin/ip route get 8.8.8.8 >/dev/null 2>/dev/null || exit 1
+
 exec 2>&1
 exec /sbin/ntpd -n -l -p pool.ntp.org
