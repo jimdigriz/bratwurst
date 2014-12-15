@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-EXTERNAL_NFTABLES_VERSION = a698868d52a550bab4867c0dc502037155baa11d
+EXTERNAL_NFTABLES_VERSION = 9239d5851afaf7522eb2e3d5f1e2dc3001860f90
 EXTERNAL_NFTABLES_SITE = git://git.netfilter.org/nftables
 EXTERNAL_NFTABLES_DEPENDENCIES = gmp external-libmnl external-libnftnl host-bison host-flex \
 	host-pkgconf $(if $(BR2_NEEDS_GETTEXT),gettext)
