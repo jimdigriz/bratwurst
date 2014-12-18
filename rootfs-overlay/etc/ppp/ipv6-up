@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+/sbin/sysctl -q -w net.ipv6.conf.$IFNAME.accept_ra=2
+
+exit 0
