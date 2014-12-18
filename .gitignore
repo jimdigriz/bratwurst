@@ -11,4 +11,7 @@ fakeisp/initrd*
 fakeisp/rootfs
 fakeisp/rootfs-overlay/etc/init.d/.depend.boot
 
+users
+.users
+
 *.pcap

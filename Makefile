@@ -72,6 +72,7 @@ clean:
 			find buildroot -name .stamp_host_installed -path '*/host-gcc-final-*' \
 				| xargs rm -f; \
 		}
+	rm -f .users
 
 .PHONY: distclean
 distclean: clean
@@ -99,7 +100,10 @@ buildroot/.config:
 		BR2_EXTERNAL="$(CURDIR)" \
 		BR2_DEFCONFIG="$(CURDIR)/board/$(BOARD)/buildroot.config"
 
-$(VMLINUZ) $(PFLASH): world
+$(VMLINUZ) $(PFLASH): | .users world
+
+.users:
+	ls -1 users | sed 's~.*~& -1 & -1 * /home/& /bin/sh - &~' > .users
 
 .PHONY: uclibc-update-defconfig
 include buildroot/.config
