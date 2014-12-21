@@ -5,6 +5,7 @@ set -eu
 runit () {
 	update-rc.d unbound remove				>/dev/null
 	update-rc.d isc-dhcp-server remove			>/dev/null
+	update-rc.d radvd remove				>/dev/null
 
 	for S in $(ls -1 /opt/bratwurst/runit); do
 		update-service --add /opt/bratwurst/runit/$S	>/dev/null
