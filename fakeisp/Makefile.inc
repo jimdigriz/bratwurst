@@ -8,7 +8,8 @@ endif
 
 .PHONY: fakeisp
 fakeisp: fakeisp/vmlinuz fakeisp/initrd $(9P_SHARE)
-	qemu-system-$(ARCH_NATIVE) -nographic -machine accel=kvm:tcg \
+	qemu-system-$(ARCH_NATIVE) -nodefaults -nographic -machine accel=kvm:tcg \
+		-serial mon:stdio \
 		-m 512 \
 		-kernel fakeisp/vmlinuz \
 		-initrd fakeisp/initrd \
