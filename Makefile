@@ -82,7 +82,8 @@ VMLINUZ		:= buildroot/output/images/vmlinuz
 PFLASH		:= buildroot/output/images/pflash
 .PHONY: bratwurst
 bratwurst: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
-	qemu-system-$(ARCH) -nographic -machine accel=kvm:tcg \
+	qemu-system-$(ARCH) -nodefaults -nographic -machine accel=kvm:tcg \
+		-serial mon:stdio \
 		-m $(RAM) \
 		-kernel $(VMLINUZ) \
 		-append "$(FSAPPEND) $(APPEND)" \
