@@ -4,11 +4,11 @@
 #
 ################################################################################
 
-EXTERNAL_NFTABLES_VERSION = 9239d5851afaf7522eb2e3d5f1e2dc3001860f90
-EXTERNAL_NFTABLES_SITE = git://git.netfilter.org/nftables
-EXTERNAL_NFTABLES_DEPENDENCIES = gmp external-libmnl external-libnftnl host-bison host-flex \
+EXTERNAL_NFTABLES_VERSION = 0.4
+EXTERNAL_NFTABLES_SOURCE = nftables-$(EXTERNAL_NFTABLES_VERSION).tar.bz2
+EXTERNAL_NFTABLES_SITE = http://www.netfilter.org/projects/nftables/files
+EXTERNAL_NFTABLES_DEPENDENCIES = gmp libmnl libnftnl host-bison host-flex \
 	host-pkgconf $(if $(BR2_NEEDS_GETTEXT),gettext)
-EXTERNAL_NFTABLES_AUTORECONF = YES
 EXTERNAL_NFTABLES_LICENSE = GPLv2
 EXTERNAL_NFTABLES_LICENSE_FILES = COPYING
 
@@ -19,10 +19,10 @@ else
 EXTERNAL_NFTABLES_CONF_OPTS = --without-cli
 endif
 
-ifeq ($(BR2_PREFER_STATIC_LIB)$(BR2_PACKAGE_LIBNFTNL_JSON),yy)
+ifeq ($(BR2_STATIC_LIBS)$(BR2_PACKAGE_LIBNFTNL_JSON),yy)
 EXTERNAL_NFTABLES_LIBS += -ljansson -lm
 endif
-ifeq ($(BR2_PREFER_STATIC_LIB)$(BR2_PACKAGE_LIBNFTNL_XML),yy)
+ifeq ($(BR2_STATIC_LIBS)$(BR2_PACKAGE_LIBNFTNL_XML),yy)
 EXTERNAL_NFTABLES_LIBS += -lmxml -lpthread
 endif
 
