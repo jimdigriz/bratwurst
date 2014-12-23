@@ -13,14 +13,8 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Required
 
- * default route IPv6 over PPP (radvd it seems)
  * get this working on Linksys WAG54G
  * firewalling
- * remote logins
-  * `users` directory (`.gitignore`'d)
-  * contains files named after usernames containing SSH public keys
-  * no direct root login, except over serial (`sudo` up)
-  * passwordless root account, if you really insist `passwd` is available
  * v6 on LAN
  * v4 NAT with SNAT
 
