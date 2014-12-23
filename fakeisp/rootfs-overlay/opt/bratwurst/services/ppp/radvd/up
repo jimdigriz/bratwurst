@@ -1,0 +1,56 @@
+#!/bin/sh
+
+set -eu
+
+BASE="/tmp/ppp/$IFNAME/radvd"
+
+if [ -d "$BASE" ]; then
+	echo directory already exists 2>&1
+	exit 1
+fi
+
+cleanup () {
+	rm -rf "$BASE"
+}
+trap cleanup 0
+
+ID=${IFNAME#ppp}
+
+mkdir -p "$BASE/runit/log"
+
+cat <<EOF > "$BASE/runit/run"
+#!/bin/sh
+
+set -eu
+
+exec 2>&1
+exec /usr/sbin/radvd -n -m stderr -C "$BASE/radvd.conf"
+EOF
+
+chmod +x "$BASE/runit/run"
+
+cat <<'EOF' > "$BASE/runit/log/run"
+#!/bin/sh
+
+exec 2>&1
+exec svlogd -tt "$(pwd)"
+EOF
+
+chmod +x "$BASE/runit/log/run"
+
+cat <<EOF > "$BASE/radvd.conf"
+interface $IFNAME {
+	AdvSendAdvert on;
+	UnicastOnly on;
+	prefix 2001:db8:$ID::/64 {
+	};
+};
+EOF
+
+/sbin/ip addr add 2001:db8:$ID::/64 dev $IFNAME
+
+/usr/sbin/update-service --add "$BASE/runit" "$IFNAME-radvd"
+
+trap - 0
+
+exit 0

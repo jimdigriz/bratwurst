@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -eu
+
+BASE="/tmp/ppp/$IFNAME/radvd"
+
+if [ ! -d "$BASE" ]; then
+	echo directory does not exist 2>&1
+	exit 1
+fi
+
+/usr/sbin/update-service --remove "$BASE/runit" "$IFNAME-radvd"
+
+rm -rf "$BASE"
+
+exit 0

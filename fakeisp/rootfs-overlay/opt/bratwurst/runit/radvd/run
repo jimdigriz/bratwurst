@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-exec 2>&1
-exec /usr/sbin/radvd -n -m stderr -C /opt/bratwurst/services/radvd/radvd.conf
