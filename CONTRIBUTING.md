@@ -5,4 +5,4 @@ The project structure tries to follow [buildroot's project-specific customisatio
 When amending some configurations, to put a suitable file into `board` you should use the following methods.
 
     make {buildroot,uclibc,busybox,linux}-menuconfig
-    make {buildroot,uclibc,busybox,linux}-update-config 
+    make {buildroot,uclibc,busybox,linux}-update-defconfig 
