@@ -46,3 +46,4 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * [Spreading the disease: Linux on microcontrollers](http://elinux.org/images/c/ca/Spreading.pdf)
   * [microYocto and the Internet of Tiny](http://elinux.org/images/5/54/Tom.zanussi-elc2014.pdf)
   * [Networking on tiny machines](http://lwn.net/Articles/597529/) with related [git tree](https://git.kernel.org/cgit/linux/kernel/git/ak/linux-misc.git/?h=net/debloat)
+  * [Linux Kernel Tinification](https://tiny.wiki.kernel.org/) - [LWN: Kernel tinification](http://lwn.net/Articles/608945/)
