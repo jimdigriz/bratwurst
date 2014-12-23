@@ -75,3 +75,23 @@ Building for specific physical hardware is available for:
  * [TP-Link TL-W8970](board/tp-link/tl-w8970/README.md)
  * [Linksys WAG54G](board/linksys/wag54g/README.md)
  * [TP-Link TL-MR3020](board/tp-link/tl-mr3020/README.md)
+
+# Configuration
+
+## User Accounts
+
+To slip in user accounts into the build, you create a directory called `users` and name each file within after the username that is logging in.  The contents of those files are the SSH public keys.  For example, if you are `bob` and you want your keys to be slipped in, you would do:
+
+    mkdir users
+    cat ~/.ssh/id_rsa.pub > users/bob
+
+Now when you build your firmware, the user accounts will be included.
+
+Note that:
+
+ 1. each account will be password less
+ 1. passwordless accounts can only log in via the serial port (SSH rejects password authentication)
+ 1. only public key is supported for SSH
+ 1. `root` is unable to ever SSH in and the account is also passwordless
+ 1. to become `root` you use `su`
+ 1. to add a password to an account, use `passwd`

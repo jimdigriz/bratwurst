@@ -104,7 +104,7 @@ buildroot/.config:
 $(VMLINUZ) $(PFLASH): | .users world
 
 .users:
-	ls -1 users | sed 's~.*~& -1 & -1 * /home/& /bin/sh - &~' > .users
+	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
 
 .PHONY: uclibc-update-defconfig
 include buildroot/.config
