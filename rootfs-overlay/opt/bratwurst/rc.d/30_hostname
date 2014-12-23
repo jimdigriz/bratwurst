@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+hostname -F /etc/hostname
+
+exit 0

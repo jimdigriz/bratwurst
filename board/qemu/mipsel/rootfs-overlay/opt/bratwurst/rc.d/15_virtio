@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -eu
+
+/sbin/modprobe virtio_pci
+/sbin/modprobe virtio_net
+
+exit 0

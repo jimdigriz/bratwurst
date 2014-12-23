@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+mount -a
+mount -o remount,rw /
+
+mkdir /var/run
+mkdir /var/lock
+mkdir /var/tmp
+
+exit 0

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+find /etc/sysctl.d -type f -name '*.conf' | xargs -n1 /sbin/sysctl -q -p
+
+exit 0

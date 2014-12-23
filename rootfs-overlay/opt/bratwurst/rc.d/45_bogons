@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+grep '^[^$#]' /opt/bratwurst/bogons | xargs -n1 /sbin/ip route add unreachable
+
+exit 0

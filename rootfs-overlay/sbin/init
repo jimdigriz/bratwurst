@@ -2,36 +2,18 @@
 
 set -eu
 
-mount -a
-mount -o remount,rw /
-
-mkdir /var/run
-mkdir /var/lock
-mkdir /var/tmp
-
-hostname -F /etc/hostname
-
-grep '^[^$#]' /etc/modules | xargs -n1 /sbin/modprobe
-
 run-parts /opt/bratwurst/rc.d
 
-/sbin/ip link set dev lo up
-
-grep '^[^$#]' /opt/bratwurst/bogons | xargs -n1 /sbin/ip route add unreachable
-run-parts /etc/nftables
-
-find /etc/sysctl.d -type f -name '*.conf' | xargs -n1 /sbin/sysctl -q -p
-
 mkdir /var/run/sv
-find /etc/sv -type d -name supervise | xargs -r rm -rf
-find /etc/sv -mindepth 1 -maxdepth 1 -type d \
+find /opt/bratwurst/runit -type d -name supervise | xargs -r rm -rf
+find /opt/bratwurst/runit -mindepth 1 -maxdepth 1 -type d \
 	| xargs -r -n1 basename \
-	| sed 's~.*~/var/run/sv/&\n/etc/sv/&/supervise~' \
+	| sed 's~.*~/var/run/sv/&\n/opt/bratwurst/runit/&/supervise~' \
 	| xargs -r -n2 ln -f -s
-find /etc/sv -mindepth 2 -maxdepth 2 -type d -name log \
+find /opt/bratwurst/runit -mindepth 2 -maxdepth 2 -type d -name log \
 	| xargs -r -n1 dirname \
 	| xargs -r -n1 basename \
-	| sed 's~.*~/var/run/sv/&.log\n/etc/sv/&/log/supervise~' \
+	| sed 's~.*~/var/run/sv/&.log\n/opt/bratwurst/runit/&/log/supervise~' \
 	| xargs -r -n2 ln -f -s
 
 exec runsvdir -s /sbin/siginit /etc/service

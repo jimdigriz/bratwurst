@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+/sbin/ip link set dev lo up
+
+exit 0
