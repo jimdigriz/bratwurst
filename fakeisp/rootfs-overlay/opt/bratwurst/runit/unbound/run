@@ -3,4 +3,4 @@
 set -eu
 
 exec 2>&1
-exec /usr/sbin/unbound -d -vvv -c /opt/bratwurst/services/unbound/unbound.conf
+exec /usr/sbin/unbound -d -v -c /opt/bratwurst/services/unbound/unbound.conf

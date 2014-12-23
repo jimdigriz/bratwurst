@@ -7,14 +7,15 @@ set -eu
 PPP_OPTIONS="	nodetach
 		debug
 		lock
-		defaultroute
-		noipdefault
-		noauth
 		lcp-echo-failure 3
 		lcp-echo-interval 1
+		noauth
+		+ipv6
+		noipdefault
+		defaultroute
+		usepeerdns
 		user $PPP_USER
-		password $PPP_PASS
-		+ipv6"
+		password $PPP_PASS"
 
 if [ "${NETWORK#ppp}" != "$NETWORK" ]; then
 	[ -f /proc/net/atm/devices ] || exit 1
