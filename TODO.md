@@ -24,13 +24,14 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * v6 on LAN
  * v4 NAT with SNAT
 
-## Wishlist
+## Roadmap
 
  * supporting straight Ethernet with DHCP (a la cable)
  * support more hardware
   * TP-Link TL-W8970
   * TP-Link TL-MR3020
  * better use of the nftables run-parts, flush to only cleans its own sections
+ * make use of the inet nftable (icmpx, etc) now we are using a 3.18 kernel
  * wireless
  * QoS
  * 6to4 when necessary automatically
