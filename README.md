@@ -72,8 +72,8 @@ On the first run, the build will take about 30 minutes (on an i7@3Ghz plus the t
 
 Building for specific physical hardware is available for:
 
- * [TP-Link TL-W8970](board/tp-link/tl-w8970/README.md)
  * [Linksys WAG54G](board/linksys/wag54g/README.md)
+ * [TP-Link TL-W8970](board/tp-link/tl-w8970/README.md)
  * [TP-Link TL-MR3020](board/tp-link/tl-mr3020/README.md)
 
 # Configuration
