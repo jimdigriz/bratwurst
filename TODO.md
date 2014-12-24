@@ -17,6 +17,11 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * v6 on LAN - from PPP this might involve using DHCPv6-PD
  * 6to4 when necessary automatically
  * v4 NAT with SNAT (even with dynamic IP)
+ * documentation describing
+  * what this project is
+  * what is aims to be
+  * what it currently does
+  * how to use it (should be more obvious once we have real hardware)
 
 ## Roadmap
 
