@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -eu
+
+. /opt/bratwurst/config
+
+[ "${NETWORK%?}" = "pppo" ] && IFNAME=ppp0 && IFNAME=$UPLINK_TYPE$UPLINK_PORT
+
+exec 2>&1
+exec /usr/sbin/dnsmasq \
+	--keep-in-foreground \
+	--expand-hosts \
+	--log-facility=- \
+	--except-interface=$IFNAME \
+	--no-dhcp-interface=$IFNAME \
+	--auth-server=$DOMAIN,$IFNAME \
+	--localise-queries \
+	--bogus-priv \
+	--stop-dns-rebind \
+	--rebind-localhost-ok \
+	--clear-on-reload \
+	--domain-needed \
+	--dhcp-range=192.168.1.64,192.168.1.255 \
+	--dhcp-range=::,constructor:br0,ra-only,ra-names \
+	--read-ethers \
+	--dhcp-authoritative \
+	--dhcp-leasefile=/var/run/dnsmasq.leases \
+	--domain=$DOMAIN,192.168.1.0/24,local \
+	--enable-ra

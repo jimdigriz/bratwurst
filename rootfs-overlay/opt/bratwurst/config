@@ -1,3 +1,5 @@
+DOMAIN=localnet
+
 # {pppoa,pppoe,dhcp}
 NETWORK=pppoe
 

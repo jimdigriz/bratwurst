@@ -2,6 +2,23 @@
 
 set -eu
 
+. /opt/bratwurst/config
+
 /sbin/ip link set dev lo up
+
+/sbin/brctl addbr br0
+/sbin/brctl setfd br0 0
+/sbin/brctl stp br0 off
+/sbin/ip addr add 192.168.1.1/24 dev br0
+/sbin/ip link set dev br0 up
+
+# HACK: make sure fakeisp is not added to the bridge
+test -d /opt/bratwurst/runit/atmtcp && ip link set dev eth0 up
+
+/sbin/ip link \
+	| sed -n '/UP/! s/[0-9]*: \([^:]*\).*/\1/ p' \
+	| xargs -r -n1 /sbin/brctl addif br0
+
+test -d /opt/bratwurst/runit/atmtcp && ip link set dev eth0 down
 
 exit 0
