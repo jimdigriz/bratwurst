@@ -21,6 +21,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 ## Roadmap
 
  * dnsmasq with public authoritive DNS server
+ * support upstream IPv6 DNS servers
  * supporting straight Ethernet with DHCP (a la cable)
  * support more hardware
   * TP-Link TL-W8970
