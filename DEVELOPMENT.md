@@ -19,7 +19,7 @@ This sub-project is what makes up emulating everything beyond your router, from 
  * builds a large [initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt) (`fakeisp/initrd.base`)
  * takes advantage that the [initramfs image can be a chain](https://www.kernel.org/doc/Documentation/early-userspace/buffer-format.txt) of overlay images, so `rootfs-overlay` is appended as a second initramfs
 
-In practice `initrd.base` does not change, so you can just use the prepared image I have made available (`dl/fakeisp.initrd.base.<arch>`).  Alternatively you can build your own by typing:
+In practice `initrd.base` does not change, so you can just use the prepared image I have made available (`dl/fakeisp.initrd.base.<arch>`).  Alternatively, you can build your own by typing from a Debian 'wheezy' 7 workstation:
 
     make fakeisp-diy
 
@@ -45,6 +45,7 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist:
 
 ## fakeisp
 
+ * **`lo`:
  * **`eth0`:** uplink to the outside world
  * **`eth1`:** link into BRatWuRsT QEMU VM
      * [IPv6 DAD is disabled](fakeisp/rootfs-overlay/etc/sysctl.d/ptp_no_v6_dad.conf)
