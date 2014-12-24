@@ -15,9 +15,10 @@ set -eu
 # HACK: make sure fakeisp is not added to the bridge
 test -d /opt/bratwurst/runit/atmtcp && ip link set dev eth0 up
 
-/sbin/ip link \
-	| sed -n '/UP/! s/[0-9]*: \([^:]*\).*/\1/ p' \
-	| xargs -r -n1 /sbin/brctl addif br0
+for IFACE in $(/sbin/ip link | sed -n '/UP/! s/[0-9]*: \([^:]*\).*/\1/ p'); do
+	/sbin/ip link set dev $IFACE up
+	/sbin/brctl addif br0 $IFACE
+done
 
 test -d /opt/bratwurst/runit/atmtcp && ip link set dev eth0 down
 
