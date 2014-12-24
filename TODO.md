@@ -16,6 +16,8 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * get this working on Linksys WAG54G
  * v4 NAT with SNAT (even with dynamic IP)
  * v6 on LAN using DHCPv6-PD assigned addresses
+  * udhcpc6 seems to not work with PPP interfaces, as the source address is set to '::'
+  * dhcp6s sees these packets, but is unable to respond; sendmsg() works but packet vanishes
  * 6to4 when necessary automatically
  * documentation describing
   * what this project is
