@@ -14,8 +14,6 @@ cleanup () {
 }
 trap cleanup 0
 
-ID=${IFNAME#ppp}
-
 mkdir -p "$BASE/runit/log"
 
 cat <<EOF > "$BASE/runit/run"
@@ -38,16 +36,23 @@ EOF
 
 chmod +x "$BASE/runit/log/run"
 
+SUBNET="fd00:cafe:$(printf "%x" ${IFNAME#ppp})::/64"
+
 cat <<EOF > "$BASE/radvd.conf"
 interface $IFNAME {
 	AdvSendAdvert on;
 	UnicastOnly on;
-	prefix 2001:db8:$ID::/64 {
+	AdvOtherConfigFlag on;
+
+	prefix $SUBNET {
+	};
+
+	RDNSS fd00:dead:beef:ffff:: {
 	};
 };
 EOF
 
-/sbin/ip addr add 2001:db8:$ID::/64 dev $IFNAME
+/sbin/ip addr add $SUBNET dev $IFNAME
 
 /usr/sbin/update-service --add "$BASE/runit" "$IFNAME-radvd"
 

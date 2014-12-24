@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-exec 2>&1
-exec /usr/sbin/dhcpd -4 -f -cf /opt/bratwurst/services/isc-dhcp-server/dhcpd.conf -d

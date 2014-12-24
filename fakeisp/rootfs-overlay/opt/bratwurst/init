@@ -5,6 +5,7 @@ set -eu
 runit () {
 	update-rc.d unbound remove				>/dev/null
 	update-rc.d isc-dhcp-server remove			>/dev/null
+	update-rc.d wide-dhcpv6-server remove			>/dev/null
 	update-rc.d radvd remove				>/dev/null
 
 	for S in $(ls -1 /opt/bratwurst/runit); do

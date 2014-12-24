@@ -3,5 +3,6 @@
 set -eu
 
 /sbin/sysctl -q -w net.ipv6.conf.$IFNAME.accept_ra=2
+/sbin/sysctl -q -w net.ipv6.conf.$IFNAME.autoconf=1
 
 exit 0

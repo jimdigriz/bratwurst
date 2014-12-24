@@ -1,0 +1,52 @@
+#!/bin/sh
+
+set -eu
+
+BASE="/tmp/ppp/$IFNAME/dhcp6s"
+
+if [ -d "$BASE" ]; then
+	echo directory already exists 2>&1
+	exit 1
+fi
+
+cleanup () {
+	rm -rf "$BASE"
+}
+trap cleanup 0
+
+mkdir -p "$BASE/runit/log"
+
+cat <<EOF > "$BASE/runit/run"
+#!/bin/sh
+
+set -eu
+
+exec 2>&1
+exec /usr/sbin/dhcp6s -f -d -c "$BASE/dhcp6s.conf" $IFNAME
+EOF
+
+chmod +x "$BASE/runit/run"
+
+cat <<'EOF' > "$BASE/runit/log/run"
+#!/bin/sh
+
+exec 2>&1
+exec svlogd -tt "$(pwd)"
+EOF
+
+chmod +x "$BASE/runit/log/run"
+
+cat <<EOF > "$BASE/dhcp6s.conf"
+option domain-name-servers fd00:dead:beef:ffff::;
+
+host bratwurst {
+	duid 00:03:00:01:00:00:00:00:00:00;
+	prefix fd00:cafe:$(printf "%x" ${IFNAME#ppp})::/48 infinity;
+};
+EOF
+
+/usr/sbin/update-service --add "$BASE/runit" "$IFNAME-dhcp6s"
+
+trap - 0
+
+exit 0

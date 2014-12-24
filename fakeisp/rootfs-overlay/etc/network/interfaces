@@ -1,6 +1,7 @@
 # interfaces(5) file used by ifup(8) and ifdown(8)
 auto lo
 iface lo inet loopback
+	up /sbin/ip addr add fd00:dead:beef:ffff:: dev lo
 	up /sbin/ip addr add 172.20.1.0 dev lo
 	up /sbin/ip addr add 172.20.2.0 dev lo
 

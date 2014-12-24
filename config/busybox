@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.22.1
-# Wed Dec 24 00:02:49 2014
+# Wed Dec 24 10:46:41 2014
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -849,7 +849,7 @@ CONFIG_UDHCPC=y
 CONFIG_UDHCP_DEBUG=9
 # CONFIG_FEATURE_UDHCP_RFC3397 is not set
 # CONFIG_FEATURE_UDHCP_8021Q is not set
-CONFIG_UDHCPC_DEFAULT_SCRIPT="/usr/share/udhcpc/default.script"
+CONFIG_UDHCPC_DEFAULT_SCRIPT="/opt/bratwurst/udhcpc.script"
 CONFIG_UDHCPC_SLACK_FOR_BUGGY_SERVERS=80
 CONFIG_IFUPDOWN_UDHCPC_CMD_OPTIONS=""
 # CONFIG_UDPSVD is not set

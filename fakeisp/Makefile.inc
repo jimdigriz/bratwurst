@@ -26,23 +26,28 @@ fakeisp-clean:
 	rm -f fakeisp/vmlinuz fakeisp/initrd*
 	test ! -d fakeisp/rootfs || sudo rm -rf fakeisp/rootfs
 
+dl:
+	mkdir dl
+
 FAKEISP_PKGS := linux-image-$(ARCH_NATIVE_KEB)
 FAKEISP_PKGS += netbase ifupdown iproute dhcpcd runit
-FAKEISP_PKGS += iptables iptables-persistent
-FAKEISP_PKGS += unbound isc-dhcp-server
-FAKEISP_PKGS += ppp atm-tools br2684ctl pppoe
-FAKEISP_PKGS += radvd netcat-traditional
+FAKEISP_PKGS += iptables iptables-persistent ppp
+FAKEISP_PKGS += unbound isc-dhcp-server atm-tools
+FAKEISP_PKGS += atm-tools br2684ctl pppoe radvd
+FAKEISP_PKGS += netcat-traditional
 DEBSITE ?= http://http.debian.net/debian
-dl/debs.tar:
+dl/debs.tgz: | dl
 	/usr/sbin/debootstrap --arch=$(ARCH_NATIVE) --variant=minbase \
 		--include=$(shell printf "$(FAKEISP_PKGS)" | tr ' ' ,) \
 		--make-tarball="$(CURDIR)/$@" wheezy fakeisp/.rootfs.debs $(DEBSITE)
 
-fakeisp/rootfs: dl/debs.tar
-ifeq (,$(filter $(shell uname -s),Linux))
-	@echo Sorry, this is a Linux only step
-	@false
-endif
+# https://bugs.debian.org/773878
+dl/wide-dhcpv6-server_20080615-11.1_i386.deb: | dl
+	curl -f -L -o dl/.wide-dhcpv6-server_20080615-11.1_i386.deb \
+		http://http.debian.net/debian/pool/main/w/wide-dhcpv6/wide-dhcpv6-server_20080615-11.1_i386.deb
+	mv dl/.wide-dhcpv6-server_20080615-11.1_i386.deb $@
+
+fakeisp/rootfs: dl/debs.tgz dl/wide-dhcpv6-server_20080615-11.1_i386.deb
 ifneq (,$(shell mount | tac | awk '/noexec|nodev/ { if ($$3 == "$(shell df -l . | sed '$$!d; s/.*% //')") print }'))
 	@echo '"$(CURDIR)" is a noexec and/or nodev mountpoint'
 	@false
@@ -50,16 +55,27 @@ endif
 	sudo rm -rf fakeisp/.rootfs
 	sudo debootstrap --arch=$(ARCH_NATIVE) --variant=minbase \
 		--include=$(shell printf "$(FAKEISP_PKGS)" | tr ' ' ,) \
-		--unpack-tarball="$(CURDIR)/dl/debs.tar" wheezy fakeisp/.rootfs $(DEBSITE)
+		--unpack-tarball="$(CURDIR)/dl/debs.tgz" wheezy fakeisp/.rootfs $(DEBSITE)
 	sudo chroot fakeisp/.rootfs /bin/sh -c "dpkg --get-selections | awk '/deinstall/ { print \$$1 }' | xargs -r dpkg --purge"
 	sudo chroot fakeisp/.rootfs apt-get -yy autoremove
 	sudo chroot fakeisp/.rootfs apt-get clean
 	sudo find fakeisp/.rootfs/var/lib/apt/lists -type f -delete
 	sudo find fakeisp/.rootfs/etc/unbound -type f \( -name '*.key' -o -name '*.pem' \) -delete
+
+	# https://bugs.debian.org/773878
+	sudo ln dl/wide-dhcpv6-server_20080615-11.1_i386.deb fakeisp/.rootfs
+	sudo sh -c 'echo INTERFACES=\"\" > fakeisp/.rootfs/etc/default/wide-dhcpv6-server'
+	sudo chroot fakeisp/.rootfs env DEBIAN_FRONTEND=noninteractive dpkg -i /wide-dhcpv6-server_20080615-11.1_i386.deb
+	sudo rm fakeisp/.rootfs/wide-dhcpv6-server_20080615-11.1_i386.deb
+
 	mv fakeisp/.rootfs $@
 
 .PHONY: fakeisp-diy
 fakeisp-diy: fakeisp/rootfs
+ifeq (,$(filter $(shell uname -s),Linux))
+	@echo Sorry, this is a Linux only step
+	@false
+endif
 	sudo sh -c "cd fakeisp/rootfs; find . | cpio --create --format='newc' | gzip -c > ../.initrd.base"
 	sudo chown --reference=Makefile fakeisp/.initrd.base
 	mv fakeisp/.initrd.base fakeisp/initrd.base
@@ -70,9 +86,9 @@ fakeisp/vmlinuz: fakeisp/initrd.base
 	ln -f -s vmlinuz.$(ARCH_NATIVE) $@
 
 FAKEISP_INITRD := http://digriz.downloads.s3-website-eu-west-1.amazonaws.com/bratwurst/fakeisp.initrd.base.$(ARCH_NATIVE)
-fakeisp/initrd.base:
+fakeisp/initrd.base: | dl
 	test -f dl/fakeisp.initrd.base.$(ARCH_NATIVE) || { \
-			curl -f -L --create-dirs -o dl/.fakeisp.initrd.base.$(ARCH_NATIVE) $(FAKEISP_INITRD); \
+			curl -f -L -o dl/.fakeisp.initrd.base.$(ARCH_NATIVE) $(FAKEISP_INITRD); \
 			mv dl/.fakeisp.initrd.base.$(ARCH_NATIVE) dl/fakeisp.initrd.base.$(ARCH_NATIVE); \
 		}
 	ln -f -s ../dl/fakeisp.initrd.base.$(ARCH_NATIVE) $@
