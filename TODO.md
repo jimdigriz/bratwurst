@@ -14,9 +14,9 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 ## Required
 
  * get this working on Linksys WAG54G
- * v6 on LAN - from PPP this might involve using DHCPv6-PD
- * 6to4 when necessary automatically
  * v4 NAT with SNAT (even with dynamic IP)
+ * v6 on LAN using DHCPv6-PD assigned addresses
+ * 6to4 when necessary automatically
  * documentation describing
   * what this project is
   * what is aims to be
@@ -27,7 +27,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 ## Roadmap
 
  * dnsmasq with public authoritive DNS server
- * support upstream IPv6 DNS servers
+ * support upstream IPv6 DNS servers (unbound currently listening and dhcp6s/radvd are advertising)
  * supporting straight Ethernet with DHCP (a la cable)
  * support more hardware
   * TP-Link TL-W8970
@@ -37,7 +37,6 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * make use of the inet nftable (icmpx, etc) now we are using a 3.18 kernel
  * wireless
  * QoS
- * DHCPv6-PD support
  * in place firmware upgrade
   * ...without losing config and customisations?
   * "OTA"?
