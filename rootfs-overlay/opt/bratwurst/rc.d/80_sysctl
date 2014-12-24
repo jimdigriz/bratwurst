@@ -2,6 +2,6 @@
 
 set -eu
 
-find /etc/sysctl.d -type f -name '*.conf' | xargs -n1 /sbin/sysctl -q -p
+find /etc/sysctl.d -type f -name '*.conf' | xargs -r -n1 /sbin/sysctl -q -p
 
 exit 0

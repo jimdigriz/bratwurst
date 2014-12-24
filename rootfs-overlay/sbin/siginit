@@ -18,8 +18,8 @@ esac
 
 shutitdown () {
 	echo killing tasks >&2
-        ls -1 /etc/service | xargs sv force-stop || true
-        ls -1 /etc/service | xargs sv exit || true
+        ls -1 /etc/service | xargs -r sv force-stop || true
+        ls -1 /etc/service | xargs -r sv exit || true
 	umount -a -r || true
 	mount /proc
 }
