@@ -31,43 +31,30 @@ esac
 [ -n "$ADDRESSES" ] && ADDRESSES="$(echo $ADDRESSES | tr ' ' '\n' | sort | uniq | tr '\n' ' ')"
 [ -n "$DNS" ] && DNS="$(echo $DNS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')"
 
-[ -f /etc/resolv.conf ] || touch /etc/resolv.conf
-
 # TODO: handle removing stale addresses and routes
 
-case "$STATE" in
+case $STATE in
 deconfig|unbound|stopped|started)
 	/sbin/ip link set dev $INTERFACE up
 
-	if [ $V -eq 4 ]; then
-		/sbin/ip -4 addr flush dev $INTERFACE
-	else
-		for A in $(/sbin/ip -6 addr show dev $INTERFACE scope global | awk '/inet/ { print $2 }'); do
+	case $V in
+	6)	for A in $(/sbin/ip -6 addr show dev $INTERFACE scope global | awk '/inet/ { print $2 }'); do
 			/sbin/ip -6 addr del $A dev $INTERFACE
 		done
-	fi
+		;;
+	4)	/sbin/ip -4 addr flush dev $INTERFACE
+		;;
+	esac
 
 	(
 		flock 9
 		sed -i -e "/ #$PNAME:$INTERFACE:$/ d" /etc/resolv.conf
-	) 9>/tmp/resolv.conf.lock
+	) 9>>/etc/resolv.conf
 	;;
 
 renew|bound|informed|ra-updated|rebound)
-	if [ $V -eq 4 ]; then
-		/sbin/ip addr add $ADDRESS${NETMASK:+/$NETMASK} ${BROADCAST:+broadcast $BROADCAST} dev $INTERFACE 2>/dev/null || true
-
-		if [ -n "$ROUTERS" ] ; then
-			while /sbin/ip route del default dev $INTERFACE 2>/dev/null; do
-				:
-			done
-
-			for R in $ROUTERS; do
-				/sbin/ip route add default via $R dev $INTERFACE
-			done
-		fi
-	else
-		# TODO: busybox ip does not support preferred_lft/valid_lft
+	case $V in
+	6)	# TODO: busybox ip does not support preferred_lft/valid_lft
 		for A in ${ADDRESSES:-}; do
 			set -- $(echo $A | tr , ' ')
 
@@ -93,7 +80,20 @@ renew|bound|informed|ra-updated|rebound)
 				[ $L -le 56 ] && /sbin/ip addr add ${S%::}:10::/64 dev br0 2>/dev/null || true
 			fi
 		done
-	fi
+		;;
+	4)	/sbin/ip addr add $ADDRESS${NETMASK:+/$NETMASK} ${BROADCAST:+broadcast $BROADCAST} dev $INTERFACE 2>/dev/null || true
+
+		if [ -n "$ROUTERS" ] ; then
+			while /sbin/ip route del default dev $INTERFACE 2>/dev/null; do
+				:
+			done
+
+			for R in $ROUTERS; do
+				/sbin/ip route add default via $R dev $INTERFACE
+			done
+		fi
+		;;
+	esac
 
 	(
 		flock 9
@@ -105,7 +105,7 @@ renew|bound|informed|ra-updated|rebound)
 		for D in ${DNS:-}; do
 			echo "nameserver $D #$PNAME:$INTERFACE:" >> /etc/resolv.conf
 		done
-	) 9>/tmp/resolv.conf.lock
+	) 9>>/etc/resolv.conf
 	;;
 esac
 
