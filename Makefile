@@ -100,17 +100,18 @@ $(VMLINUZ) $(PFLASH): | .users world
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
 
+.buildroot.defconfig:
+	cat board/$(BOARD)/buildroot config/buildroot > .$@
+	mv .$@ $@
+
 .PHONY: buildroot
 buildroot:
 	git submodule update --init buildroot
 
-buildroot/.defconfig: | buildroot
-	cat board/$(BOARD)/buildroot config/buildroot > buildroot/defconfig
-	cp buildroot/defconfig buildroot/.defconfig
-
-buildroot/.config: | buildroot/.defconfig
+buildroot/.config: .buildroot.defconfig | buildroot
 	make -C buildroot defconfig \
-		BR2_EXTERNAL="$(CURDIR)"
+		BR2_EXTERNAL="$(CURDIR)" \
+		BR2_DEFCONFIG="$(CURDIR)/.buildroot.defconfig"
 
 .PHONY: buildroot-update-defconfig
 buildroot-update-defconfig: buildroot/.config
