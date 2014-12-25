@@ -1,3 +1,5 @@
 #!/usr/sbin/nft -f
 
 add table inet filter;
+
+add table ip nat;

@@ -4,6 +4,4 @@ set -eu
 
 rm -f /var/run/uplink
 
-sv down odhcp6c
-
 exit 0

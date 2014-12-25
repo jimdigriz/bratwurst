@@ -7,8 +7,11 @@ set -eu
 
 	echo "IFNAME=$IFNAME" >> /var/run/uplink
 	sed -n -i "/^IFNAME=/!p; /^IFNAME=/h; \${g;p}" /var/run/uplink
+
+	echo "IPLOCAL=$IPLOCAL" >> /var/run/uplink
+	sed -n -i "/^IPLOCAL=/!p; /^IPLOCAL=/h; \${g;p}" /var/run/uplink
 ) 9>>/var/run/uplink
 
-sv up odhcp6c
+/opt/bratwurst/nftables/060_nat
 
 exit 0

@@ -1,10 +1,29 @@
-#!/usr/sbin/nft -f
+#!/bin/sh
+
+set -eu
+
+[ -f /var/run/uplink ] || exit 0
+
+. /var/run/uplink
+
+[ "${IFNAME:-}" -a "${IPLOCAL:-}" ] || exit 1
+
+CONFIG="$(mktemp)"
+
+cat <<EOF > "$CONFIG"
+flush table ip nat;
 
 table ip nat {
 	chain postrouting {
 		type nat hook postrouting priority 0;
 
-		ip saddr 192.168.1.0/24 ip daddr 192.168.1.0/24 accept;
-		#ip saddr 192.168.1.0/24 snat 1.2.3.4;
+		ip saddr 192.168.1.0/24 oif $IFNAME snat $IPLOCAL;
 	}
 }
+EOF
+
+/usr/sbin/nft -f "$CONFIG"
+
+rm -f "$CONFIG"
+
+exit 0

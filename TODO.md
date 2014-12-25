@@ -14,7 +14,6 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 ## Required
 
  * get this working on Linksys WAG54G
- * v4 NAT with SNAT (even with dynamic IP)
  * documentation describing
   * what this project is
   * what is aims to be
