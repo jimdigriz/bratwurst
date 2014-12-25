@@ -18,9 +18,10 @@ esac
 
 shutitdown () {
 	echo killing tasks >&2
-        ls -1 /var/service | xargs -r sv force-stop || true
-        ls -1 /var/service | xargs -r sv exit
+	ls -1 /var/service | xargs -r sv force-stop || true
+	ls -1 /var/service | xargs -r sv exit
 	find /var/service -type l | xargs -r rm
+	/opt/bratwurst/rc.d/40_urandom stop
 	mount -o remount,ro /
 }
 
