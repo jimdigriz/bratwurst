@@ -95,30 +95,45 @@ bratwurst: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
-buildroot/.config:
-	git submodule update --init buildroot
-	make -C buildroot defconfig \
-		BR2_EXTERNAL="$(CURDIR)" \
-		BR2_DEFCONFIG="$(CURDIR)/board/$(BOARD)/buildroot.config"
-
 $(VMLINUZ) $(PFLASH): | .users world
 
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
 
+.PHONY: buildroot
+buildroot:
+	git submodule update --init buildroot
+
+buildroot/.defconfig: | buildroot
+	cat board/$(BOARD)/buildroot config/buildroot > buildroot/defconfig
+	cp buildroot/defconfig buildroot/.defconfig
+
+buildroot/.config: | buildroot/.defconfig
+	make -C buildroot defconfig \
+		BR2_EXTERNAL="$(CURDIR)"
+
+.PHONY: buildroot-update-defconfig
+buildroot-update-defconfig: buildroot/.config
+	make -C buildroot savedefconfig \
+		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
+		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
+		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
+	sed '/^BR2_[a-z]/!d' buildroot/defconfig > board/$(BOARD)/buildroot
+	sed '/^BR2_[a-z]/ d' buildroot/defconfig > config/buildroot
+
 .PHONY: uclibc-update-defconfig
-include buildroot/.config
+-include buildroot/.config
 uclibc-update-defconfig:
 	cp buildroot/output/build/uclibc-$(subst ",,$(BR2_UCLIBC_VERSION_STRING))/.config $(CURDIR)/board/$(BOARD)/uclibc.config
 
 .PHONY: busybox-update-defconfig
-include buildroot/package/busybox/busybox.mk
+-include buildroot/package/busybox/busybox.mk
 busybox-update-defconfig:
 	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config $(CURDIR)/config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
 world %-menuconfig %-update-defconfig: buildroot/.config
-	make -C buildroot $(subst buildroot-,,$(subst buildroot-update-defconfig,savedefconfig,$@)) \
+	make -C buildroot $(subst buildroot-,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
 		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
