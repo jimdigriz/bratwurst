@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+[ -f /var/run/uplink ] || exit 1
+
+. /var/run/uplink
+
+exec 2>&1
+exec /usr/sbin/odhcp6c -v -e -P 0 -s /opt/bratwurst/dhcpc.script $IFNAME

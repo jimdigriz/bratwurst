@@ -74,10 +74,13 @@ table inet filter {
 		ct state established,related counter accept;
 		ct state invalid counter drop;
 
+		# dhcpv6
+		ip6 saddr fe80::/10 ip6 daddr fe80::/10 udp dport 546 accept;
+		# ssh
 		tcp dport 22 ct state new limit rate 10/minute accept;
 
-		tcp dport 0-65535 counter reject with tcp reset;
-		udp dport 0-65535 counter drop;
+		tcp dport 0-65535 counter reject;
+		udp dport 0-65535 counter reject;
 		counter drop;
 	}
 

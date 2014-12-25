@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+/sbin/ip addr add fd00:dead:beef:$(printf "%x" ${IFNAME#ppp})::/64 dev $IFNAME
+
+exit 0

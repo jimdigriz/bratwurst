@@ -2,7 +2,7 @@
 
 set -eu
 
-sv status pppoa | grep -q ^run: && sv restart pppoa || true
-sv status pppoe | grep -q ^run: && sv restart pppoe || true
+sv status pppoa | grep -q ^run: && sv force-restart pppoa || true
+sv status pppoe | grep -q ^run: && sv force-restart pppoe || true
 
 exit 0

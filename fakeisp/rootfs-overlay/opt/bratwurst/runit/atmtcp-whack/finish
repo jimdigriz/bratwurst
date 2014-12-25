@@ -2,6 +2,6 @@
 
 set -eu
 
-sv force-restart atmtcp || true
+sv force-reload atmtcp || true
 
 exit 0
