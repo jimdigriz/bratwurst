@@ -15,7 +15,6 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
  * get this working on Linksys WAG54G
  * v4 NAT with SNAT (even with dynamic IP)
- * 6to4 when necessary automatically
  * documentation describing
   * what this project is
   * what is aims to be
@@ -25,6 +24,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Roadmap
 
+ * 6to4 when necessary automatically
  * dnsmasq with public authoritive DNS server
  * supporting straight Ethernet with DHCP (a la cable)
  * support more hardware

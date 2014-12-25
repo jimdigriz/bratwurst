@@ -2,9 +2,9 @@ BRatWuRsT (aka 'Buildroot WRT') is a project that creates a [buildroot](http://b
 
 Included in this project is:
 
- * **[TODO](TODO.md):** a list of outstanding items, as well as aims and thoughts on where the project is going
  * **[Development](DEVELOPMENT.md):** how to work on the project
  * **[Contributing](CONTRIBUTING.md):** how to contribute to the project
+ * **[TODO](TODO.md):** a list of outstanding items, as well as aims and thoughts on where the project is going
 
 # Preflight
 
