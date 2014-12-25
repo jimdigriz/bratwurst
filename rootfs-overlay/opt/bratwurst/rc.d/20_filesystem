@@ -2,11 +2,14 @@
 
 set -eu
 
-mount -a
-mount -o remount,rw /
+mount					-t proc		proc	/proc
+mount					-t sysfs	sysfs	/sys
 
-mkdir /var/run
-mkdir /var/lock
-mkdir /var/tmp
+mount -o remount,rw,nodev					/
+mount -o nosuid,nodev,noexec,mode=1777	-t tmpfs	tmpfs	/tmp
+mount -o nosuid,nodev,noexec		-t tmpfs	tmpfs	/run
+mount -o nosuid,nodev			-t tmpfs	tmpfs	/var
+
+mkdir -m 1777 /run/lock
 
 exit 0

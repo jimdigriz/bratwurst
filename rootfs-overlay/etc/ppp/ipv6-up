@@ -5,9 +5,9 @@ set -eu
 (
 	flock 9
 
-	echo "IFNAME=$IFNAME" >> /var/run/uplink
-	sed -n -i "/^IFNAME=/!p; /^IFNAME=/h; \${g;p}" /var/run/uplink
-) 9>>/var/run/uplink
+	echo "IFNAME=$IFNAME" >> /run/uplink
+	sed -n -i "/^IFNAME=/!p; /^IFNAME=/h; \${g;p}" /run/uplink
+) 9>>/run/uplink
 
 sv up odhcp6c
 

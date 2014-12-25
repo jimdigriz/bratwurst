@@ -5,12 +5,12 @@ set -eu
 (
 	flock 9
 
-	echo "IFNAME=$IFNAME" >> /var/run/uplink
-	sed -n -i "/^IFNAME=/!p; /^IFNAME=/h; \${g;p}" /var/run/uplink
+	echo "IFNAME=$IFNAME" >> /run/uplink
+	sed -n -i "/^IFNAME=/!p; /^IFNAME=/h; \${g;p}" /run/uplink
 
-	echo "IPLOCAL=$IPLOCAL" >> /var/run/uplink
-	sed -n -i "/^IPLOCAL=/!p; /^IPLOCAL=/h; \${g;p}" /var/run/uplink
-) 9>>/var/run/uplink
+	echo "IPLOCAL=$IPLOCAL" >> /run/uplink
+	sed -n -i "/^IPLOCAL=/!p; /^IPLOCAL=/h; \${g;p}" /run/uplink
+) 9>>/run/uplink
 
 /opt/bratwurst/nftables/060_nat
 

@@ -2,6 +2,6 @@
 
 set -eu
 
-rm -f /var/run/uplink
+rm -f /run/uplink
 
 exit 0

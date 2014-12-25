@@ -2,7 +2,7 @@
 
 set -eu
 
-rm -f /var/run/uplink
+rm -f /run/uplink
 
 sv down odhcp6c
 

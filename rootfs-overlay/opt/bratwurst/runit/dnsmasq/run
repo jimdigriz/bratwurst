@@ -11,6 +11,7 @@ exec /usr/sbin/dnsmasq \
 	--keep-in-foreground \
 	--expand-hosts \
 	--log-facility=- \
+	--pid-file \
 	--except-interface=$IFNAME \
 	--no-dhcp-interface=$IFNAME \
 	--auth-server=$DOMAIN,$IFNAME \
@@ -24,6 +25,6 @@ exec /usr/sbin/dnsmasq \
 	--dhcp-range=::,constructor:br0,ra-only,ra-names \
 	--read-ethers \
 	--dhcp-authoritative \
-	--dhcp-leasefile=/var/run/dnsmasq.leases \
+	--dhcp-leasefile=/run/dnsmasq.leases \
 	--domain=$DOMAIN,192.168.1.0/24,local \
 	--enable-ra

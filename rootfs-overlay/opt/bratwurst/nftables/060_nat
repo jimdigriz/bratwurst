@@ -2,9 +2,9 @@
 
 set -eu
 
-[ -f /var/run/uplink ] || exit 0
+[ -f /run/uplink ] || exit 0
 
-. /var/run/uplink
+. /run/uplink
 
 [ "${IFNAME:-}" -a "${IPLOCAL:-}" ] || exit 1
 
