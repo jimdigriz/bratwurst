@@ -16,7 +16,7 @@ for U in $(ls -1 ../users | sed -n '/^[a-z0-9]*$/ p'); do
 	chmod 640 "$ROOTDIR/home/$U/.ssh/authorized_keys"
 done
 
-rsync -rl ../board/qemu/mipsel/rootfs-overlay/ "$ROOTDIR/"
+rsync -Crl ../board/qemu/mipsel/rootfs-overlay/ "$ROOTDIR/"
 
 find "$ROOTDIR/usr/lib/pppd/2.4.7" -type f ! -name pppoatm.so ! -name rp-pppoe.so -delete
 
