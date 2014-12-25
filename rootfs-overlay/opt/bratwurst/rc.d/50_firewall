@@ -2,6 +2,6 @@
 
 set -eu
 
-run-parts /etc/nftables
+run-parts /opt/bratwurst/nftables
 
 exit 0
