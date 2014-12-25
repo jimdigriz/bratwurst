@@ -119,8 +119,8 @@ buildroot-update-defconfig: buildroot/.config
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
 		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
-	sed '/^BR2_[a-z]/!d' buildroot/defconfig > board/$(BOARD)/buildroot
-	sed '/^BR2_[a-z]/ d' buildroot/defconfig > config/buildroot
+	sed '/^BR2_[a-z]/!d' .buildroot.defconfig > board/$(BOARD)/buildroot
+	sed '/^BR2_[a-z]/ d' .buildroot.defconfig > config/buildroot
 
 .PHONY: uclibc-update-defconfig
 -include buildroot/.config
