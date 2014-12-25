@@ -3,11 +3,10 @@
 BRatWuRsT tries to follow [buildroot's customisation recommendations](http://buildroot.uclibc.org/downloads/manual/manual.html#customize) where possible but with the following deviations:
 
  * buildroot is a [git submodule](http://git-scm.com/docs/git-submodule) and so our customisations live in its parent directory
- * there are *two* `rootfs-overlay` directories, they are applied in this order:
-     - `rootfs-overlay`
-     - `board/<company>/<boardname>/rootfs-overlay` (optional)
+ * the root (skeleton) filesystem is `rootfs`
+ * there is a single root filesystem overlay directory at `board/<company>/<boardname>/rootfs-overlay`
 
-All the interesting bits live in `rootfs-overlay`, and under `opt/bratwurst` (which appears as `/opt/bratwurst` on the target) you will find the `init` script which you can treat like you would `rc.local` for boot time customisations.
+All the interesting bits live in `rootfs`, and under `opt/bratwurst` (which appears as `/opt/bratwurst` on the target) you will find the `init` script which you can treat like you would `rc.local` for boot time customisations.
 
 To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/<company>/<boardname>/post-build.sh`.  This is run after the `rootfs-overlay` directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
 

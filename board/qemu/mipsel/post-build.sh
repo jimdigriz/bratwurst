@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -eu
-set -x
+
 if [ $# -ne 1 ] || [ -z "$1" ]; then
 	echo "no" >&2
 	exit 1
@@ -15,8 +15,6 @@ for U in $(ls -1 ../users | sed -n '/^[a-z0-9]*$/ p'); do
 	cp ../users/$U "$ROOTDIR/home/$U/.ssh/authorized_keys"
 	chmod 640 "$ROOTDIR/home/$U/.ssh/authorized_keys"
 done
-
-rsync -Crl ../board/qemu/mipsel/rootfs-overlay/ "$ROOTDIR/"
 
 find "$ROOTDIR/usr/lib/pppd/2.4.7" -type f ! -name pppoatm.so ! -name rp-pppoe.so -delete
 
@@ -55,8 +53,6 @@ FILES="	sbin/hediag
 	bin/gettext.sh"
 
 echo "$FILES" | xargs -I{} rm -f "$ROOTDIR/usr/{}"
-
-find "$ROOTDIR/var" -depth -mindepth 1 | xargs -r rm -r
 
 find "$ROOTDIR/etc/nftables" -type f ! -name '[0-9]*' -delete
 
