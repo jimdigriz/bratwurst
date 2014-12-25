@@ -12,4 +12,8 @@ mount -o nosuid,nodev			-t tmpfs	tmpfs	/var
 
 mkdir -m 1777 /run/lock
 
+# pppd needs these
+ln -s /run /var/run
+ln -s /run/lock /var/lock
+
 exit 0
