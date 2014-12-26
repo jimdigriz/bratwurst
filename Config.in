@@ -2,3 +2,9 @@ source "$BR2_EXTERNAL/package/external-nftables/Config.in"
 source "$BR2_EXTERNAL/package/linux-atm/Config.in"
 source "$BR2_EXTERNAL/package/ar7-atm/Config.in"
 source "$BR2_EXTERNAL/package/odhcp6c/Config.in"
+
+menu "Host utilities"
+
+	source "$BR2_EXTERNAL/package/srecord/Config.in.host"
+
+endmenu
