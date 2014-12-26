@@ -6,4 +6,4 @@ ARCHS			+= mipsel
 .PHONY:	qemu/mipsel
 qemu/mipsel: ARCH	:= mipsel
 qemu/mipsel: BOARD	:= qemu/mipsel
-qemu/mipsel: world
+qemu/mipsel: buildroot/.config world
