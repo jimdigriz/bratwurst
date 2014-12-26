@@ -140,7 +140,7 @@ busybox-update-defconfig:
 	cp buildroot/output/build/busybox-1.22.1/.config $(CURDIR)/config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
-world %-menuconfig %-update-defconfig: buildroot .users
+world %-menuconfig %-update-defconfig: buildroot/.config .users
 	make -C buildroot $(subst buildroot-,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
