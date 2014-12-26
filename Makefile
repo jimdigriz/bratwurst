@@ -1,6 +1,5 @@
-PLAT		?= qemu
 ARCH		?= mipsel
-BOARD		:= $(PLAT)/$(ARCH)
+BOARD		?= qemu/mipsel
 
 RAM		?= 16
 NAND		?= 4
@@ -136,7 +135,7 @@ busybox-update-defconfig:
 	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config $(CURDIR)/config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
-world %-menuconfig %-update-defconfig: buildroot/.config
+world %-menuconfig %-update-defconfig: buildroot
 	make -C buildroot $(subst buildroot-,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
