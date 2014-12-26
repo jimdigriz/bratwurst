@@ -1,13 +1,10 @@
-P	:= qemu
-A	:= mipsel
-B	:= $(P)/$(A)
-ARCHS	+= $(A)
-BOARDS	+= $(B)
-.PHONY:	$(B)
+BOARDS			+= qemu/mipsel
+NAME-qemu/mipsel	:= QEMU mipsel system
 
-NAME-$(B)	:= $(B) system
+ARCHS			+= mipsel
 
-$(B): PLAT	:= $(P)
-$(B): ARCH	:= $(A)
-$(B): BOARD	:= $(B)
-$(B): buildroot
+.PHONY:	qemu/mipsel
+qemu/mipsel: PLAT	:= qemu
+qemu/mipsel: ARCH	:= mipsel
+qemu/mipsel: BOARD	:= qemu/mipsel
+qemu/mipsel: world

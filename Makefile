@@ -25,7 +25,7 @@ help:
 	@echo
 	@echo 'Build Firmware:'
 	@$(foreach board, $(sort $(BOARDS)), \
-	  printf "  %-16s - Build for %s\\n" $(board) "$(NAME-$(board))";)
+	  printf "  %-16s - %s\\n" $(board) "$(NAME-$(board))";)
 	@echo
 	@echo 'Run:'
 	@echo '  bratwurst        - Spin up bratwurst'
@@ -100,15 +100,16 @@ $(VMLINUZ) $(PFLASH): | .users world
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
 
-.buildroot.defconfig:
+.buildroot.defconfig: board/$(BOARD)/buildroot config/buildroot
 	cat board/$(BOARD)/buildroot config/buildroot > .$@
 	mv .$@ $@
 
-.PHONY: buildroot
-buildroot:
+buildroot: buildroot/.git
+
+buildroot/.git:
 	git submodule update --init buildroot
 
-buildroot/.config: .buildroot.defconfig | buildroot
+buildroot/.config: .buildroot.defconfig buildroot
 	make -C buildroot defconfig \
 		BR2_EXTERNAL="$(CURDIR)" \
 		BR2_DEFCONFIG="$(CURDIR)/.buildroot.defconfig"
