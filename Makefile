@@ -99,7 +99,7 @@ $(VMLINUZ) $(PFLASH): | .users world
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
 
-.buildroot.defconfig: board/$(BOARD)/buildroot config/buildroot
+.buildroot.defconfig:
 	cat board/$(BOARD)/buildroot config/buildroot > .$@
 	mv .$@ $@
 
@@ -114,15 +114,16 @@ buildroot/.config: .buildroot.defconfig buildroot
 		BR2_DEFCONFIG="$(CURDIR)/.buildroot.defconfig"
 
 .PHONY: buildroot-update-defconfig
-buildroot-update-defconfig: buildroot/.config
+buildroot-update-defconfig:
 	make -C buildroot savedefconfig \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
 		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
-	sed -n 's/^config \(.*\)/^\\(# \\)*\1/ p' buildroot/arch/* \
-		| sort | uniq | grep    -f - .buildroot.defconfig > board/$(BOARD)/buildroot
-	sed -n 's/^config \(.*\)/^\\(# \\)*\1/ p' buildroot/arch/* \
-		| sort | uniq | grep -v -f - .buildroot.defconfig > config/buildroot
+	sed -n 's/^config \(.*\)/\1/ p' buildroot/arch/* | sort | uniq > .list
+	echo BR2_PACKAGE_AR7_ATM >> .list
+	grep    -F -f .list .buildroot.defconfig > board/$(BOARD)/buildroot
+	grep -v -F -f .list .buildroot.defconfig > config/buildroot
+	rm .list
 
 .PHONY: uclibc-update-defconfig
 -include buildroot/.config
