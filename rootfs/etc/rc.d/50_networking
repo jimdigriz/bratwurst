@@ -2,7 +2,7 @@
 
 set -eu
 
-. /opt/bratwurst/config
+. /etc/bratwurst
 
 /sbin/ip link set dev lo up
 
@@ -13,13 +13,13 @@ set -eu
 /sbin/ip link set dev br0 up
 
 # HACK: make sure fakeisp is not added to the bridge
-test -d /opt/bratwurst/runit/atmtcp && ip link set dev eth0 up
+test -d /etc/sv/atmtcp && ip link set dev eth0 up
 
 for IFACE in $(/sbin/ip link | sed -n '/UP/! s/[0-9]*: \([^:]*\).*/\1/ p'); do
 	/sbin/ip link set dev $IFACE up
 	/sbin/brctl addif br0 $IFACE
 done
 
-test -d /opt/bratwurst/runit/atmtcp && ip link set dev eth0 down
+test -d /etc/sv/atmtcp && ip link set dev eth0 down
 
 exit 0

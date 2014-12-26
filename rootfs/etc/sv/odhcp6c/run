@@ -7,4 +7,4 @@ set -eu
 . /run/uplink
 
 exec 2>&1
-exec /usr/sbin/odhcp6c -v -e -P 0 -s /opt/bratwurst/dhcpc.script $IFNAME
+exec /usr/sbin/odhcp6c -v -e -P 0 -s /usr/share/dhcpc.script $IFNAME

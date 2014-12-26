@@ -21,7 +21,7 @@ shutitdown () {
 	ls -1 /var/service | xargs -r sv force-stop || true
 	ls -1 /var/service | xargs -r sv exit
 	find /var/service -type l | xargs -r rm
-	/opt/bratwurst/rc.d/40_urandom stop
+	/etc/rc.d/40_urandom stop
 	mount -o remount,ro /
 }
 

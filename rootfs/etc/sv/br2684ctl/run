@@ -2,7 +2,7 @@
 
 set -eu
 
-. /opt/bratwurst/config
+. /etc/bratwurst
 
 case $ATM_ENCAP in
 llc)		ENCAP=0;;

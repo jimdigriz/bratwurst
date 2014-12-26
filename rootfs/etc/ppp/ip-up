@@ -12,6 +12,6 @@ set -eu
 	sed -n -i "/^IPLOCAL=/!p; /^IPLOCAL=/h; \${g;p}" /run/uplink
 ) 9>>/run/uplink
 
-/opt/bratwurst/nftables/060_nat
+/etc/nftables/060_nat
 
 exit 0

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+grep '^[^$#]' /etc/bogons | xargs -r -n1 /sbin/ip route add unreachable
+
+exit 0

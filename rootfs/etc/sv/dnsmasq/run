@@ -2,7 +2,7 @@
 
 set -eu
 
-. /opt/bratwurst/config
+. /etc/bratwurst
 
 [ "${NETWORK%?}" = "pppo" ] && IFNAME=ppp0 && IFNAME=$UPLINK_TYPE$UPLINK_PORT
 

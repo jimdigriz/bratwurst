@@ -2,20 +2,20 @@
 
 set -eu
 
-run-parts /opt/bratwurst/rc.d
+run-parts /etc/rc.d
 
-mkdir -p /var/spool/runit
-find /opt/bratwurst/runit -type d -name supervise | xargs -r rm -rf
-find /opt/bratwurst/runit -mindepth 1 -maxdepth 1 -type d \
-	| sed 's~.*/\([^/]*\)~\1~; s~.*~/var/spool/runit/&\n/opt/bratwurst/runit/&/supervise~' \
+mkdir -p /var/spool/sv
+find /etc/sv -type d -name supervise | xargs -r rm -rf
+find /etc/sv -mindepth 1 -maxdepth 1 -type d \
+	| sed 's~.*/\([^/]*\)~\1~; s~.*~/var/spool/sv/&\n/etc/sv/&/supervise~' \
 	| xargs -r -n2 ln -f -s
-find /opt/bratwurst/runit -mindepth 2 -maxdepth 2 -type d -name log \
-	| sed 's~.*/\([^/]*\)/log~\1~; s~.*~/var/spool/runit/&.log\n/opt/bratwurst/runit/&/log/supervise~' \
+find /etc/sv -mindepth 2 -maxdepth 2 -type d -name log \
+	| sed 's~.*/\([^/]*\)/log~\1~; s~.*~/var/spool/sv/&.log\n/etc/sv/&/log/supervise~' \
 	| xargs -r -n2 ln -f -s
 
 mkdir /var/service
-find /opt/bratwurst/runit -mindepth 1 -maxdepth 1 -type d \
-	| sed 's~.*/\([^/]*\)~\1~; s~.*~/opt/bratwurst/runit/&\n/var/service/&~' \
+find /etc/sv -mindepth 1 -maxdepth 1 -type d \
+	| sed 's~.*/\([^/]*\)~\1~; s~.*~/etc/sv/&\n/var/service/&~' \
 	| xargs -r -n2 ln -f -s
 
 exec runsvdir -s /sbin/siginit /var/service

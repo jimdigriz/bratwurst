@@ -2,7 +2,7 @@
 
 set -eu
 
-. /opt/bratwurst/config
+. /etc/bratwurst
 
 PPP_OPTIONS="	nodetach
 		debug
