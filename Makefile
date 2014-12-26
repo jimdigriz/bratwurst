@@ -126,14 +126,12 @@ buildroot-update-defconfig:
 	rm .list
 
 .PHONY: uclibc-update-defconfig
--include buildroot/.config
 uclibc-update-defconfig:
-	cp buildroot/output/build/uclibc-$(subst ",,$(BR2_UCLIBC_VERSION_STRING))/.config $(CURDIR)/board/$(BOARD)/uclibc.config
+	cp buildroot/output/build/uclibc-0.9.33.2/.config $(CURDIR)/board/$(BOARD)/uclibc.config
 
 .PHONY: busybox-update-defconfig
--include buildroot/package/busybox/busybox.mk
 busybox-update-defconfig:
-	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config $(CURDIR)/config/busybox
+	cp buildroot/output/build/busybox-1.22.1/.config $(CURDIR)/config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
 world %-menuconfig %-update-defconfig: buildroot
