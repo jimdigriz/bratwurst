@@ -11,6 +11,10 @@ ROOTDIR="$1"
 
 find "$ROOTDIR" -type f -name .keep -delete
 
+umask 077
+dd if=/dev/urandom of="$ROOTDIR/etc/random-seed" count=1 >/dev/null 2>/dev/null
+umask 022
+
 for U in $(ls -1 ../users | sed -n '/^[a-z0-9]*$/ p'); do
 	mkdir -m 750 -p "$ROOTDIR/home/$U/.ssh"
 
