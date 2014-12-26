@@ -79,8 +79,13 @@ distclean: clean
 
 VMLINUZ		:= buildroot/output/images/vmlinuz
 PFLASH		:= buildroot/output/images/pflash
+$(VMLINUZ) $(PFLASH): world
+
 .PHONY: bratwurst
-bratwurst: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
+bratwurst: $(VMLINUZ) $(PFLASH)
+
+.PHONY: qemu
+qemu: bratwurst $(9P_SHARE)
 	qemu-system-$(ARCH) -nodefaults -nographic -machine accel=kvm:tcg \
 		-serial mon:stdio \
 		-m $(RAM) \
@@ -94,8 +99,6 @@ bratwurst: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
-$(VMLINUZ) $(PFLASH): | .users world
-
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
 
@@ -108,7 +111,7 @@ buildroot: buildroot/.git
 buildroot/.git:
 	git submodule update --init buildroot
 
-buildroot/.config: .buildroot.defconfig buildroot
+buildroot/.config: | .buildroot.defconfig buildroot
 	make -C buildroot defconfig \
 		BR2_EXTERNAL="$(CURDIR)" \
 		BR2_DEFCONFIG="$(CURDIR)/.buildroot.defconfig"
@@ -134,7 +137,7 @@ busybox-update-defconfig:
 	cp buildroot/output/build/busybox-1.22.1/.config $(CURDIR)/config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
-world %-menuconfig %-update-defconfig: buildroot
+world %-menuconfig %-update-defconfig: buildroot .users
 	make -C buildroot $(subst buildroot-,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
