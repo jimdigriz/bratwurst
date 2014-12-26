@@ -1,0 +1,6 @@
+config BR2_PACKAGE_HOST_ADDPATTERN
+	bool "host addpattern"
+	help
+	  addpattern tool used in generating images for the adam2 bootloader
+
+	  http://git.openwrt.org/?p=openwrt.git;a=tree;f=tools/firmware-utils/src

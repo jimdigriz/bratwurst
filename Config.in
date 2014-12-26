@@ -6,5 +6,7 @@ source "$BR2_EXTERNAL/package/odhcp6c/Config.in"
 menu "Host utilities"
 
 	source "$BR2_EXTERNAL/package/srecord/Config.in.host"
+	source "$BR2_EXTERNAL/package/srec2bin/Config.in.host"
+	source "$BR2_EXTERNAL/package/addpattern/Config.in.host"
 
 endmenu
