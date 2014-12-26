@@ -54,13 +54,10 @@ FILES="	etc/atmsigd.conf
 	usr/bin/ttcp_atm
 	usr/bin/aread
 	usr/bin/gettext.sh
-	usr/share/udhcpc/default.script
 	lib/firmware/pca200e.bin
 	lib/firmware/pca200e_ecd.bin2
 	lib/firmware/sba200e_ecd.bin2"
 echo "$FILES" | xargs -I{} rm -f "$ROOTDIR/{}"
-
-find "$ROOTDIR/usr/share" -empty -delete
 
 find "$ROOTDIR/usr/lib/pppd/2.4.7" -type f ! -name pppoatm.so ! -name rp-pppoe.so -delete
 
