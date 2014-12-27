@@ -1,6 +1,6 @@
 # Layout
 
-BRatWuRsT tries to follow [buildroot's customisation recommendations](http://buildroot.uclibc.org/downloads/manual/manual.html#customize) where possible but with the following deviations:
+The project structure tries to follow [buildroot's project-specific customisation](http://buildroot.uclibc.org/downloads/manual/manual.html#_project_specific_customization) recommendations where possible but with the following deviations:
 
  * buildroot is a [git submodule](http://git-scm.com/docs/git-submodule) and so our customisations live in its parent directory
  * the root (skeleton) filesystem is `rootfs` - this is where all the interesting bits live
@@ -64,3 +64,12 @@ Then from your router:
     mkdir /tmp/shared
     modprobe 9pnet
     mount -t 9p -o version=9p2000.L,trans=tcp,port=5564 192.0.2.0 /tmp/shared
+
+# Contributing
+
+## Configuration Files
+
+When amending some configurations, to commit your changes you should use the following methods.
+
+    make {buildroot,uclibc,busybox,linux}-menuconfig
+    make {buildroot,uclibc,busybox,linux}-update-defconfig

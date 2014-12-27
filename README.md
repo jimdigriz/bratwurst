@@ -21,9 +21,9 @@ BRatWuRsT (aka 'Buildroot WRT') is a [buildroot](http://buildroot.uclibc.org/) b
 
 ## Related Links
 
- * **[Development](DEVELOPMENT.md):** how to work on the project
- * **[Contributing](CONTRIBUTING.md):** how to contribute to the project
- * **[TODO](TODO.md):** a list of outstanding items, as well as aims and thoughts on where the project is going
+ * [Configuration](CONFIGURATION.md)
+ * [Development and Contributing](DEVELOPMENT.md)
+ * [TODO](TODO.md)
 
 # Preflight
 
@@ -86,23 +86,3 @@ The following will spin up a QEMU instance of BRatWuRsT (`ARCH` defaults to `mip
 **N.B.** do *not* put the `ARCH` at the end, otherwise the variable cascades through the build and breaks it
 
 On the first run, the build will take about 30 minutes (on an i7@3Ghz plus the time taken to download 250MB) whilst subsequent runs should take seconds.  Once built, you should see a typical Linux kernel boot up which the drops you at a login prompt; the username is `root` with no password.  Use `Ctrl-A ?` to get some QEMU usage information, `Ctrl-A x` will exit the emulator and there is of course the [QEMU Monitor Console](http://wiki.qemu.org/download/qemu-doc.html#pcsys_005fmonitor) instructions to help you out too.
-
-# Configuration
-
-## User Accounts
-
-To slip in user accounts into the build, you create a directory called `users` and name each file within after the username that is logging in.  The contents of those files are the SSH public keys.  For example, if you are `bob` and you want your keys to be slipped in, you would do:
-
-    mkdir users
-    cat ~/.ssh/id_rsa.pub > users/bob
-
-Now when you build your firmware, the user accounts will be included.
-
-Note that:
-
- 1. each account will be password less
- 1. passwordless accounts can only log in via the serial port (SSH rejects password authentication)
- 1. only public key is supported for SSH
- 1. `root` is unable to ever SSH in and the account is also passwordless
- 1. to become `root` you use `su`
- 1. to add a password to an account, use `passwd`
