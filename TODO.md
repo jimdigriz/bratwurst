@@ -13,7 +13,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Required
 
- * move buildroot external bits into an `buildroot-external` directory
+ * noticed that `BR2_EXTERNAL` points to an external overlay tree, so I should be able to drive the whole configuration via buildroot's menu, including how to build boards
  * deal with `rootfs/etc/bratwurst` much better; .gitignore and default file etc etc
  * get this working on Linksys WAG54G
  * documentation describing
