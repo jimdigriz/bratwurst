@@ -15,9 +15,6 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
  * get this working on Linksys WAG54G
  * documentation describing
-  * what this project is
-  * what is aims to be
-  * what it currently does
   * how to use it (should be more obvious once we have real hardware)
   * IP ranges used
 

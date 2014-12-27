@@ -1,6 +1,25 @@
-BRatWuRsT (aka 'Buildroot WRT') is a project that creates a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/), and walks you through the steps required to install it and get it running.
+BRatWuRsT (aka 'Buildroot WRT') is a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/).
 
-Included in this project is:
+## Features
+
+ * complete development supported within a [QEMU](http://www.qemu.org/] VM
+ * includes a 'fake ISP' VM to emulates xDSL connectivity, the ISP and Internet
+ * PPPoA/PPPoE support
+ * full native IPv6 support, uses [odhcp6c](https://github.com/sbyx/odhcp6c) for IPv6 inter-op, including [DHCPv6-PD](http://en.wikipedia.org/wiki/Prefix_delegation) to automatically assign IPv6 subnets locally
+ * combined IPv6/IPv4 firewalling with [nftables](http://wiki.nftables.org/)
+ * [runit](http://smarden.org/runit/) ([tutorial](http://www.sanityinc.com/articles/init-scripts-considered-harmful/)) as PID 1
+ * client services:
+  * SSH with [public keys](https://macnugget.org/projects/publickeys/)
+  * DNS
+  * DHCPv4
+
+## Supported Physical Targets
+
+ * [Linksys WAG54G](board/linksys/wag54g/README.md) - work in progress
+ * [TP-Link TL-W8970](board/tp-link/tl-w8970/README.md) - planned, not supported
+ * [TP-Link TL-MR3020](board/tp-link/tl-mr3020/README.md) - planned, not supported
+
+## Related Links
 
  * **[Development](DEVELOPMENT.md):** how to work on the project
  * **[Contributing](CONTRIBUTING.md):** how to contribute to the project
@@ -67,14 +86,6 @@ The following will spin up a QEMU instance of BRatWuRsT (`ARCH` defaults to `mip
 **N.B.** do *not* put the `ARCH` at the end, otherwise the variable cascades through the build and breaks it
 
 On the first run, the build will take about 30 minutes (on an i7@3Ghz plus the time taken to download 250MB) whilst subsequent runs should take seconds.  Once built, you should see a typical Linux kernel boot up which the drops you at a login prompt; the username is `root` with no password.  Use `Ctrl-A ?` to get some QEMU usage information, `Ctrl-A x` will exit the emulator and there is of course the [QEMU Monitor Console](http://wiki.qemu.org/download/qemu-doc.html#pcsys_005fmonitor) instructions to help you out too.
-
-## Physical Targets
-
-Building for specific physical hardware is available for:
-
- * [Linksys WAG54G](board/linksys/wag54g/README.md)
- * [TP-Link TL-W8970](board/tp-link/tl-w8970/README.md)
- * [TP-Link TL-MR3020](board/tp-link/tl-mr3020/README.md)
 
 # Configuration
 
