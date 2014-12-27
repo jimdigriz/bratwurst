@@ -1,0 +1,38 @@
+diff -r -N -u linux-3.18.1.orig/include/net/ip_fib.h linux-3.18.1/include/net/ip_fib.h
+--- linux-3.18.1.orig/include/net/ip_fib.h	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/include/net/ip_fib.h	2014-12-26 14:00:22.443064992 +0000
+@@ -65,7 +65,11 @@
+ 	struct fib_nh_exception __rcu	*chain;
+ };
+ 
++#ifdef CONFIG_BASE_SMALL
++#define FNHE_HASH_SHIFT		4
++#else
+ #define FNHE_HASH_SHIFT		11
++#endif
+ #define FNHE_HASH_SIZE		(1 << FNHE_HASH_SHIFT)
+ #define FNHE_RECLAIM_DEPTH	5
+ 
+@@ -163,6 +167,7 @@
+ #ifdef CONFIG_IP_MULTIPLE_TABLES
+ #define FIB_TABLE_HASHSZ 256
+ #else
++/* Can we use 1 for BASE_SMALL? */
+ #define FIB_TABLE_HASHSZ 2
+ #endif
+ 
+diff -r -N -u linux-3.18.1.orig/net/ipv4/fib_semantics.c linux-3.18.1/net/ipv4/fib_semantics.c
+--- linux-3.18.1.orig/net/ipv4/fib_semantics.c	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/net/ipv4/fib_semantics.c	2014-12-26 13:59:17.787067554 +0000
+@@ -51,7 +51,11 @@
+ static unsigned int fib_info_hash_size;
+ static unsigned int fib_info_cnt;
+ 
++#ifdef CONFIG_BASE_SMALL
++#define DEVINDEX_HASHBITS 2
++#else
+ #define DEVINDEX_HASHBITS 8
++#endif
+ #define DEVINDEX_HASHSIZE (1U << DEVINDEX_HASHBITS)
+ static struct hlist_head fib_info_devhash[DEVINDEX_HASHSIZE];
+ 

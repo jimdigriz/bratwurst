@@ -1,0 +1,37 @@
+From d26b7402d294b60842e6ff1b4cdee0dde20a016e Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Mon, 20 Jan 2014 00:57:46 -0800
+Subject: [PATCH 20/27] net, diet: Make XPS configurable
+
+Not needed on small systems. Already disabled with !SMP,
+but also makes sense to explicitely disabled on very
+small multi-core SOCKs.
+
+Saves ~6k text, but increases the data segment by a
+mysterious ~4k (some padding?)
+
+   text	   data	    bss	    dec	    hex	filename
+6893698	1392544	 634880	8921122	 882022	vmlinux-with-xps
+6887542	1396544	 634880	8918966	 8817b6	vmlinux-wo-xps
+
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+---
+ net/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/Kconfig b/net/Kconfig
+index cc0264a..2437348 100644
+--- a/net/Kconfig
++++ b/net/Kconfig
+@@ -259,7 +259,7 @@ config RFS_ACCEL
+ 	default y
+ 
+ config XPS
+-	boolean
++	bool "Support multiqueue transmit queues (XPS)"
+ 	depends on SMP
+ 	default y
+ 
+-- 
+1.7.10.4
+

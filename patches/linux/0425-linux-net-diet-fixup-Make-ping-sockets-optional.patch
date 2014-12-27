@@ -1,0 +1,25 @@
+From 2e9319722aae144d9c15719863fd3dbdd4cd292d Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Mon, 5 May 2014 15:38:46 -0700
+Subject: [PATCH 25/27] fixup! net, diet: Make ping sockets optional
+
+---
+ net/ipv4/ping.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+index 3f79243..ea5516c 100644
+--- a/net/ipv4/ping.c
++++ b/net/ipv4/ping.c
+@@ -1207,7 +1207,7 @@ void ping_proc_exit(void)
+ }
+ 
+ module_init(ping_proc_init);
+-module_exit(ping_proc_init);
++module_exit(ping_proc_exit);
+ 
+ #endif
+ 
+-- 
+1.7.10.4
+

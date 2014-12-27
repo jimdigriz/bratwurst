@@ -1,0 +1,36 @@
+From 351071768210bd3311f29a0f86b43b7f826ee81a Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Mon, 13 Jan 2014 17:37:13 -0800
+Subject: [PATCH 02/27] net, diet: Reduce NAPI hash table for
+ CONFIG_BASE_SMALL
+
+For really small kernels, use only 3 bits for the hash table.
+
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+---
+ net/core/dev.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index d2c8a06..c6cbe69 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -175,7 +175,14 @@ EXPORT_SYMBOL(dev_base_lock);
+ static DEFINE_SPINLOCK(napi_hash_lock);
+ 
+ static unsigned int napi_gen_id;
+-static DEFINE_HASHTABLE(napi_hash, 8);
++
++#ifdef CONFIG_BASE_SMALL
++#define NAPI_HASH_BITS 3
++#else
++#define NAPI_HASH_BITS 8
++#endif
++
++static DEFINE_HASHTABLE(napi_hash, NAPI_HASH_BITS);
+ 
+ static seqcount_t devnet_rename_seq;
+ 
+-- 
+1.7.10.4
+

@@ -1,0 +1,128 @@
+diff -r -N -u linux-3.18.1.orig/drivers/net/team/Kconfig linux-3.18.1/drivers/net/team/Kconfig
+--- linux-3.18.1.orig/drivers/net/team/Kconfig	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/drivers/net/team/Kconfig	2014-12-26 14:21:13.155015433 +0000
+@@ -64,6 +64,7 @@
+ 
+ config NET_TEAM_MODE_LOADBALANCE
+ 	tristate "Load-balance mode support"
++	select LPF_FILTER
+ 	depends on NET_TEAM
+ 	---help---
+ 	  This mode provides load balancing functionality. Tx port selection
+diff -r -N -u linux-3.18.1.orig/include/linux/filter.h linux-3.18.1/include/linux/filter.h
+--- linux-3.18.1.orig/include/linux/filter.h	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/include/linux/filter.h	2014-12-26 14:22:23.783012635 +0000
+@@ -286,6 +286,7 @@
+ })
+ 
+ /* Macro to invoke filter function. */
++#ifdef CONFIG_LPF_FILTER
+ #define SK_RUN_FILTER(filter, ctx) \
+ 	(*filter->prog->bpf_func)(ctx, filter->prog->insnsi)
+ 
+@@ -389,6 +390,32 @@
+ 
+ bool sk_filter_charge(struct sock *sk, struct sk_filter *fp);
+ void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
++#else
++#define SK_RUN_FILTER(filter, ctx) 0
++static inline int
++sk_filter(struct sock *sk, struct sk_buff *skb) { return 0; }
++static inline u32 sk_run_filter_int_seccomp(const struct seccomp_data *ctx,
++			      const struct sock_filter_int *insni)
++{ return 0; }
++static inline u32 sk_run_filter_int_skb(const struct sk_buff *ctx,
++			  const struct sock_filter_int *insni)
++{ return 0; }
++static inline int sk_unattached_filter_create(struct sk_filter **pfp,
++				       struct sock_fprog *fprog)
++{ return -EINVAL; }
++static inline void sk_unattached_filter_destroy(struct sk_filter *fp) {}
++static inline int sk_attach_filter(struct sock_fprog *fprog, struct sock *sk)
++{ return -EINVAL; }
++static inline int sk_detach_filter(struct sock *sk) { return -EINVAL; }
++static inline int sk_chk_filter(struct sock_filter *filter, unsigned int flen)
++{ return 0; }
++static inline int sk_get_filter(struct sock *sk, struct sock_filter __user *filter, unsigned len)
++{ return -EINVAL; }
++static inline void
++sk_decode_filter(struct sock_filter *filt, struct sock_filter *to) {}
++static inline void sk_filter_charge(struct sock *sk, struct sk_filter *fp) {}
++static inline void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp) {}
++#endif
+ 
+ u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+ void bpf_int_jit_compile(struct bpf_prog *fp);
+diff -r -N -u linux-3.18.1.orig/init/Kconfig linux-3.18.1/init/Kconfig
+--- linux-3.18.1.orig/init/Kconfig	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/init/Kconfig	2014-12-26 14:21:13.155015433 +0000
+@@ -2017,4 +2017,11 @@
+ 	  inform it as to what tags are to be expected in a stream and what
+ 	  functions to call on what tags.
+ 
++# Automatically enable LPF_FILTER when any architecture sets SECCOMP
++config SECCOMP_ENABLE_LPF
++	bool
++	depends on SECCOMP
++	default y
++	select LPF_FILTER
++
+ source "kernel/Kconfig.locks"
+diff -r -N -u linux-3.18.1.orig/net/core/Makefile linux-3.18.1/net/core/Makefile
+--- linux-3.18.1.orig/net/core/Makefile	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/net/core/Makefile	2014-12-26 14:21:13.155015433 +0000
+@@ -15,6 +15,7 @@
+ obj-y += net-sysfs.o
+ obj-$(CONFIG_PROC_FS) += net-procfs.o
+ obj-$(CONFIG_NET_PKTGEN) += pktgen.o
++obj-$(CONFIG_LPF_FILTER) += filter.o
+ obj-$(CONFIG_NETPOLL) += netpoll.o
+ obj-$(CONFIG_FIB_RULES) += fib_rules.o
+ obj-$(CONFIG_TRACEPOINTS) += net-traces.o
+diff -r -N -u linux-3.18.1.orig/net/Kconfig linux-3.18.1/net/Kconfig
+--- linux-3.18.1.orig/net/Kconfig	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/net/Kconfig	2014-12-26 14:21:13.155015433 +0000
+@@ -83,6 +83,13 @@
+ 
+ endif # if INET
+ 
++# XXX seccomp and other users should auto enable?
++config LPF_FILTER
++	bool "LPF filter"
++	default y
++	help
++	  Enable BPF/LPF (Linux Packet Filter) filtering on sockets.
++
+ config NETWORK_SECMARK
+ 	bool "Security Marking"
+ 	help
+@@ -272,6 +279,7 @@
+ config BPF_JIT
+ 	bool "enable BPF Just In Time compiler"
+ 	depends on HAVE_BPF_JIT
++	depends on LPF_FILTER
+ 	depends on MODULES
+ 	---help---
+ 	  Berkeley Packet Filter filtering capabilities are normally handled
+diff -r -N -u linux-3.18.1.orig/net/netfilter/Kconfig linux-3.18.1/net/netfilter/Kconfig
+--- linux-3.18.1.orig/net/netfilter/Kconfig	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/net/netfilter/Kconfig	2014-12-26 14:21:13.159015433 +0000
+@@ -945,6 +945,7 @@
+ config NETFILTER_XT_MATCH_BPF
+ 	tristate '"bpf" match support'
+ 	depends on NETFILTER_ADVANCED
++	select LPF_FILTER
+ 	help
+ 	  BPF matching applies a linux socket filter to each packet and
+ 	  accepts those for which the filter returns non-zero.
+diff -r -N -u linux-3.18.1.orig/net/sched/Kconfig linux-3.18.1/net/sched/Kconfig
+--- linux-3.18.1.orig/net/sched/Kconfig	2014-12-16 17:39:45.000000000 +0000
++++ linux-3.18.1/net/sched/Kconfig	2014-12-26 14:21:13.159015433 +0000
+@@ -469,6 +469,7 @@
+ config NET_CLS_BPF
+ 	tristate "BPF-based classifier"
+ 	select NET_CLS
++	select LPF_FILTER
+ 	---help---
+ 	  If you say Y here, you will be able to classify packets based on
+ 	  programmable BPF (JIT'ed) filters as an alternative to ematches.

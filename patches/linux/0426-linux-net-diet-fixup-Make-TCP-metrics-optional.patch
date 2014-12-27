@@ -1,0 +1,26 @@
+From 6e628aa64ec8cd9f2dee7efbc709d418dccc56c9 Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Mon, 5 May 2014 16:29:26 -0700
+Subject: [PATCH 26/27] fixup! net, diet: Make TCP metrics optional
+
+---
+ net/ipv4/Kconfig |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv4/Kconfig b/net/ipv4/Kconfig
+index 578e332..aa301ce 100644
+--- a/net/ipv4/Kconfig
++++ b/net/ipv4/Kconfig
+@@ -284,7 +284,8 @@ config IP_PIMSM_V2
+ 	  you want to play with it.
+ 
+ config TCP_METRICS
+-	bool "Report TCP metrics over netlink"
++	bool "Save TCP metrics between connections"
++	default y
+ 	---help---
+            Enable support in TCP to save host information between different
+ 	   connections.
+-- 
+1.7.10.4
+
