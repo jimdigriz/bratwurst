@@ -76,6 +76,7 @@ clean:
 .PHONY: distclean
 distclean: clean
 	make -C buildroot distclean
+	rm -rf ccache
 
 VMLINUZ		:= buildroot/output/images/vmlinuz
 PFLASH		:= buildroot/output/images/pflash
