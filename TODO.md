@@ -13,6 +13,8 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Required
 
+ * move buildroot external bits into an `buildroot-external` directory
+ * deal with `rootfs/etc/bratwurst` much better; .gitignore and default file etc etc
  * get this working on Linksys WAG54G
  * documentation describing
   * how to use it (should be more obvious once we have real hardware)
