@@ -2,7 +2,7 @@ BRatWuRsT (aka 'Buildroot WRT') is a [buildroot](http://buildroot.uclibc.org/) b
 
 ## Features
 
- * complete development supported within a [QEMU](http://www.qemu.org/] VM
+ * complete development supported within a [QEMU](http://www.qemu.org/) VM
  * includes a 'fake ISP' VM to emulates xDSL connectivity, the ISP and Internet
  * PPPoA/PPPoE support
  * full native IPv6 support, uses [odhcp6c](https://github.com/sbyx/odhcp6c) for IPv6 inter-op, including [DHCPv6-PD](http://en.wikipedia.org/wiki/Prefix_delegation) to automatically assign IPv6 subnets locally
