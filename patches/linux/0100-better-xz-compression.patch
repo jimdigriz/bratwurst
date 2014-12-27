@@ -1,0 +1,11 @@
+--- linux-3.18.1/scripts/xz_wrap.sh.orig	2014-12-27 01:08:33.153476417 +0000
++++ linux-3.18.1/scripts/xz_wrap.sh	2014-12-27 01:09:09.329474984 +0000
+@@ -10,7 +10,7 @@
+ #
+ 
+ BCJ=
+-LZMA2OPTS=
++LZMA2OPTS=lp=1,pb=2
+ 
+ case $SRCARCH in
+ 	x86)            BCJ=--x86 ;;
