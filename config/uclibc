@@ -196,7 +196,7 @@ UCLIBC_BUILD_NOEXECSTACK=y
 # Development/debugging options
 #
 CROSS_COMPILER_PREFIX="/usr/src/bratwurst/buildroot/output/host/usr/bin/mipsel-buildroot-linux-uclibc-"
-UCLIBC_EXTRA_CFLAGS="-fno-lto -fno-whole-program"
+UCLIBC_EXTRA_CFLAGS="-flto -fwhole-program"
 # DODEBUG is not set
 DOSTRIP=y
 # DOASSERTS is not set
