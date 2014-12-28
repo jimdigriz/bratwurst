@@ -37,7 +37,8 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * ...without losing config and customisations?
   * "OTA"?
  * development instructions to be expanded to work under Mac OS X
- * take another stab at getting Link-Time-Optimisations (LTO) working on the kernel
+ * take another stab at getting [Link-Time-Optimisations (LTO) working on the kernel](https://github.com/andikleen/linux-misc/tree/lto-3.16)
+  * [MIPS: Make declarations and definitions of tlbmiss_handler_setup_pgd match](http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=0bfbf6a256348b1543e638c7d7b2f3004b289fdb) partly fixes the problem but unfortunately [MIPS: Move generated code to .text for microMIPS](http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6ba045f9fbdafb48da42aa8576ea7a3980443136)
 
 # Links
 
