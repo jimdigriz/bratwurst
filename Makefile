@@ -20,7 +20,7 @@ include $(wildcard board/*/*/board.mk)
 help:
 	@echo 'Cleaning:'
 	@echo '  clean            - clean ready to rebuild filesystem'
-	@echo '  distclean        - prepare for toolchain change'
+	@echo '  distclean        - prepare for buildroot changes'
 	@echo
 	@echo 'Build Firmware:'
 	@$(foreach board, $(sort $(BOARDS)), \
