@@ -142,6 +142,7 @@ uclibc-update-defconfig:
 	find buildroot/output/build/uclibc-$(UCLIBC_VERSION)/extra/Configs \
 			-name 'Config.*' -a ! -name Config.in -a ! -name Config.in.arch \
 		| xargs sed -n 's/^config \(.*\)/\1/ p' | sort | uniq > .list
+	echo TARGET_ >> .list
 	grep    -F -f .list buildroot/output/build/uclibc-$(UCLIBC_VERSION)/.config > board/$(BOARD)/uclibc
 	grep -v -F -f .list buildroot/output/build/uclibc-$(UCLIBC_VERSION)/.config > config/uclibc
 	rm .list
