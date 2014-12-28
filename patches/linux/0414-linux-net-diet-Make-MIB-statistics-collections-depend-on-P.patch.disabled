@@ -1,0 +1,355 @@
+From 3b6fd070ad92da6d935f7af3ea0606fb4876a8cc Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Mon, 13 Jan 2014 13:09:23 -0800
+Subject: [PATCH 14/27] net, diet: Make MIB statistics collections depend on
+ PROC_FS
+
+When PROC_FS is not compiled in we don't need the statistics
+gathering code, as the only way to see the output is through
+/proc. Saves about 5k text, likely more in dynamic memory.
+
+   text    data     bss     dec     hex filename
+ 386302    8993   12564  407859   63933 net/built-in.o-with-mib
+ 381542    8933   12564  403039   6265f net/built-in.o-wo-mib
+
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+---
+ include/net/ip.h         |    9 +++++++
+ include/net/ipv6.h       |    8 ++++++-
+ include/net/snmp.h       |   60 +++++++++++++++++++++++++++++++++++++++-------
+ net/ipv4/af_inet.c       |   12 ++++++++++
+ net/ipv6/addrconf.c      |    9 +++++++
+ net/ipv6/addrconf_core.c |    2 ++
+ net/ipv6/af_inet6.c      |    5 ++++
+ 7 files changed, 95 insertions(+), 10 deletions(-)
+
+diff --git a/include/net/ip.h b/include/net/ip.h
+index 3ec2b0f..6764e30 100644
+--- a/include/net/ip.h
++++ b/include/net/ip.h
+@@ -196,6 +196,7 @@ void ip_send_unicast_reply(struct net *net, struct sk_buff *skb, __be32 daddr,
+ #define NET_ADD_STATS_BH(net, field, adnd) SNMP_ADD_STATS_BH((net)->mib.net_statistics, field, adnd)
+ #define NET_ADD_STATS_USER(net, field, adnd) SNMP_ADD_STATS_USER((net)->mib.net_statistics, field, adnd)
+ 
++#ifdef CONFIG_PROC_FS
+ unsigned long snmp_fold_field(void __percpu *mib[], int offt);
+ #if BITS_PER_LONG==32
+ u64 snmp_fold_field64(void __percpu *mib[], int offt, size_t sync_off);
+@@ -217,6 +218,12 @@ static inline void snmp_mib_free(void __percpu *ptr[SNMP_ARRAY_SZ])
+ 		ptr[i] = NULL;
+ 	}
+ }
++#else
++#define snmp_mib_init(a,b,c) ({ 0; })
++#define snmp_mib_free(x) do {} while (0)
++#define snmp_fold_field(a, b) ({ 0; })
++#define snmp_fold_field64(a, b, c) ({ 0; })
++#endif
+ 
+ void inet_get_local_port_range(struct net *net, int *low, int *high);
+ 
+@@ -523,6 +530,8 @@ void ip_local_error(struct sock *sk, int err, __be32 daddr, __be16 dport,
+ 
+ #ifdef CONFIG_PROC_FS
+ int ip_misc_proc_init(void);
++#else
++static inline int ip_misc_proc_init(void) { return 0; }
+ #endif
+ 
+ #endif	/* _IP_H */
+diff --git a/include/net/ipv6.h b/include/net/ipv6.h
+index d640925..3c4c041 100644
+--- a/include/net/ipv6.h
++++ b/include/net/ipv6.h
+@@ -830,11 +830,17 @@ int udp6_proc_init(struct net *net);
+ void udp6_proc_exit(struct net *net);
+ int udplite6_proc_init(void);
+ void udplite6_proc_exit(void);
++#ifdef CONFIG_PROC_FS
+ int ipv6_misc_proc_init(void);
+ void ipv6_misc_proc_exit(void);
+ int snmp6_register_dev(struct inet6_dev *idev);
+ int snmp6_unregister_dev(struct inet6_dev *idev);
+-
++#else
++static inline int ipv6_misc_proc_init(void) { return 0; }
++static inline void ipv6_misc_proc_exit(void) {}
++static inline int snmp6_register_dev(struct inet6_dev *idev) { return 0; }
++static inline int snmp6_unregister_dev(struct inet6_dev *idev) { return 0; }
++#endif
+ #else
+ static inline int ac6_proc_init(struct net *net) { return 0; }
+ static inline void ac6_proc_exit(struct net *net) { }
+diff --git a/include/net/snmp.h b/include/net/snmp.h
+index 7159626..83815f9 100644
+--- a/include/net/snmp.h
++++ b/include/net/snmp.h
+@@ -23,6 +23,8 @@
+ #include <linux/snmp.h>
+ #include <linux/smp.h>
+ 
++#define MIB_SIZE(x) (IS_ENABLED(CONFIG_PROC_FS) ? (x) : (0))
++
+ /*
+  * Mibs are stored in array of unsigned long.
+  */
+@@ -31,6 +33,7 @@
+  *  - list of entries for particular API (such as /proc/net/snmp)
+  *  - name of entries.
+  */
++#ifdef CONFIG_PROC_FS
+ struct snmp_mib {
+ 	const char *name;
+ 	int entry;
+@@ -45,6 +48,11 @@ struct snmp_mib {
+ 	.name = NULL,		\
+ 	.entry = 0,		\
+ }
++#else
++struct snmp_mib {};
++#define SNMP_MIB_ITEM(_name,_entry) {}
++#define SNMP_MIB_SENTINEL
++#endif
+ 
+ /*
+  * We use unsigned longs for most mibs but u64 for ipstats.
+@@ -52,7 +60,7 @@ struct snmp_mib {
+ #include <linux/u64_stats_sync.h>
+ 
+ /* IPstats */
+-#define IPSTATS_MIB_MAX	__IPSTATS_MIB_MAX
++#define IPSTATS_MIB_MAX MIB_SIZE(__IPSTATS_MIB_MAX)
+ struct ipstats_mib {
+ 	/* mibs[] must be first field of struct ipstats_mib */
+ 	u64		mibs[IPSTATS_MIB_MAX];
+@@ -60,18 +68,18 @@ struct ipstats_mib {
+ };
+ 
+ /* ICMP */
+-#define ICMP_MIB_MAX	__ICMP_MIB_MAX
++#define ICMP_MIB_MAX	MIB_SIZE(__ICMP_MIB_MAX)
+ struct icmp_mib {
+ 	unsigned long	mibs[ICMP_MIB_MAX];
+ };
+ 
+-#define ICMPMSG_MIB_MAX	__ICMPMSG_MIB_MAX
++#define ICMPMSG_MIB_MAX	MIB_SIZE(__ICMPMSG_MIB_MAX)
+ struct icmpmsg_mib {
+ 	atomic_long_t	mibs[ICMPMSG_MIB_MAX];
+ };
+ 
+ /* ICMP6 (IPv6-ICMP) */
+-#define ICMP6_MIB_MAX	__ICMP6_MIB_MAX
++#define ICMP6_MIB_MAX	MIB_SIZE(__ICMP6_MIB_MAX)
+ /* per network ns counters */
+ struct icmpv6_mib {
+ 	unsigned long	mibs[ICMP6_MIB_MAX];
+@@ -81,7 +89,7 @@ struct icmpv6_mib_device {
+ 	atomic_long_t	mibs[ICMP6_MIB_MAX];
+ };
+ 
+-#define ICMP6MSG_MIB_MAX  __ICMP6MSG_MIB_MAX
++#define ICMP6MSG_MIB_MAX  MIB_SIZE(__ICMP6MSG_MIB_MAX)
+ /* per network ns counters */
+ struct icmpv6msg_mib {
+ 	atomic_long_t	mibs[ICMP6MSG_MIB_MAX];
+@@ -93,29 +101,31 @@ struct icmpv6msg_mib_device {
+ 
+ 
+ /* TCP */
+-#define TCP_MIB_MAX	__TCP_MIB_MAX
++#define TCP_MIB_MAX	MIB_SIZE(__TCP_MIB_MAX)
+ struct tcp_mib {
+ 	unsigned long	mibs[TCP_MIB_MAX];
+ };
+ 
+ /* UDP */
+-#define UDP_MIB_MAX	__UDP_MIB_MAX
++#define UDP_MIB_MAX	MIB_SIZE(__UDP_MIB_MAX)
+ struct udp_mib {
+ 	unsigned long	mibs[UDP_MIB_MAX];
+ };
+ 
+ /* Linux */
+-#define LINUX_MIB_MAX	__LINUX_MIB_MAX
++#define LINUX_MIB_MAX	MIB_SIZE(__LINUX_MIB_MAX)
+ struct linux_mib {
+ 	unsigned long	mibs[LINUX_MIB_MAX];
+ };
+ 
+ /* Linux Xfrm */
+-#define LINUX_MIB_XFRMMAX	__LINUX_MIB_XFRMMAX
++#define LINUX_MIB_XFRMMAX	MIB_SIZE(__LINUX_MIB_XFRMMAX)
+ struct linux_xfrm_mib {
+ 	unsigned long	mibs[LINUX_MIB_XFRMMAX];
+ };
+ 
++#ifdef CONFIG_PROC_FS
++
+ #define SNMP_ARRAY_SZ 1
+ 
+ #define DEFINE_SNMP_STAT(type, name)	\
+@@ -216,4 +226,36 @@ struct linux_xfrm_mib {
+ #define SNMP_UPD_PO_STATS64_BH(mib, basefield, addend) SNMP_UPD_PO_STATS_BH(mib, basefield, addend)
+ #endif
+ 
++#else
++
++/* Stub out everything */
++
++#define SNMP_ARRAY_SZ 0
++#define DEFINE_SNMP_STAT(type, name) type *name
++#define DEFINE_SNMP_STAT_ATOMIC(type, name) type *name
++#define DECLARE_SNMP_STAT(type, name) extern type *name
++#define SNMP_INC_STATS_BH(mib, field) do { (void)(mib); } while(0)
++#define SNMP_INC_STATS_USER(mib, field) do { (void)(mib); } while(0)
++#define SNMP_INC_STATS_ATOMIC_LONG(mib, field) do { (void)(mib); } while(0)
++#define SNMP_INC_STATS(mib, field) do { (void)(mib); } while(0)
++#define SNMP_DEC_STATS(mib, field) do { (void)(mib); } while(0)
++#define SNMP_ADD_STATS_BH(mib, field, addend) do { (void)(mib); } while(0)
++#define SNMP_ADD_STATS_USER(mib, field, addend)	do { (void)(mib); } while(0)
++#define SNMP_ADD_STATS(mib, field, addend) do { (void)(mib); } while(0)
++#define SNMP_UPD_PO_STATS(mib, basefield, addend) do { (void)(mib); } while(0)
++#define SNMP_UPD_PO_STATS_BH(mib, basefield, addend) \
++	do { (void)(mib); } while(0)
++#define SNMP_ADD_STATS64_BH(mib, field, addend) do { (void)(mib); } while(0)
++#define SNMP_ADD_STATS64_USER(mib, field, addend) do { (void)(mib); } while(0)
++#define SNMP_ADD_STATS64(mib, field, addend) do { (void)(mib); } while(0)
++#define SNMP_INC_STATS64_BH(mib, field) do { (void)(mib); } while(0)
++#define SNMP_INC_STATS64_USER(mib, field) do { (void)(mib); } while(0)
++#define SNMP_INC_STATS64(mib, field) do { (void)(mib); } while(0)
++#define SNMP_UPD_PO_STATS64_BH(mib, basefield, addend) \
++	do { (void)(mib); } while(0)
++#define SNMP_UPD_PO_STATS64(mib, basefield, addend) \
++	do { (void)(mib); } while(0)
++
++#endif /* CONFIG_NET_SNMP */
++
+ #endif
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index e65e750..46b1815 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -1482,6 +1482,8 @@ int inet_ctl_sock_create(struct sock **sk, unsigned short family,
+ }
+ EXPORT_SYMBOL_GPL(inet_ctl_sock_create);
+ 
++#ifdef CONFIG_PROC_FS
++
+ unsigned long snmp_fold_field(void __percpu *mib[], int offt)
+ {
+ 	unsigned long res = 0;
+@@ -1541,6 +1543,8 @@ int snmp_mib_init(void __percpu *ptr[2], size_t mibsize, size_t align)
+ }
+ EXPORT_SYMBOL_GPL(snmp_mib_init);
+ 
++#endif
++
+ #ifdef CONFIG_IP_MULTICAST
+ static const struct net_protocol igmp_protocol = {
+ 	.handler =	igmp_rcv,
+@@ -1572,6 +1576,7 @@ static const struct net_protocol icmp_protocol = {
+ 	.netns_ok =	1,
+ };
+ 
++#ifdef CONFIG_PROC_FS
+ static __net_init int ipv4_mib_init_net(struct net *net)
+ {
+ 	int i;
+@@ -1656,6 +1661,13 @@ static int __init init_ipv4_mibs(void)
+ 	return register_pernet_subsys(&ipv4_mib_ops);
+ }
+ 
++#else
++static int __init init_ipv4_mibs(void)
++{
++	return 0;
++}
++#endif
++
+ static int ipv4_proc_init(void);
+ 
+ #ifdef CONFIG_IP_OFFLOAD
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 6c7fa08..0d8c820 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -271,6 +271,7 @@ static void addrconf_mod_dad_work(struct inet6_ifaddr *ifp,
+ 	mod_delayed_work(addrconf_wq, &ifp->dad_work, delay);
+ }
+ 
++#ifdef CONFIG_PROC_FS
+ static int snmp6_alloc_dev(struct inet6_dev *idev)
+ {
+ 	int i;
+@@ -309,6 +310,9 @@ err_icmp:
+ err_ip:
+ 	return -ENOMEM;
+ }
++#else
++static int snmp6_alloc_dev(struct inet6_dev *idev) { return 0; }
++#endif
+ 
+ static struct inet6_dev *ipv6_add_dev(struct net_device *dev)
+ {
+@@ -4348,6 +4352,7 @@ static inline size_t inet6_if_nlmsg_size(void)
+ 	       + nla_total_size(inet6_ifla6_size()); /* IFLA_PROTINFO */
+ }
+ 
++#ifdef CONFIG_PROC_FS
+ static inline void __snmp6_fill_statsdev(u64 *stats, atomic_long_t *mib,
+ 				      int items, int bytes)
+ {
+@@ -4391,6 +4396,10 @@ static void snmp6_fill_stats(u64 *stats, struct inet6_dev *idev, int attrtype,
+ 		break;
+ 	}
+ }
++#else
++static void snmp6_fill_stats(u64 *stats, struct inet6_dev *idev, int attrtype,
++			     int bytes) {}
++#endif
+ 
+ static int inet6_fill_ifla6_attrs(struct sk_buff *skb, struct inet6_dev *idev)
+ {
+diff --git a/net/ipv6/addrconf_core.c b/net/ipv6/addrconf_core.c
+index 4c11cbc..80ff00e 100644
+--- a/net/ipv6/addrconf_core.c
++++ b/net/ipv6/addrconf_core.c
+@@ -121,9 +121,11 @@ EXPORT_SYMBOL(in6addr_sitelocal_allrouters);
+ 
+ static void snmp6_free_dev(struct inet6_dev *idev)
+ {
++#ifdef CONFIG_PROC_FS
+ 	kfree(idev->stats.icmpv6msgdev);
+ 	kfree(idev->stats.icmpv6dev);
+ 	snmp_mib_free((void __percpu **)idev->stats.ipv6);
++#endif
+ }
+ 
+ /* Nobody refers to this device, we may destroy it. */
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index 68ac214..9ff80ad 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -711,6 +711,7 @@ static void ipv6_packet_cleanup(void)
+ 	dev_remove_pack(&ipv6_packet_type);
+ }
+ 
++#ifdef CONFIG_PROC_FS
+ static int __net_init ipv6_init_mibs(struct net *net)
+ {
+ 	int i;
+@@ -768,6 +769,10 @@ static void ipv6_cleanup_mibs(struct net *net)
+ 	snmp_mib_free((void __percpu **)net->mib.icmpv6_statistics);
+ 	kfree(net->mib.icmpv6msg_statistics);
+ }
++#else
++static inline int __net_init ipv6_init_mibs(struct net *net) { return 0; }
++static inline void ipv6_cleanup_mibs(struct net *net) {}
++#endif
+ 
+ static int __net_init inet6_net_init(struct net *net)
+ {
+-- 
+1.7.10.4
+
