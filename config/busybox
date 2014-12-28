@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.22.1
-# Thu Dec 25 22:37:32 2014
+# Sat Dec 27 16:54:22 2014
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -64,8 +64,8 @@ CONFIG_FEATURE_SYSLOG=y
 CONFIG_LFS=y
 CONFIG_CROSS_COMPILER_PREFIX=""
 CONFIG_SYSROOT=""
-CONFIG_EXTRA_CFLAGS=""
-CONFIG_EXTRA_LDFLAGS=""
+CONFIG_EXTRA_CFLAGS="-fno-lto -fno-whole-program"
+CONFIG_EXTRA_LDFLAGS="-fno-lto -fno-use-linker-plugin"
 CONFIG_EXTRA_LDLIBS=""
 
 #

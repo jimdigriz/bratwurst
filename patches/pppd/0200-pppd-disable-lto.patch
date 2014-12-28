@@ -1,0 +1,11 @@
+--- a/pppd/plugins/rp-pppoe/Makefile.linux.orig	2014-12-27 12:10:45.983902023 +0000
++++ b/pppd/plugins/rp-pppoe/Makefile.linux	2014-12-27 12:11:16.523900813 +0000
+@@ -27,6 +27,8 @@
+ 
+ COPTS=-O2 -g
+ CFLAGS=$(COPTS) -I../../../include '-DRP_VERSION="$(RP_VERSION)"'
++CFLAGS+=-fno-lto -fno-whole-program
++LDFLAGS=-fno-lto -fno-use-linker-plugin
+ all: rp-pppoe.so pppoe-discovery
+ 
+ pppoe-discovery: pppoe-discovery.o debug.o

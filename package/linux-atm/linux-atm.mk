@@ -11,6 +11,10 @@ LINUX_ATM_DEPENDENCIES = flex
 LINUX_ATM_LICENSE = GPLv2
 LINUX_ATM_LICENSE_FILES = COPYING
 
-IPSEC_TOOLS_CONF_OPTS = --with-kernel-headers=$(STAGING_DIR)/usr/include
+LINUX_ATM_CONF_ENV += \
+	CFLAGS="$(TARGET_CFLAGS) -fno-lto -fno-whole-program"
+	LDFLAGS="$(TARGET_LDFLAGS) -fno-lto -fno-use-linker-plugin"
+
+LINUX_ATM_CONF_OPTS = --with-kernel-headers=$(STAGING_DIR)/usr/include
 
 $(eval $(autotools-package))
