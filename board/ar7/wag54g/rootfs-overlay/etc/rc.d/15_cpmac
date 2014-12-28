@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+/sbin/modprobe cpmac
+
+exit 0
