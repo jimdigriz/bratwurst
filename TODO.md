@@ -37,6 +37,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * ...without losing config and customisations?
   * "OTA"?
  * development instructions to be expanded to work under Mac OS X
+ * take another stab at getting Link-Time-Optimisations (LTO) working on the kernel
 
 # Links
 
