@@ -71,7 +71,7 @@ clean:
 			find buildroot -name .stamp_host_installed -path '*/host-gcc-final-*' \
 				| xargs rm -f; \
 		}
-	rm -f .users
+	rm -f .users .buildroot.defconfig .uclibc.config
 
 .PHONY: distclean
 distclean: clean
@@ -103,7 +103,7 @@ qemu: bratwurst $(9P_SHARE)
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
 
-.buildroot.defconfig:
+.buildroot.defconfig: board/$(BOARD)/buildroot config/buildroot
 	cat board/$(BOARD)/buildroot config/buildroot > .$@
 	mv .$@ $@
 
@@ -132,7 +132,7 @@ buildroot-update-defconfig:
 	grep -v -F -f .list .buildroot.defconfig > config/buildroot
 	rm .list
 
-.uclibc.config:
+.uclibc.config: board/$(BOARD)/uclibc config/uclibc
 	cat board/$(BOARD)/uclibc config/uclibc > .$@
 	mv .$@ $@
 
