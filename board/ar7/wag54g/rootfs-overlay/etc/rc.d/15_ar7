@@ -3,5 +3,6 @@
 set -eu
 
 /sbin/modprobe cpmac
+/sbin/modprobe tiatm
 
 exit 0
