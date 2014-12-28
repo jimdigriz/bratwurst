@@ -19,8 +19,8 @@ include $(wildcard board/*/*/board.mk)
 .PHONY: help
 help:
 	@echo 'Cleaning:'
-	@echo '  clean            - clean built rootfs and kernel'
-	@echo '  distclean        - delete all files created by build'
+	@echo '  clean            - clean ready to rebuild filesystem'
+	@echo '  distclean        - prepare for toolchain change'
 	@echo
 	@echo 'Build Firmware:'
 	@$(foreach board, $(sort $(BOARDS)), \
