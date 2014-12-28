@@ -132,19 +132,30 @@ buildroot-update-defconfig:
 	grep -v -F -f .list .buildroot.defconfig > config/buildroot
 	rm .list
 
+.uclibc.config:
+	cat board/$(BOARD)/uclibc config/uclibc > .$@
+	mv .$@ $@
+
 .PHONY: uclibc-update-defconfig
+uclibc-update-defconfig: UCLIBC_VERSION=0.9.33.2
 uclibc-update-defconfig:
-	cp buildroot/output/build/uclibc-0.9.33.2/.config $(CURDIR)/board/$(BOARD)/uclibc.config
+	find buildroot/output/build/uclibc-$(UCLIBC_VERSION)/extra/Configs \
+			-name 'Config.*' -a ! -name Config.in -a ! -name Config.in.arch \
+		| xargs sed -n 's/^config \(.*\)/\1/ p' | sort | uniq > .list
+	grep    -F -f .list buildroot/output/build/uclibc-$(UCLIBC_VERSION)/.config > board/$(BOARD)/uclibc
+	grep -v -F -f .list buildroot/output/build/uclibc-$(UCLIBC_VERSION)/.config > config/uclibc
+	rm .list
 
 .PHONY: busybox-update-defconfig
+busybox-update-defconfig: BUSYBOX_VERSION=1.22.1
 busybox-update-defconfig:
-	cp buildroot/output/build/busybox-1.22.1/.config $(CURDIR)/config/busybox
+	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config $(CURDIR)/config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
-world %-menuconfig %-update-defconfig: buildroot/.config .users
+world %-menuconfig %-update-defconfig: buildroot/.config .uclibc.config .users
 	make -C buildroot $(subst buildroot-,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
-		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
+		UCLIBC_CONFIG_FILE="$(CURDIR)/.uclibc.config" \
 		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
 
 $(9P_SHARE):
