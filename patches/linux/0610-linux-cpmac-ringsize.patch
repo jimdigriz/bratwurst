@@ -1,0 +1,11 @@
+--- linux-3.9.11/drivers/net/ethernet/ti/cpmac.c.orig	2013-10-27 11:54:03.812509792 +0000
++++ linux-3.9.11/drivers/net/ethernet/ti/cpmac.c	2013-10-27 11:54:14.280561703 +0000
+@@ -1165,7 +1165,7 @@
+ 	spin_lock_init(&priv->lock);
+ 	spin_lock_init(&priv->rx_lock);
+ 	priv->dev = dev;
+-	priv->ring_size = 64;
++	priv->ring_size = 128;
+ 	priv->msg_enable = netif_msg_init(debug_level, 0xff);
+ 	memcpy(dev->dev_addr, pdata->dev_addr, sizeof(pdata->dev_addr));
+ 

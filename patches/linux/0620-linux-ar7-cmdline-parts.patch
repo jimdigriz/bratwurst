@@ -1,0 +1,11 @@
+--- linux.orig/arch/mips/ar7/platform.c	2013-07-21 01:16:17.000000000 +0100
++++ linux/arch/mips/ar7/platform.c	2013-09-01 19:33:31.262718124 +0100
+@@ -202,7 +202,7 @@
+ 	.end	= 0x107fffff,
+ };
+ 
+-static const char *ar7_probe_types[] = { "ar7part", NULL };
++static const char *ar7_probe_types[] = { "cmdlinepart", "ar7part", NULL };
+ 
+ static struct physmap_flash_data physmap_flash_data = {
+ 	.width	= 2,
