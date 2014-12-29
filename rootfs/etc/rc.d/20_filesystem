@@ -5,7 +5,11 @@ set -eu
 mount					-t proc		proc	/proc
 mount					-t sysfs	sysfs	/sys
 
+mkdir -p /dev/pts
+mount -o nosuid,noexec			-t devpts	devpts	/dev/pts
+
 mount -o remount,rw,nodev					/
+
 mount -o nosuid,nodev,noexec,mode=1777	-t tmpfs	tmpfs	/tmp
 mount -o nosuid,nodev,noexec		-t tmpfs	tmpfs	/run
 mount -o nosuid,nodev			-t tmpfs	tmpfs	/var
