@@ -1,0 +1,20 @@
+--- ar7-atm-D7.05.01.00-R1/tn7dsl.c.orig	2014-12-29 23:06:42.518512078 +0000
++++ ar7-atm-D7.05.01.00-R1/tn7dsl.c	2014-12-29 23:04:39.886516938 +0000
+@@ -529,7 +529,7 @@
+ 		return -1;
+ 	}
+ 
+-	if (request_firmware(&fw_entry, "ar0700xx.bin", &avsar)) {
++	if (request_firmware_direct(&fw_entry, "ar0700xx.bin", &avsar)) {
+ 		printk(KERN_ERR
+ 			"avsar: Firmware not available\n");
+ 		device_unregister(&avsar);
+@@ -559,7 +559,7 @@
+ 		return -1;
+ 	}
+ 
+-	if (request_firmware(&fw_entry, "ar0700xx.bin", &avsar)) {
++	if (request_firmware_direct(&fw_entry, "ar0700xx.bin", &avsar)) {
+ 		printk(KERN_ERR
+ 			"avsar: Firmware not available\n");
+ 		device_unregister(&avsar);

@@ -1,0 +1,10 @@
+--- ar7-atm-D7.05.01.00-R1/tn7atm.c.orig	2014-12-29 23:07:06.934511111 +0000
++++ ar7-atm-D7.05.01.00-R1/tn7atm.c	2014-12-29 23:08:41.090507380 +0000
+@@ -434,6 +434,7 @@
+         phy_put:        NULL,
+         phy_get:        NULL,
+         change_qos:     tn7atm_change_qos,
++        owner:          THIS_MODULE,
+ };
+ 
+ const char drv_proc_root_folder[] = "avalanche";
