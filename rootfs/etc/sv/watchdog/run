@@ -2,6 +2,10 @@
 
 set -eu
 
-/sbin/modprobe softdog
+if [ -c /dev/watchdog ]; then
+	echo /dev/watchdog does not exist
+	sv once .
+	exit 1
+fi
 
 exec /sbin/watchdog -F /dev/watchdog

@@ -3,6 +3,7 @@
 set -eu
 
 /sbin/modprobe cpmac
+/sbin/modprobe ar7_wdt
 /sbin/modprobe tiatm
 
 exit 0

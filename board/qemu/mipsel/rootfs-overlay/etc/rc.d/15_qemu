@@ -4,5 +4,6 @@ set -eu
 
 /sbin/modprobe virtio_pci
 /sbin/modprobe virtio_net
+/sbin/modprobe softdog
 
 exit 0
