@@ -2,7 +2,7 @@
 
 set -eu
 
-if [ -c /dev/watchdog ]; then
+if [ ! -c /dev/watchdog ]; then
 	echo /dev/watchdog does not exist
 	sv once .
 	exit 1
