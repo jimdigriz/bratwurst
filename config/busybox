@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.22.1
-# Sun Dec 28 11:28:47 2014
+# Mon Dec 29 20:52:44 2014
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -39,8 +39,8 @@ CONFIG_LAST_SUPPORTED_WCHAR=0
 # CONFIG_LONG_OPTS is not set
 # CONFIG_FEATURE_DEVPTS is not set
 # CONFIG_FEATURE_CLEAN_UP is not set
-CONFIG_FEATURE_UTMP=y
-CONFIG_FEATURE_WTMP=y
+# CONFIG_FEATURE_UTMP is not set
+# CONFIG_FEATURE_WTMP is not set
 # CONFIG_FEATURE_PIDFILE is not set
 CONFIG_PID_FILE_PATH=""
 CONFIG_FEATURE_SUID=y
@@ -56,7 +56,7 @@ CONFIG_FEATURE_SYSLOG=y
 # Build Options
 #
 # CONFIG_STATIC is not set
-CONFIG_PIE=y
+# CONFIG_PIE is not set
 # CONFIG_NOMMU is not set
 # CONFIG_BUILD_LIBBUSYBOX is not set
 # CONFIG_FEATURE_INDIVIDUAL is not set
@@ -64,8 +64,8 @@ CONFIG_PIE=y
 CONFIG_LFS=y
 CONFIG_CROSS_COMPILER_PREFIX=""
 CONFIG_SYSROOT=""
-CONFIG_EXTRA_CFLAGS="-fno-lto -fno-whole-program"
-CONFIG_EXTRA_LDFLAGS="-fno-lto -fno-use-linker-plugin"
+CONFIG_EXTRA_CFLAGS=""
+CONFIG_EXTRA_LDFLAGS=""
 CONFIG_EXTRA_LDLIBS=""
 
 #

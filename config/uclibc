@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Version: 0.9.33.2
-# Sun Dec 28 18:37:19 2014
+# Mon Dec 29 21:09:44 2014
 #
 
 #
@@ -28,9 +28,9 @@ HAVE_DOT_CONFIG=y
 #
 # General Library Settings
 #
-DOPIC=y
+# DOPIC is not set
 HAVE_SHARED=y
-FORCE_SHAREABLE_TEXT_SEGMENTS=y
+# FORCE_SHAREABLE_TEXT_SEGMENTS is not set
 # LDSO_LDD_SUPPORT is not set
 # LDSO_CACHE_SUPPORT is not set
 # LDSO_PRELOAD_ENV_SUPPORT is not set
@@ -184,7 +184,7 @@ MULTILIB_DIR="lib"
 #
 # Security options
 #
-UCLIBC_BUILD_PIE=y
+# UCLIBC_BUILD_PIE is not set
 # UCLIBC_HAS_ARC4RANDOM is not set
 # UCLIBC_HAS_SSP is not set
 # UCLIBC_BUILD_RELRO is not set
@@ -195,7 +195,7 @@ UCLIBC_BUILD_NOEXECSTACK=y
 # Development/debugging options
 #
 CROSS_COMPILER_PREFIX="/usr/src/bratwurst/buildroot/output/host/usr/bin/mipsel-buildroot-linux-uclibc-"
-UCLIBC_EXTRA_CFLAGS="-flto -fwhole-program"
+UCLIBC_EXTRA_CFLAGS=""
 # DODEBUG is not set
 DOSTRIP=y
 # DOASSERTS is not set
