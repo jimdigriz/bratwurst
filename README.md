@@ -11,6 +11,7 @@ BRatWuRsT (aka 'Buildroot WRT') is a [buildroot](http://buildroot.uclibc.org/) b
  * client services:
   * SSH with [public keys](https://macnugget.org/projects/publickeys/)
   * DNS
+  * IPv6 RA
   * DHCPv4
 
 ## Supported Physical Targets
