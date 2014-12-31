@@ -17,7 +17,7 @@ PPP_OPTIONS="	nodetach
 		user $PPP_USER
 		password $PPP_PASS"
 
-if [ "${NETWORK#ppp}" != "$NETWORK" ]; then
+if [ "${NETWORK%?}" = "pppo" ]; then
 	[ -f /proc/net/atm/devices ] || exit 1
 
 	TYPE=$(awk 'NR > 1 { print $2 }' /proc/net/atm/devices)
