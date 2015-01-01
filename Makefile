@@ -81,6 +81,9 @@ distclean: clean
 .PHONY: bratwurst
 bratwurst: qemu/mipsel qemu
 
+VMLINUZ	:= buildroot/output/images/vmlinuz
+PFLASH	:= buildroot/output/images/pflash
+
 .PHONY: qemu
 qemu: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 	qemu-system-$(ARCH) -nodefaults -nographic -machine accel=kvm:tcg \
