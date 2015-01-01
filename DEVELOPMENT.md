@@ -10,7 +10,7 @@ To make amendments to the rootfs before it is converted to a binary blob you wil
 
 ## fakeisp
 
-This sub-project is what makes up emulating everything beyond your router, from the DSLAM (ATM layer) to the ISP (authentication) and beyond onto the Internet (access):
+This sub-project is what makes up emulating everything beyond your router, from the [DSLAM (ATM layer)](https://www.farside.org.uk/200903/ipoeoatm) to the ISP (authentication) and beyond onto the Internet (access):
 
  * based on [Debian's debootstrap](https://wiki.debian.org/Debootstrap)
  * builds a large [initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt) (`fakeisp/initrd.base`)
