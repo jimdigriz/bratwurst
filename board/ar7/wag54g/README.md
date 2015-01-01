@@ -240,6 +240,6 @@ A list of issues and hints I have found with the kernel:
  * [Original Linksys Sourcecode](http://download.modem-help.co.uk/mfcs-L/LinkSys/WAG54G/GPL/v2/)
  * [cpmaccfg](http://www.heimpold.de/freetz/index.html)
  * [Wireless on the unit is a TI ACX](http://acx100.sourceforge.net/)
-  * ''git clone git://acx100.git.sourceforge.net/gitroot/acx100/acx-mac80211''
+  * `git clone git://acx100.git.sourceforge.net/gitroot/acx100/acx-mac80211`
  * [fix for `eth0: rx dma ring overrun`](https://forum.openwrt.org/viewtopic.php?id=22454) - if you compile out `ethtool` support you have to [patch the kernel instead](patches/linux/0900-linux-cpmac-ringsize.patch)
  * [Ben Whitten's attempt to clean up the AR7-ATM driver](https://github.com/BWhitten/ar7-atm)
