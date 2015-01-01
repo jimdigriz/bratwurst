@@ -14,7 +14,7 @@ exec /usr/sbin/dnsmasq \
 	--pid-file \
 	--except-interface=$IFNAME \
 	--no-dhcp-interface=$IFNAME \
-	--auth-server=$DOMAIN,$IFNAME \
+	--auth-server=${DOMAIN:-localnet},$IFNAME \
 	--localise-queries \
 	--bogus-priv \
 	--stop-dns-rebind \
@@ -26,5 +26,5 @@ exec /usr/sbin/dnsmasq \
 	--read-ethers \
 	--dhcp-authoritative \
 	--dhcp-leasefile=/run/dnsmasq.leases \
-	--domain=$DOMAIN,192.168.1.0/24,local \
+	--domain=${DOMAIN:-localnet},192.168.1.0/24,local \
 	--enable-ra

@@ -1,5 +1,3 @@
-DOMAIN=localnet
-
 # {pppoa,pppoe,dhcp}
 NETWORK=pppoe
 
@@ -11,12 +9,10 @@ UPLINK_TYPE=atm
 # 0..9, eg. 0 -> eth0/atm0
 UPLINK_PORT=0
 
-# pppoa:0,32 pppoe:8,35
 ATM_VPI=8
 ATM_VCI=35
 # {llc,vcmux}
 ATM_ENCAP=vcmux
 
-# if DHCPv6-PD is unavailable, provide your prefix manually here
-# 0->pppoa, 1->pppoe
+#DOMAIN=localnet
 #PREFIX=fd00:cafe:0::/48

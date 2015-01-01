@@ -4,8 +4,6 @@ This document details how to customise the BRatWuRsT build.
 
 The main configration can be found at `rootfs/etc/bratwurst` and looks like:
 
-    DOMAIN=localnet
-    
     # {pppoa,pppoe,dhcp}
     NETWORK=pppoe
     
@@ -23,6 +21,13 @@ The main configration can be found at `rootfs/etc/bratwurst` and looks like:
     ATM_VCI=35
     # {llc,vcmux}
     ATM_ENCAP=vcmux
+    
+    # if you want a particular domain, set this (defaults to 'localnet')
+    #DOMAIN=localnet
+    
+    # if DHCPv6-PD is unavailable, provide your prefix manually here
+    # fakeisp makes the subnet number 0->pppoa, 1->pppoe
+    #PREFIX=fd00:cafe:0::/48
 
 # User Accounts
 
