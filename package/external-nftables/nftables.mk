@@ -7,7 +7,7 @@
 EXTERNAL_NFTABLES_VERSION = 0.4
 EXTERNAL_NFTABLES_SOURCE = nftables-$(EXTERNAL_NFTABLES_VERSION).tar.bz2
 EXTERNAL_NFTABLES_SITE = http://www.netfilter.org/projects/nftables/files
-EXTERNAL_NFTABLES_DEPENDENCIES = gmp libmnl libnftnl host-bison host-flex \
+EXTERNAL_NFTABLES_DEPENDENCIES = gmp libmnl external-libnftnl host-bison host-flex \
 	host-pkgconf $(if $(BR2_NEEDS_GETTEXT),gettext)
 EXTERNAL_NFTABLES_LICENSE = GPLv2
 EXTERNAL_NFTABLES_LICENSE_FILES = COPYING
