@@ -26,8 +26,8 @@ TARGET_mips=y
 # TARGET_xtensa is not set
 TARGET_ARCH="mips"
 FORCE_OPTIONS_FOR_ARCH=y
-# CONFIG_MIPS_O32_ABI is not set
-CONFIG_MIPS_N32_ABI=y
+CONFIG_MIPS_O32_ABI=y
+# CONFIG_MIPS_N32_ABI is not set
 # CONFIG_MIPS_N64_ABI is not set
 # CONFIG_MIPS_ISA_1 is not set
 # CONFIG_MIPS_ISA_2 is not set
