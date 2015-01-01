@@ -16,7 +16,7 @@ BRatWuRsT (aka 'Buildroot WRT') is a [buildroot](http://buildroot.uclibc.org/) b
 
 ## Supported Physical Targets
 
- * [Linksys WAG54G](board/linksys/wag54g/README.md) - work in progress
+ * [Linksys WAG54G](board/linksys/wag54g/README.md)
  * [TP-Link TL-W8970](board/tp-link/tl-w8970/README.md) - planned, not supported
  * [TP-Link TL-MR3020](board/tp-link/tl-mr3020/README.md) - planned, not supported
 
