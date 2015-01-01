@@ -78,15 +78,11 @@ distclean: clean
 	make -C buildroot distclean
 	rm -rf ccache
 
-VMLINUZ		:= buildroot/output/images/vmlinuz
-PFLASH		:= buildroot/output/images/pflash
-$(VMLINUZ) $(PFLASH): world
-
 .PHONY: bratwurst
-bratwurst: $(VMLINUZ) $(PFLASH) qemu
+bratwurst: qemu/mipsel qemu
 
 .PHONY: qemu
-qemu: $(9P_SHARE)
+qemu: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 	qemu-system-$(ARCH) -nodefaults -nographic -machine accel=kvm:tcg \
 		-serial mon:stdio \
 		-m $(RAM) \

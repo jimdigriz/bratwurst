@@ -6,4 +6,6 @@ ARCHS			+= mipsel
 .PHONY:	qemu/mipsel
 qemu/mipsel: ARCH	:= mipsel
 qemu/mipsel: BOARD	:= qemu/mipsel
-qemu/mipsel: qemu
+qemu/mipsel: VMLINUZ	:= buildroot/output/images/vmlinuz
+qemu/mipsel: PFLASH	:= buildroot/output/images/pflash
+qemu/mipsel: world
