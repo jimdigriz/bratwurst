@@ -99,38 +99,38 @@ You can browse the pin direction and values with:
 
 So far the map I have been able to piece together is (all pins have `active_low` set to zero):
 
- * pin 00 [in] (default 1): fixed on
- * pin 01 [in] (default 1): fixed on
- * pin 02 [in] (default 1): fixed on
- * pin 03 [in] (default 0): fixed off
- * pin 04 [in] (default 0): status led {0}
- * pin 05 [in] (default 1): status led {1}
- * pin 06 [in] (default 1): WLAN led
- * pin 07 [in] (default 0): ?
- * pin 08 [in] (default 1): status led {2}
- * pin 09 [in] (default 0): ?
- * pin 10 [in] (default 1): reset ethernet - CAUTION, it is a latch (0 - reset, 1 - start however lights lock on)
- * pin 11 |   in | 1 | reset key (0 - off, 1 = pressed)|
- * pin 12 [in] (default 1): ?
- * pin 13 [in] (default 1): ?
- * pin 14 [in] (default 0): ?
- * pin 15 [in] (default 1): fixed on
- * pin 16 [in] (default 1): fixed on
- * pin 17 [in] (default 1): fixed on
- * pin 18 [out] (default 1): fixed on
- * pin 19 [out] (default 1): fixed on
- * pin 20 [in] (default 0): hw ver(?) {0}
- * pin 21 [in] (default 0): hw ver(?) {1}
- * pin 22 [in] (default 0): hw ver(?) {2}
- * pin 23 [in] (default 1): hw ver(?) {3}
- * pin 24 [in] (default 0): hw ver(?) {4}
- * pin 25 [in] (default 0): hw ver(?) {5}
- * pin 26 [in] (default varies): ?
- * pin 27 [in] (default varies): ?
- * pin 28 [in] (default 0): ?
- * pin 29 [in] (default 0): ?
- * pin 30 [in] (default 0): ?
- * pin 31 [in] (default 0): ?
+ * pin 00, default 1, dir in: fixed on
+ * pin 01, default 1, dir in: fixed on
+ * pin 02, default 1, dir in: fixed on
+ * pin 03, default 0, dir in: fixed off
+ * pin 04, default 0, dir in: status led {0}
+ * pin 05, default 1, dir in: status led {1}
+ * pin 06, default 1, dir in: WLAN led
+ * pin 07, default 0, dir in: ?
+ * pin 08, default 1, dir in: status led {2}
+ * pin 09, default 0, dir in: ?
+ * pin 10, default 1, dir in: reset ethernet - CAUTION, it is a latch (0 - reset, 1 - start however lights lock on)
+ * pin 11, default 1, dir in: reset key (0 - off, 1 = pressed)
+ * pin 12, default 1, dir in: ?
+ * pin 13, default 1, dir in: ?
+ * pin 14, default 0, dir in: ?
+ * pin 15, default 1, dir in: fixed on
+ * pin 16, default 1, dir in: fixed on
+ * pin 17, default 1, dir in: fixed on
+ * pin 18, default 1, dir out: fixed on
+ * pin 19, default 1, dir out: fixed on
+ * pin 20, default 0, dir in: hw ver(?) {0}
+ * pin 21, default 0, dir in: hw ver(?) {1}
+ * pin 22, default 0, dir in: hw ver(?) {2}
+ * pin 23, default 1, dir in: hw ver(?) {3}
+ * pin 24, default 0, dir in: hw ver(?) {4}
+ * pin 25, default 0, dir in: hw ver(?) {5}
+ * pin 26, default varies, dir in: ?
+ * pin 27, default varies, dir in: ?
+ * pin 28, default 0, dir in: ?
+ * pin 29, default 0, dir in: ?
+ * pin 30, default 0, dir in: ?
+ * pin 31, default 0, dir in: ?
 
 Some of the [locations of those pins on the board](https://forum.openwrt.org/viewtopic.php?id=20171) can be found at JP4:
 
