@@ -76,11 +76,11 @@ A gotcha typically is a broken capacitor (33uF 16V) that can lead to all [sorts 
 
 The onboard 4MB (64kB erase size) NAND is partition as follows:
 
- * `mtd0` [`0x900e0000-0x903f0000` (size: 3136kB)]: rootfs
- * `mtd1` [`0x90020000-0x900e0000` (size: 768kB)]: kernel
- * `mtd2` [`0x90000000-0x90020000` (size: 128kB)]: adam2 bootloader
- * `mtd3` [`0x903f0000-0x90400000` (size: 64kB)]: adam2 configuratino
- * `mtd4` [`0x90020000-0x903f0000` (size: 3904kB)]: kernel and rootfs (this is where `firmware-code.bin` is flashed to)
+ * `mtd0` (`0x900e0000-0x903f0000`, size: 3136kB): rootfs
+ * `mtd1` (`0x90020000-0x900e0000`, size: 768kB): kernel
+ * `mtd2` (`0x90000000-0x90020000`, size: 128kB): adam2 bootloader
+ * `mtd3` (`0x903f0000-0x90400000`, size: 64kB): adam2 configuratino
+ * `mtd4` (`0x90020000-0x903f0000`, size: 3904kB): kernel and rootfs which is where `firmware-code.bin` is flashed to
 
 Under Linux the `ar7part.c` driver is [meant to spit out a suitable partition table](http://marc.info/?l=linux-mips&m=126268121228322&w=3) for both bootloaders (PSPBoot and ADAM2) that are available on the AR7 platform.  However, I found it does not and should not be used as for me the 'rootfs' partition overlaps the 'linux' partition.  Instead I recommend using `cmdlinepart`.
 
