@@ -83,10 +83,10 @@ PFLASH		:= buildroot/output/images/pflash
 $(VMLINUZ) $(PFLASH): world
 
 .PHONY: bratwurst
-bratwurst: $(VMLINUZ) $(PFLASH)
+bratwurst: $(VMLINUZ) $(PFLASH) qemu
 
 .PHONY: qemu
-qemu: bratwurst $(9P_SHARE)
+qemu: $(9P_SHARE)
 	qemu-system-$(ARCH) -nodefaults -nographic -machine accel=kvm:tcg \
 		-serial mon:stdio \
 		-m $(RAM) \
