@@ -10,7 +10,7 @@ set -eu
 ) 9>>/run/uplink
 
 . /etc/bratwurst
-if [ "$PREFIX" ]; then
+if [ "${PREFIX:-}" ]; then
 	PREFIXES="$PREFIX,4294967295,4294967295" \
 		/usr/share/dhcpc.script $IFNAME informed
 )
