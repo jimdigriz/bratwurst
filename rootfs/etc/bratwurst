@@ -16,3 +16,7 @@ ATM_VPI=8
 ATM_VCI=35
 # {llc,vcmux}
 ATM_ENCAP=vcmux
+
+# if DHCPv6-PD is unavailable, provide your prefix manually here
+# 0->pppoa, 1->pppoe
+#PREFIX=fd00:cafe:0::/48
