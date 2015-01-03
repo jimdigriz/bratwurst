@@ -9,12 +9,6 @@ set -eu
 	sed -n -i "/^IFNAME=/!p; /^IFNAME=/h; \${g;p}" /run/uplink
 ) 9>>/run/uplink
 
-. /etc/bratwurst
-if [ "${PREFIX:-}" ]; then
-	PREFIXES="$PREFIX,4294967295,4294967295" \
-		/usr/share/dhcpc.script $IFNAME informed
-fi
-
 sv up odhcp6c
 
 exit 0

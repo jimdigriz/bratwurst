@@ -6,7 +6,7 @@ set -eu
 
 [ -f /run/uplink ] && . /run/uplink || exit 1
 
-[ "$PREFIX" ] || PD="-P 0"
+[ "${PREFIX:-}" ] || PD="-P 0"
 
 exec 2>&1
 exec /usr/sbin/odhcp6c -v -e ${PD:-} -s /usr/share/dhcpc.script $IFNAME
