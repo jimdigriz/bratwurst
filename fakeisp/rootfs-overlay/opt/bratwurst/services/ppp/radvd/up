@@ -42,10 +42,10 @@ interface $IFNAME {
 	UnicastOnly on;
 	AdvOtherConfigFlag on;
 
-	prefix fd00:dead:beef:$(printf "%x" ${IFNAME#ppp})::/64 {
+	prefix fd80:dead:beef:$(printf "%x" ${IFNAME#ppp})::/64 {
 	};
 
-	RDNSS fd00:dead:beef:ffff:: {
+	RDNSS fd80:dead:beef:ffff:: {
 	};
 };
 EOF

@@ -4,11 +4,18 @@ set -eu
 
 . /etc/bratwurst
 
+if [ ! "${SITELOCAL:-}" ]; then
+	# knowingly using '00' here, and no xxd/sha1sum to do this properly
+	SITELOCAL="$(printf "%08x\n" $(date +%s) | sed 's/\(....\)\(....\)/fd00:\1:\2/')"
+	printf "\nSITELOCAL=%s\n" $SITELOCAL >> /etc/bratwurst
+fi
+
 /sbin/ip link set dev lo up
 
 /sbin/brctl addbr br0
 /sbin/brctl setfd br0 0
 /sbin/brctl stp br0 off
+/sbin/ip addr add $SITELOCAL:10::/64 dev br0
 /sbin/ip addr add 192.168.1.1/24 dev br0
 /sbin/ip link set dev br0 up
 
