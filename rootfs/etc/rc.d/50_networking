@@ -22,4 +22,9 @@ done
 
 test -d /etc/sv/atmtcp && ip link set dev eth0 down
 
+if [ "${PREFIX:-}" ]; then
+	PREFIXES="$PREFIX,4294967295,4294967295" \
+		/usr/share/dhcpc.script IGNORED informed
+fi
+
 exit 0
