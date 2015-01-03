@@ -7,9 +7,10 @@ set -eu
 [ -f /run/uplink ] && . /run/uplink || exit 1
 
 if [ "${PREFIX:-}" ]; then
-	PD="-P 0"
 	PREFIXES="$PREFIX,4294967295,4294967295" \
 		/usr/share/dhcpc.script IGNORED informed
+else
+	PD="-P 0"
 fi
 
 exec 2>&1
