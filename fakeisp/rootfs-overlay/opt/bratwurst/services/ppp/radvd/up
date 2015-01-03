@@ -36,16 +36,18 @@ EOF
 
 chmod +x "$BASE/runit/log/run"
 
+NUM=$(printf "%x" ${IFNAME#ppp})
+
 cat <<EOF > "$BASE/radvd.conf"
 interface $IFNAME {
 	AdvSendAdvert on;
 	UnicastOnly on;
 	AdvOtherConfigFlag on;
 
-	prefix fd80:dead:beef:$(printf "%x" ${IFNAME#ppp})::/64 {
+	prefix 2001:db8:ffff:$NUM::/64 {
 	};
 
-	RDNSS fd80:dead:beef:ffff:: {
+	RDNSS 2001:db8:ffff:$NUM:: {
 	};
 };
 EOF

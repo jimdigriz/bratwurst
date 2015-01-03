@@ -13,6 +13,3 @@ ATM_VPI=8
 ATM_VCI=35
 # {llc,vcmux}
 ATM_ENCAP=vcmux
-
-#DOMAIN=localnet
-#PREFIX=fd80:cafe:0::/48

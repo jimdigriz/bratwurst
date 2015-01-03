@@ -27,7 +27,7 @@ The main configration can be found at `rootfs/etc/bratwurst` and looks like:
     
     # if DHCPv6-PD is unavailable, provide your prefix manually here
     # fakeisp makes the subnet number 0->pppoa, 1->pppoe
-    #PREFIX=fd80:cafe:0::/48
+    #PREFIX=2001:db8:1::/48
 
 # User Accounts
 

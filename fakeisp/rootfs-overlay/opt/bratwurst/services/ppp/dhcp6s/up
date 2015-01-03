@@ -36,8 +36,10 @@ EOF
 
 chmod +x "$BASE/runit/log/run"
 
+NUM=$(printf "%x" ${IFNAME#ppp})
+
 cat <<EOF > "$BASE/dhcp6s.conf"
-option domain-name-servers fd80:dead:beef:ffff::;
+option domain-name-servers 2001:db8:ffff:$NUM::;
 
 interface $IFNAME {
 	allow rapid-commit;
@@ -45,8 +47,8 @@ interface $IFNAME {
 
 host bratwurst {
 	duid 00:03:00:01:52:54:00:12:34:56;
-	address fd80:dead:beef:$(printf "%x" ${IFNAME#ppp})::1 infinity;
-	prefix fd80:cafe:$(printf "%x" ${IFNAME#ppp})::/48 infinity;
+	address 2001:db8:ffff:$NUM::1 infinity;
+	prefix 2001:db8:$NUM::/48 infinity;
 };
 EOF
 
