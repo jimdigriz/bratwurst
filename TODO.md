@@ -18,6 +18,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * documentation describing
   * how to use it (should be more obvious once we have real hardware)
   * IP ranges used
+  * how to strap in another VM as a client on the LAN
 
 ## Roadmap
 
