@@ -4,4 +4,8 @@ set -eu
 
 rm -f /run/uplink
 
+SIX2FOUR=$(printf "2002:%02x%02x:%02x%02x" $(echo $IPLOCAL | tr . ' '))
+/sbin/ip addr del $SIX2FOUR:10::/64 dev br0
+/sbin/ip tunnel del 6to4
+
 exit 0

@@ -22,7 +22,6 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Roadmap
 
- * 6to4 when necessary automatically
  * dnsmasq with public authoritive DNS server
  * supporting straight Ethernet with DHCP (a la cable)
  * improve firewalling

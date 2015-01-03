@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.23.0
-# Thu Jan  1 19:08:49 2015
+# Sat Jan  3 11:27:46 2015
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -811,7 +811,7 @@ CONFIG_IP=y
 CONFIG_FEATURE_IP_ADDRESS=y
 CONFIG_FEATURE_IP_LINK=y
 CONFIG_FEATURE_IP_ROUTE=y
-# CONFIG_FEATURE_IP_TUNNEL is not set
+CONFIG_FEATURE_IP_TUNNEL=y
 # CONFIG_FEATURE_IP_RULE is not set
 # CONFIG_FEATURE_IP_SHORT_FORMS is not set
 # CONFIG_FEATURE_IP_RARE_PROTOCOLS is not set
