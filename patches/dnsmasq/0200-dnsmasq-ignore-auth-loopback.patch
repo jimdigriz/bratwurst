@@ -1,0 +1,17 @@
+--- a/src/network.c	2015-01-04 19:09:25.086396076 +0000
++++ b/src/network.c	2015-01-04 19:29:04.402377390 +0000
+@@ -302,10 +302,12 @@
+ #endif
+ 	}
+     }
+-  
++
++  if ((addr->sa.sa_family == AF_INET && (*(unsigned int*)&addr->in.sin_addr >> IN_CLASSA_NSHIFT) != IN_LOOPBACKNET)
+ #ifdef HAVE_IPV6
+-  if (addr->sa.sa_family != AF_INET6 || !IN6_IS_ADDR_LINKLOCAL(&addr->in6.sin6_addr))
++    || (addr->sa.sa_family == AF_INET6 && !IN6_IS_ADDR_LOOPBACK(&addr->in6.sin6_addr) && !IN6_IS_ADDR_LINKLOCAL(&addr->in6.sin6_addr))
+ #endif
++    )
+     {
+       struct interface_name *int_name;
+       struct addrlist *al;
