@@ -89,7 +89,7 @@ table inet filter {
 		type filter hook forward priority 0;
 
 		# clients should not try to use 6to4 themselves
-		ip daddr 192.88.99.1 ip protocol 41 iif br0 reject with icmp type host-unreachable;
+		ip daddr 192.88.99.1 reject with icmp type host-unreachable;
 
 		counter accept;
 	}
