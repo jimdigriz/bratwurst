@@ -9,6 +9,8 @@ fi
 
 ROOTDIR="$1"
 
+cp ../bratwurst.config "$ROOTDIR/etc/bratwurst"
+
 find "$ROOTDIR" -type f -name .keep -delete
 
 umask 077
