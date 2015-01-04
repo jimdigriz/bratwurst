@@ -120,7 +120,7 @@ buildroot/.config: | .buildroot.defconfig buildroot
 buildroot-update-defconfig:
 	make -C buildroot savedefconfig \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
-		UCLIBC_CONFIG_FILE="$(CURDIR)/board/$(BOARD)/uclibc.config" \
+		UCLIBC_CONFIG_FILE="$(CURDIR)/.uclibc.config" \
 		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
 	sed -n 's/^config \(.*\)/\1/ p' buildroot/arch/* | sort | uniq > .list
 	echo BR2_PACKAGE_AR7_ATM >> .list
