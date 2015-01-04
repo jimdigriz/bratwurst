@@ -71,7 +71,7 @@ clean:
 			find buildroot -name .stamp_host_installed -path '*/host-gcc-final-*' \
 				| xargs rm -f; \
 		}
-	rm -f bratwurst.config .users .buildroot.defconfig .uclibc.config
+	rm -f .users .buildroot.defconfig .uclibc.config
 
 .PHONY: distclean
 distclean: clean
