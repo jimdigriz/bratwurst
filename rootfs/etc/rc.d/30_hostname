@@ -4,8 +4,15 @@ set -eu
 
 . /etc/bratwurst
 
-HOSTNAME=${HOSTNAME:-bratwurst}
-DOMAIN=${DOMAIN:-localnet}
+if [ ! "${HOSTNAME:-}" ]; then
+	HOSTNAME=bratwurst
+	printf "\nHOSTNAME=%s\n" $HOSTNAME >> /etc/bratwurst
+fi
+
+if [ ! "${DOMAIN:-}" ]; then
+	DOMAIN=localnet
+	printf "\nDOMAIN=%s\n" $DOMAIN >> /etc/bratwurst
+fi
 
 hostname $HOSTNAME
 

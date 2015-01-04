@@ -6,25 +6,34 @@ set -eu
 
 [ "${NETWORK%?}" = "pppo" ] && IFNAME=ppp0 || IFNAME=$UPLINK_TYPE$UPLINK_PORT
 
+if [ "$DOMAIN" != "localnet" ]; then
+	OPTIONS="	--no-dhcp-interface=$IFNAME
+			--server=/$DOMAIN/ \
+			--auth-server=$DOMAIN,$IFNAME
+			--interface-name=$DOMAIN,$IFNAME
+			--auth-zone=$DOMAIN,$IFNAME
+			--domain=$DOMAIN,192.168.1.0/24,local"
+else
+	OPTIONS="	--except-interface=$IFNAME"
+fi
+
 exec 2>&1
 exec /usr/sbin/dnsmasq \
 	--keep-in-foreground \
 	--expand-hosts \
 	--log-facility=- \
 	--pid-file \
-	--except-interface=$IFNAME \
-	--no-dhcp-interface=$IFNAME \
-	--auth-server=${DOMAIN:-localnet},$IFNAME \
 	--localise-queries \
 	--bogus-priv \
 	--stop-dns-rebind \
 	--rebind-localhost-ok \
 	--clear-on-reload \
 	--domain-needed \
+	--server=/localnet/ \
 	--dhcp-range=192.168.1.64,192.168.1.255 \
-	--dhcp-range=::,constructor:br0,ra-only,ra-names \
+	--dhcp-range=::,constructor:br0,ra-stateless,ra-names \
 	--read-ethers \
 	--dhcp-authoritative \
 	--dhcp-leasefile=/run/dnsmasq.leases \
-	--domain=${DOMAIN:-localnet},192.168.1.0/24,local \
-	--enable-ra
+	--enable-ra \
+	$OPTIONS
