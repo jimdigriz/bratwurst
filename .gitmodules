@@ -4,4 +4,4 @@
 [submodule "py9p"]
 	path = py9p
 	url = https://github.com/svinota/py9p.git
-	ignore = dirty
+	ignore = all
