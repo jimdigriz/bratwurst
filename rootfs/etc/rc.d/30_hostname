@@ -2,6 +2,14 @@
 
 set -eu
 
-hostname -F /etc/hostname
+. /etc/bratwurst
+
+HOSTNAME=${HOSTNAME:-bratwurst}
+DOMAIN=${DOMAIN:-localnet}
+
+hostname $HOSTNAME
+
+grep -q 127.1.0.1 /etc/hosts || sed -i "2i \
+127.1.0.1	$HOSTNAME.$DOMAIN	$HOSTNAME" /etc/hosts
 
 exit 0

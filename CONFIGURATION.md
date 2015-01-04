@@ -24,8 +24,11 @@ Unless stated otherwise, all the following options are required:
     ATM_VCI=35
     # {llc,vcmux}
     ATM_ENCAP=vcmux
-    
-    # optional: local domain to use (defaults to 'localnet')
+
+    # optional: hostname to use (defaults to 'bratwurst')
+    #HOSTNAME=bratwurst
+
+    # optional: domain to use (defaults to 'localnet')
     #DOMAIN=localnet
     
     # optional: if DHCPv6-PD is unavailable, provide your prefix manually here
