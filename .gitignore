@@ -11,7 +11,7 @@ fakeisp/initrd*
 fakeisp/rootfs
 fakeisp/rootfs-overlay/etc/init.d/.depend.boot
 
-bratwurst.config
+bratwurst.config*
 users
 
 *.pcap
