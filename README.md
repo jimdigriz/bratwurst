@@ -82,7 +82,7 @@ So instead we use QEMU.
 
 The following will spin up a QEMU instance of BRatWuRsT (`ARCH` defaults to `mipsel` so can be omitted):
 
-    make buildroot.config
+    make bratwurst.config	# edit bratwurst.config for customisations
     ARCH=mipsel make bratwurst
 
 **N.B.** do *not* put the `ARCH` at the end, otherwise the variable cascades through the build and breaks it

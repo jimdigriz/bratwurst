@@ -27,6 +27,7 @@ help:
 	  printf "  %-16s - %s\\n" $(board) "$(NAME-$(board))";)
 	@echo
 	@echo 'Run:'
+	@echo '  bratwurst.config - Create default configuration file'
 	@echo '  bratwurst        - Spin up bratwurst'
 	@echo '    ARCH=<arch>                     (currently: $(ARCH))'
 	@echo '      Supported: $(ARCHS)'
