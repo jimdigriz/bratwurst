@@ -71,7 +71,7 @@ clean:
 			find buildroot -name .stamp_host_installed -path '*/host-gcc-final-*' \
 				| xargs rm -f; \
 		}
-	rm -f .users .buildroot.defconfig .uclibc.config
+	rm -f bratwurst.config .users .buildroot.defconfig .uclibc.config
 
 .PHONY: distclean
 distclean: clean
@@ -98,6 +98,11 @@ qemu: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 			-net none,vlan=2 \
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
+
+bratwurst.config:
+	@cp config/bratwurst bratwurst.config
+	@echo created default bratwurst.config, please edit and then re-run make
+	@false
 
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
@@ -152,7 +157,7 @@ busybox-update-defconfig:
 	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
-world %-menuconfig %-update-defconfig: buildroot/.config .uclibc.config .users
+world %-menuconfig %-update-defconfig: buildroot/.config .uclibc.config bratwurst.config .users
 	make -C buildroot $(subst buildroot-,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/.uclibc.config" \

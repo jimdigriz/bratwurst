@@ -13,7 +13,6 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Required
 
- * deal with `rootfs/etc/bratwurst` much better; .gitignore and default file etc etc
  * documentation describing
   * how to use it (should be more obvious once we have real hardware)
   * IP ranges used
