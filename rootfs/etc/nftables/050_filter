@@ -84,7 +84,7 @@ table inet filter {
 
 		# ULA<->ULA only
 		ip6 saddr fc00::/7 ip6 daddr fc00::/7 accept;
-		ip6 saddr fc00::/7 reject with icmpv6 type host-unreachable;
+		ip6 saddr fc00::/7 reject with icmpv6 type addr-unreachable;
 
 		# https://tools.ietf.org/html/draft-ietf-opsec-icmp-filtering
 		# http://tools.ietf.org/html/rfc4890
@@ -115,7 +115,7 @@ table inet filter {
 
 		# ULA<->ULA only
 		ip6 saddr fc00::/7 ip6 daddr fc00::/7 accept;
-		ip6 saddr fc00::/7 reject with icmpv6 type host-unreachable;
+		ip6 saddr fc00::/7 reject with icmpv6 type addr-unreachable;
 
 		# clients should not try to use 6to4 themselves
 		ip daddr 192.88.99.1 reject with icmp type host-unreachable;
