@@ -80,7 +80,10 @@ renew|bound|informed|ra-updated|rebound)
 			else
 				/sbin/ip route add unreachable $1 2>/dev/null || true
 
-				[ $L -le 56 ] && /sbin/ip addr add ${S%::}:10::/64 dev br0 2>/dev/null || true
+				if [ $L -le 56 ]; then
+					/sbin/ip addr add ${S%::}:08::/64 dev lo  2>/dev/null || true
+					/sbin/ip addr add ${S%::}:10::/64 dev br0 2>/dev/null || true
+				fi
 			fi
 		done
 		;;

@@ -9,9 +9,9 @@ set -eu
 if [ "$DOMAIN" != "localnet" ]; then
 	OPTIONS="	--no-dhcp-interface=$IFNAME
 			--server=/$DOMAIN/ \
-			--auth-server=$DOMAIN,$IFNAME
+			--interface-name=$DOMAIN,lo
 			--interface-name=$DOMAIN,$IFNAME
-			--auth-zone=$DOMAIN,$IFNAME
+			--auth-zone=$DOMAIN,lo,$IFNAME,br0/6
 			--domain=$DOMAIN,192.168.1.0/24,local"
 else
 	OPTIONS="	--except-interface=$IFNAME"
