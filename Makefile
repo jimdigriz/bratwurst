@@ -149,7 +149,7 @@ uclibc-update-defconfig:
 .PHONY: busybox-update-defconfig
 busybox-update-defconfig: BUSYBOX_VERSION=1.23.0
 busybox-update-defconfig:
-	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config $(CURDIR)/config/busybox
+	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
 world %-menuconfig %-update-defconfig: buildroot/.config .uclibc.config .users
