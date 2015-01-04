@@ -92,6 +92,8 @@ table inet filter {
 
 		iif br0 accept;
 
+		# 6to4
+		ip saddr 192.88.99.1 ip protocol 41 counter accept;
 		# dhcpv6
 		ip6 saddr fe80::/10 ip6 daddr fe80::/10 udp dport 546 accept;
 		# ssh
