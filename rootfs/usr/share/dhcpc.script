@@ -3,6 +3,9 @@
 set -eu
 
 PNAME=$(basename $(readlink /proc/$PPID/exe))
+
+[ $# -eq 2 -a "$1" = "IGNORED" ] && PNAME=odhcp6c
+
 case $PNAME in
 odhcp6c)	V=6
 		STATE=$2
