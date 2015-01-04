@@ -90,6 +90,8 @@ table inet filter {
 		ct state established,related counter accept;
 		ct state invalid counter drop;
 
+		iif br0 accept;
+
 		# dhcpv6
 		ip6 saddr fe80::/10 ip6 daddr fe80::/10 udp dport 546 accept;
 		# ssh
