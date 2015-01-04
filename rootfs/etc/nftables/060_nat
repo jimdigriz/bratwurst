@@ -14,6 +14,10 @@ cat <<EOF > "$CONFIG"
 flush table ip nat;
 
 table ip nat {
+	chain prerouting {
+		type nat hook prerouting priority 0;
+	}
+
 	chain postrouting {
 		type nat hook postrouting priority 0;
 
