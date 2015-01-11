@@ -1,4 +1,4 @@
-This section primary concerns version 2 of the Linksys WAG54G, but should work equally with the version model which has just twice the amount of RAM and NAND.
+This section primary concerns version 2 of the Linksys WAG54G, but it should work equally well with the version 3 modle which has just twice the amount of RAM and NAND (CFI changes looks to change from AMD to Intel CFI).
 
 # Preflight
 
@@ -25,7 +25,7 @@ If you have a serial console, power on the device and press any key to interrupt
 
 You should see over the serial port the router state that a firmware update is underway and about 90 seconds later the router will reset and boot into BRatWuRsT.
 
-If you do not have a serial port, then you will need to prep to run the `tftp` command, and run it within five seconds of powering on the router, hoping that you catch it.
+If you do not have a serial port, then you will need to prep to run the `tftp` command, and run it within five seconds of powering on the router, hoping that you catch it before the system starts booting up.
 
 # Information
 
@@ -33,7 +33,7 @@ Here is some helpful information regarding the device.
 
 ## Serial Cable
 
-The best serial port mod I have seen, and the one I use, is by placing a standard stereo 3.5mm headphone jack onto the front leg of the box, as a hint, when making the hole, try to put it as high up as you can on the leg otherwise the headphone socket will make contact with the board and cause problems.
+The best serial port mod I have seen, and the one I use, is by placing a standard stereo 3.5mm headphone jack onto the front leg of the box.  A top tip is when making the hole, try to put it as high up as you can on the leg otherwise the headphone socket will make contact with the board and cause problems.
 
 ![Headphone Jack As a Serial Port](http://duff.dk/wrt54gs/pics/Reuter_complete.jpg "Headphone Jack As a Serial Port").
 
@@ -68,7 +68,7 @@ Once all hooked up, you should use [minicom](http://alioth.debian.org/projects/m
 
 ## Misbehaving Ethernet Ports
 
-A gotcha typically is a broken capacitor (33uF 16V) that can lead to all [sorts of trouble](http://archive.gavinbenda.com.au/2007/05/27/wag54g-v2-capacitor-replacement/).  I had this issue with all ten of the WAG54Gs I bought off [eBay](http://www.ebay.com/) and found that with one of them I was able to get a temporary workaround by using a direct connection from my workstation after forcing the link speed to 10Mbps half-duplex with:
+A gotcha typically is a broken capacitor (33uF 16V) that can lead to all [sorts of trouble](http://archive.gavinbenda.com.au/2007/05/27/wag54g-v2-capacitor-replacement/).  I had this issue with all ten of the WAG54Gs I bought off [eBay](http://www.ebay.com/) but did found that with one of them I was able to get a temporary workaround by using a direct connection from my workstation after forcing the link speed to 10Mbps half-duplex with:
 
     sudo ethtool -s eth0 autoneg off speed 10 duplex half
 
