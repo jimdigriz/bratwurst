@@ -14,7 +14,8 @@ Plug in your workstation over Ethernet, and assign yourself a static IP in the r
 
 # Building
 
-    make defconfig	# edit bratwurst.config for customisations
+Go through the 'Configuration' section of the [main instructions](README.md) and type the following to build the firmware:
+
     make ar7/wag54g
 
 # Installing
