@@ -14,7 +14,7 @@ Plug in your workstation over Ethernet, and assign yourself a static IP in the r
 
 # Building
 
-Go through the 'Configuration' section of the [main instructions](README.md) and type the following to build the firmware:
+Work through [Configuration](README.md#configuration) and then type the following to build the firmware:
 
     make ar7/wag54g
 
