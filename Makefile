@@ -69,7 +69,7 @@ clean:
 			find buildroot -name .stamp_host_installed -path '*/host-gcc-final-*' \
 				| xargs rm -f; \
 		}
-	rm -f .users .buildroot.defconfig .uclibc.config
+	rm -f .users .buildroot.defconfig .uclibc.config .qemu-arch
 
 .PHONY: distclean
 distclean: clean
@@ -84,7 +84,7 @@ PFLASH	:= buildroot/output/images/pflash
 
 .PHONY: qemu
 qemu: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
-	qemu-system-$(ARCH) -nodefaults -nographic -machine accel=kvm:tcg \
+	qemu-system-$(shell cat .qemu-arch) -nodefaults -nographic -machine accel=kvm:tcg \
 		-serial mon:stdio \
 		-m $(RAM) \
 		-kernel $(VMLINUZ) \
