@@ -34,6 +34,8 @@ Patches are welcome, and I can take github pull requests, or personal emails.
 
 In lieu of anyone having contibuted to this project as of yet, the only hurdle I'll throw back at you is that I ask you to review the output of the `git diff` for your changes and that you put in a good effort to make the patch as small as possible.
 
+If you are looking to chip in on nothing in particular, then do look at the [TODO](TODO.md) list.
+
 For those feeling daring, I would rather your effort is put into digging through [OpenWRT](https://openwrt.org/) and to get their [Linux patches upstreamed](http://git.openwrt.org/?p=openwrt.git;a=tree;f=target/linux).
 
 # Networking
