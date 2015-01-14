@@ -123,6 +123,6 @@ On the first run, the build will take about 30 minutes (on an i7@3Ghz plus the t
 
 Building for other targets is just a case of reading the relevant page linked from [Supported Physical Targets](#supported-physical-targets) above to learn how to install the built firmware to your target.  Building the firmware its-self is done just by typing:
 
-    make <soc/board>
+    make soc/board
 
 For information on customising the build, read the [Customising the Build](DEVELOPMENT.md#customising-the-build).
