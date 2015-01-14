@@ -4,9 +4,9 @@ The project structure tries to follow [buildroot's project-specific customisatio
 
  * buildroot is a [git submodule](http://git-scm.com/docs/git-submodule) and so our customisations live in its parent directory
  * the root (skeleton) filesystem is `rootfs` - this is where all the interesting bits live
- * there is a single root filesystem overlay directory at `board/<company>/<boardname>/rootfs-overlay`
+ * there is a single root filesystem overlay directory at `board/<soc>/<boardname>/rootfs-overlay`
 
-To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/<company>/<boardname>/post-build.sh`.  This is run after the `rootfs-overlay` directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
+To make amendments to the rootfs before it is converted to a binary blob you will want to look at `board/<soc>/<boardname>/post-build.sh`.  This is run after the `rootfs-overlay` directory is copied on top of the base root filesystem and deals with making minor fixups to files in place.
 
 ## fakeisp
 
@@ -16,60 +16,95 @@ This sub-project is what makes up emulating everything beyond your router, from 
  * builds a large [initramfs](https://www.kernel.org/doc/Documentation/filesystems/ramfs-rootfs-initramfs.txt) (`fakeisp/initrd.base`)
  * takes advantage that the [initramfs image can be a chain](https://www.kernel.org/doc/Documentation/early-userspace/buffer-format.txt) of overlay images, so `rootfs-overlay` is appended as a second initramfs
 
-In practice `initrd.base` does not change, so you can just use the prepared image I have made available (`dl/fakeisp.initrd.base.<arch>`).  Alternatively, you can build your own by typing from a Debian 'wheezy' 7 workstation:
+To build and run it, all you need to do is type:
+
+    make fakeisp
+
+Part of this process utilises a pre-built base Debian root filesystem, a componment which rarely changes, to simplify the build.  However, if you prefer to build your own locally you can run the following on a Debian 'wheezy' 7 workstation:
 
     make fakeisp-diy
 
-**N.B.** this calls `sudo` as `debootstrap` has to be run as root plus you also need to make sure the mountpoint you have checked out on is *not* mounted `nodev`
+**N.B.** doing this calls `sudo` as `debootstrap` has needs to run as root.  Also the mountpoint you have BRatWuRsT checked out on [must *not* be mounted `nodev`](http://en.wikipedia.org/wiki/Fstab#Options_common_to_all_filesystems).
 
-As before, the interesting bits live in `fakeisp/rootfs-overlay/opt/bratwurst`.
+All the interesting parts to this sub-project live in `fakeisp/rootfs-overlay/opt/bratwurst`.
+
+# Contributing
+
+Patches are welcome, and I can take github pull requests, or personal emails.
+
+In lieu of anyone having contibuted to this project as of yet, the only hurdle I'll throw back at you is that I ask you to review the output of the `git diff` for your changes and that you put in a good effort to make the patch as small as possible.
+
+For those feeling daring, I would rather your effort is put into digging through [OpenWRT](https://openwrt.org/) and to get their [Linux patches upstreamed](http://git.openwrt.org/?p=openwrt.git;a=tree;f=target/linux).
 
 # Networking
 
-For the BRatWuRsT QEMU VM, a number of network interfaces exist:
+For the BRatWuRsT QEMU VM, a number of network interfaces exist with the following IP addresses assigned:
 
+ * **`lo`:**
+  * **IPv6:** `$ULA:08::/64` - [ULA](http://en.wikipedia.org/wiki/Unique_local_address) (for example `fd12:3456:7890:08::/64`)
+  * **IPv6:** `2002:[public-IPv4-address]:08::/64` - when connected a [6to4](http://en.wikipedia.org/wiki/6to4) assignment
+  * **IPv6:** `[DHCPv6-PD]:08::/64` - when connected and a prefix has been allocated
  * **`eth0`:** link into fakeisp for uplink
-     * [IPv6 DAD is disabled](board/qemu/mipsel/rootfs-overlay/opt/bratwurst/rc.d/20_ptp_no_v6_dad) as [QEMU mcast socket](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html) causes it problems
+  * **IPv4:** 172.21.0.1/32
  * **`eth1`:** LAN interface
  * **`wlan0` [not supported]:** provided by `mac80211_hwsim` testing is performed on (as in the real world)
+ * **`br0`:** Ethernet bridge made up of `eth1` and `wlan0`
+  * **IPv6:** `$ULA:10::/64`
+  * **IPv6:** `2002:[public-IPv4-address]:10::/64` - when connected
+  * **IPv6:** `[DHCPv6-PD]:10::/64` - when connected and a prefix has been allocated
+  * **IPv4:** `192.168.1.1/24`
 
-`eth0` is multi-purpose and used to provide emulation of typical cable and xDSL configurations (plumbing into fakeisp):
+`eth0` is multi-purpose interface that is used to provide emulation of real world typical xDSL configurations.
 
  * **ethernet (cable modem) [not supported]:** eth0 <- dhcp
  * **xDSL:**
      * **PPPoA:** ATM-over-TCP (`atmtcp`) <- ppp
      * **PPPoE:** ATM-over-TCP (`atmtcp`) <- RFC2684 (`br2684ctl`) <- ppp
 
+BRatWuRsT communicates with fakeisp using a multicast UDP socket bounded to the loopback interface, the reason is so you do not have to pay attention to the order that you start both VMs.  The disadvantage though is that [QEMU mcast socket's](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html) cause [problems for IPv6 DAD](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html).  Fortunately we can work around this by disabling DAD over this link on both [BRatWuRsT](board/qemu/mipsel/rootfs-overlay/opt/bratwurst/rc.d/20_ptp_no_v6_dad) and [fakeisp](fakeisp/rootfs-overlay/etc/sysctl.d/ptp_no_v6_dad.conf).
+
 ## fakeisp
 
- * **`lo`:
+ * **`lo`:**
  * **`eth0`:** uplink to the outside world
+  * **IPv4:** DHCP to QEMU user mode networking stack
  * **`eth1`:** link into BRatWuRsT QEMU VM
-     * [IPv6 DAD is disabled](fakeisp/rootfs-overlay/etc/sysctl.d/ptp_no_v6_dad.conf)
+  * **IPv4:** 172.21.0.0/32
+
+For `eth0` we use user mode network stack for the convience of not having to run anything as root but it comes with the disadvantage that IPv6 is not supported routing to the outside world.  Fortunately this does not affect IPv6 support between fakeisp and BRatWuRsT though.
 
 # Using a Network Filesystem
 
-To help with development it is handy to have some network filesystem capabilities so you can quickly edit scripts on your side of the fence and use them instantly from inside the VM.  NFS and CIFS though is too big for our target so we use [9P](https://www.kernel.org/doc/Documentation/filesystems/9p.txt) instead which in total weighs in at about 100kB worth of kernel modules.
+When developmenting, it is often helpful to have a shared (typically network) filesystem to hand so you can quickly edit scripts on your side of the fence and use them instantly from inside the VM.  Unfortunately, NFS and CIFS are too big for our target platforms but [9P](https://www.kernel.org/doc/Documentation/filesystems/9p.txt) is not, weighing in at about 100kB worth of kernel modules.
 
-There are two methods available to mount the 9P export, you of course only need to use one.  For QEMU, the virtio transport is automatically setup for you by [90_shared](board/qemu/mipsel/rootfs-overlay/opt/bratwurst/rc.d/90_shared) on boot and mounted at `/tmp/shared` (sharing `shared` at the top level directory).
+There are two methods available to mount the 9P export.
+
+## QEMU (virtio)
+
+The virtio transport is automatically setup for you by [90_shared](board/qemu/mipsel/rootfs-overlay/opt/bratwurst/rc.d/90_shared) on boot and mounted at `/tmp/shared`, sharing `shared` located at the top level directory of the BRatWuRsT project tree.
 
 **N.B.** the variable `9P_SHARE` (default: `shared`) can be used to specify the directory you wish to export
 
-For real hardware, you will have to use a userland TCP based server.  To aid you, plumbed into the project, we use a [fork of py9p](https://github.com/svinota/py9p) (there are other [9p server implementation](http://9p.cat-v.org/implementations) you can use) which should work everywhere that has python available (`{apt-get,yum} install python`), you can run a 9P server by just typing into a spare terminal:
+## Real Hardware (TCP)
 
-    9P_SHARE=shared make 9p
+Plumbed into the project, we use a [fork of py9p](https://github.com/svinota/py9p) (there are other [9p server implementation](http://9p.cat-v.org/implementations) you can use) which should work everywhere that has python available (`{apt-get,yum} install python`), you can run a 9P server by just typing into a spare terminal:
 
-Then from your router:
+    make 9p 9P_SHARE=shared
+
+Then from your router (replacing `192.0.2.0` with the IP address of your workstation):
 
     mkdir /tmp/shared
     modprobe 9pnet
     mount -t 9p -o version=9p2000.L,trans=tcp,port=5564 192.0.2.0 /tmp/shared
 
-# Contributing
-
-## Configuration Files
+# Customising the Build
 
 When amending some configurations, to commit your changes you should use the following methods.
 
-    make {buildroot,uclibc,busybox,linux}-menuconfig
-    make {buildroot,uclibc,busybox,linux}-update-defconfig
+    make {buildroot,uclibc,busybox,linux}-menuconfig BOARD=soc/board
+
+Where `soc/board` is substituted for your target, for example `ar7/wag54g`.
+
+To save your changes afterwards, run:
+
+    make {buildroot,uclibc,busybox,linux}-update-defconfig BOARD=soc/board

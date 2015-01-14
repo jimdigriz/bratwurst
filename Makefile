@@ -1,4 +1,3 @@
-ARCH		?= mipsel
 BOARD		?= qemu/mipsel
 
 RAM		?= 16
@@ -27,10 +26,8 @@ help:
 	  printf "  %-16s - %s\\n" $(board) "$(NAME-$(board))";)
 	@echo
 	@echo 'Run:'
-	@echo '  bratwurst.config - Create default configuration file'
-	@echo '  bratwurst        - Spin up bratwurst'
-	@echo '    ARCH=<arch>                     (currently: $(ARCH))'
-	@echo '      Supported: $(ARCHS)'
+	@echo '  defconfig        - Create default configuration file'
+	@echo '  bratwurst        - Spin up BRatWuRsT QEMU (currently: $(BOARD))'
 	@echo '    RAM=<size-in-megabytes>         (currently: $(RAM))'
 	@echo '    NAND=<size-in-megabytes>        (currently: $(NAND))'
 	@echo
@@ -100,10 +97,14 @@ qemu: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 		-fsdev local,id=shared_fsdev,path=$(9P_SHARE),security_model=none \
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
-bratwurst.config:
-	@cp config/bratwurst bratwurst.config
+.PHONY: defconfig
+defconfig: bratwurst.config
 	@echo created default bratwurst.config, please edit and then re-run make
 	@false
+
+bratwurst.config:
+	@cp config/bratwurst .$@
+	@mv .$@ $@
 
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users

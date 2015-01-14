@@ -14,9 +14,10 @@ PPP_OPTIONS="	nodetach
 		noipdefault
 		defaultroute
 		usepeerdns
-		user $PPP_USER
-		password $PPP_PASS"
+		user ${PPP_USER:-test123}
+		password ${PPP_PASS:-test456}"
 
+NETWORK="${NETWORK:-pppoe}"
 if [ "${NETWORK%?}" = "pppo" ]; then
 	[ -f /proc/net/atm/devices ] || exit 1
 
@@ -26,18 +27,18 @@ if [ "${NETWORK%?}" = "pppo" ]; then
 	[ -n "$TYPE" ] || exit 1
 
 	# wait for carrier, do nothing
-	grep -q 1 /sys/class/atm/$TYPE$UPLINK_PORT/carrier || exit 1
+	grep -q 1 /sys/class/atm/$TYPE${UPLINK_PORT:-0}/carrier || exit 1
 fi
 
 case $NETWORK in
 pppoa)	/sbin/modprobe pppoatm
-	exec /usr/sbin/pppd $PPP_OPTIONS plugin pppoatm.so $UPLINK_PORT.$ATM_VPI.$ATM_VCI
+	exec /usr/sbin/pppd $PPP_OPTIONS plugin pppoatm.so ${UPLINK_PORT:-0}.${ATM_VPI:-8}.${ATM_VCI:-32}
 	;;
 pppoe)	/sbin/modprobe pppoe
 	sv start br2684ctl
 	/sbin/ip link set address 00:00:01:00:00:56 dev nas0 up
-	exec /usr/sbin/pppd $PPP_OPTIONS plugin rp-pppoe.so nas$UPLINK_PORT
+	exec /usr/sbin/pppd $PPP_OPTIONS plugin rp-pppoe.so nas${UPLINK_PORT:-0}
 	;;
-dhcp)	exec /sbin/udhcpc -f -n -R -t 3 -i $UPLINK_TYPE$UPLINK_PORT
+dhcp)	exec /sbin/udhcpc -f -n -R -t 3 -i eth${UPLINK_PORT:-0}
 	;;
 esac

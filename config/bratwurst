@@ -1,15 +1,31 @@
-# {pppoa,pppoe,dhcp}
-NETWORK=pppoe
+# pick the type of uplink connection you have (default: 'pppoe')
+#NETWORK=pppoe		# 'pppoe' 'pppoa'
 
-PPP_USER=test123
-PPP_PASS=test456
+# which interface is your uplink (default: '0')
+#UPLINK_PORT=0		# 0..9, eg. 0 -> eth0/atm0
 
-# 'eth' (cable) or 'atm' (xDSL)
-UPLINK_TYPE=atm
-# 0..9, eg. 0 -> eth0/atm0
-UPLINK_PORT=0
+# if using a PPP link, you need to specify the ATM settings
+# N.B. fakeisp expects pppoa:0,32 pppoe:8,35 (default: 8/35)
+#ATM_VPI=8
+#ATM_VCI=35
+# optional: ATM encapulation method (default: 'vcmux')
+#ATM_ENCAP=vcmux	# 'llc' 'vcmux'
 
-ATM_VPI=8
-ATM_VCI=35
-# {llc,vcmux}
-ATM_ENCAP=vcmux
+# for PPP connections, the username and password to use
+# (default is set to what fakeisp expects: test123/test456)
+#PPP_USER=test123
+#PPP_PASS=test456
+
+# hostname to use (default: 'bratwurst')
+#HOSTNAME=bratwurst
+
+# domain to use (default: 'localnet')
+# N.B. changing from the default enables the public authoritive DNS server
+#DOMAIN=localnet
+
+# optional: if DHCPv6-PD is unavailable, provide your prefix here
+# N.B. fakeisp makes the subnet number 0->pppoa, 1->pppoe
+#PREFIX=2001:db8:1::/48
+
+# optional: IPv6 ULA subnet (default: automatically generated)
+#ULA=fd00:dead:beef

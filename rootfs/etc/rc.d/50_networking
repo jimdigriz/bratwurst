@@ -11,6 +11,7 @@ if [ ! "${ULA:-}" ]; then
 fi
 
 /sbin/ip link set dev lo up
+/sbin/ip addr add $ULA:08::/64 dev lo
 
 /sbin/brctl addbr br0
 /sbin/brctl setfd br0 0

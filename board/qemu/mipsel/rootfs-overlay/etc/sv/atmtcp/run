@@ -4,7 +4,7 @@ set -eu
 
 . /etc/bratwurst
 
-if [ "$NETWORK" = "dhcp" ]; then
+if [ "${NETWORK:-}" = "dhcp" ]; then
 	sv once .
 	exit 0
 fi

@@ -4,9 +4,10 @@ set -eu
 
 . /etc/bratwurst
 
-[ "${NETWORK%?}" = "pppo" ] && IFNAME=ppp0 || IFNAME=$UPLINK_TYPE$UPLINK_PORT
+NETWORK="${NETWORK:-pppoe}"
+[ "${NETWORK%?}" = "pppo" ] && IFNAME=ppp0 || IFNAME=eth${UPLINK_PORT:-0}
 
-if [ "$DOMAIN" != "localnet" ]; then
+if [ "${DOMAIN:-localnet}" != "localnet" ]; then
 	OPTIONS="	--no-dhcp-interface=$IFNAME
 			--server=/$DOMAIN/ \
 			--interface-name=$DOMAIN,lo
