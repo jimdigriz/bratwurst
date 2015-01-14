@@ -98,12 +98,12 @@ To slip user accounts into the build, at the top of the BRatWuRsT project direct
     mkdir users
     cat ~bob/.ssh/id_rsa.pub > users/bob
 
-Here we have added an account for 'bob' whos SSH keys from the local workstation; of course you may addition more accounts in this manner.
+Here we have added an account for 'bob' using the SSH keys from the local workstation; of course you may addition more accounts in this manner.
 
 Note that:
 
- 1. each account will be password less
- 1. passwordless accounts can only log in via the serial port (SSH rejects password authentication)
+ 1. each account will be password-less
+ 1. password-less accounts can only log in via the serial port (SSH rejects password authentication)
  1. only public key is supported for SSH
  1. `root` is unable to ever SSH in and the account is also passwordless
  1. to become `root` you use `su`
