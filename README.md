@@ -121,8 +121,8 @@ On the first run, the build will take about 30 minutes (on an i7@3Ghz plus the t
 
 ## Building
 
-Building for other targets is typically just a case of reading 'Supported Physical Targets' to learn how to install the firmware once built to your target, and of course to build the firmware its-self.  This is done typically by just typing:
+Building for other targets is just a case of reading the relevant page linked from the 'Supported Physical Targets' above to learn how to install the built firmware to your target.  Building the firmware its-self is done just by typing:
 
-    make ar7/wag54g
+    make <soc/board>
 
-For information on customising the build, read the 'Customising the Build' of [Development and Contributing](DEVELOPMENT.md).
+For information on customising the build, read the 'Customising the Build' section of [Development and Contributing](DEVELOPMENT.md).
