@@ -23,8 +23,9 @@ To build and run it, all you need to do is type:
 Part of this process utilises a pre-built base Debian root filesystem (`fakeisp/initrd.base`), a component which rarely changes, to simplify the build.  However, if you prefer to build your own locally you can run the following on a Debian 'wheezy' 7 workstation:
 
     make fakeisp-diy
+    make fakeisp
 
-**N.B.** doing this calls `sudo` as `debootstrap` has needs to run as root.  Also the mount point you have BRatWuRsT checked out on [must *not* be mounted `nodev`](http://en.wikipedia.org/wiki/Fstab#Options_common_to_all_filesystems).
+**N.B.** calling `make fakeisp-diy` calls `sudo` as `debootstrap` has needs to run as root.  Also the mount point you have BRatWuRsT checked out on [must *not* be mounted `nodev`](http://en.wikipedia.org/wiki/Fstab#Options_common_to_all_filesystems).
 
 All the interesting parts to this sub-project live in `fakeisp/rootfs-overlay/opt/bratwurst`.
 
