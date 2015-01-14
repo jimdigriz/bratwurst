@@ -98,13 +98,14 @@ qemu: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
 		-device virtio-9p-pci,fsdev=shared_fsdev,mount_tag=shared
 
 .PHONY: defconfig
-defconfig: bratwurst.config
+defconfig:
+	@cp config/bratwurst .bratwurst.config
+	@mv .bratwurst.config bratwurst.config
 	@echo created default bratwurst.config, please edit and then re-run make
-	@false
 
 bratwurst.config:
-	@cp config/bratwurst .$@
-	@mv .$@ $@
+	@echo "missing $@, type 'make defconfig' first?"
+	@false
 
 .users:
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
@@ -159,7 +160,7 @@ busybox-update-defconfig:
 	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
-world %-menuconfig %-update-defconfig: buildroot/.config .uclibc.config bratwurst.config .users
+world %-menuconfig %-update-defconfig: bratwurst.config .users buildroot/.config .uclibc.config
 	make -C buildroot $(subst buildroot-,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/.uclibc.config" \
