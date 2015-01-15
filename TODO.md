@@ -19,6 +19,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * how to strap in another VM as a client on the LAN
  * improve the automatic ULA prefix choice, currently you effectively end up with the uptime (~9 seconds)
   * maybe use: cat /sys/class/net/$IFACE/address | cut -d: -f3-
+  * maybe use: dd if=/dev/urandom bs=1 count=5 2>/dev/null | od -v -An -t x1
 
 ## Roadmap
 
