@@ -4,7 +4,7 @@ set -eu
 
 . /etc/bratwurst
 
-case ${ATM_ENCAP:-1} in
+case ${ATM_ENCAP:-vcmux} in
 llc)		ENCAP=0;;
 vcmux)		ENCAP=1;;
 esac
