@@ -74,7 +74,6 @@ clean:
 .PHONY: distclean
 distclean: clean
 	make -C buildroot distclean
-	rm -rf ccache
 
 .PHONY: bratwurst
 bratwurst: qemu/mipsel qemu
