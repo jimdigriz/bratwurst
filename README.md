@@ -81,7 +81,7 @@ To install the dependencies you should just need to run:
     sudo yum update vim-minimal
     sudo yum install vim-common
 
-# How to Run
+# How to Use
 
 ## Configuration
 
@@ -98,16 +98,16 @@ To slip user accounts into the build, at the top of the BRatWuRsT project direct
     mkdir users
     cat ~bob/.ssh/id_rsa.pub > users/bob
 
-Here we have added an account for 'bob' using the SSH keys from the local workstation; of course you may addition more accounts in this manner.
+Here we have added an account for 'bob' using the SSH keys from the local workstation.
 
 Note that:
 
- 1. each account will be password-less
- 1. password-less accounts can only log in via the serial port (SSH rejects password authentication)
- 1. only public key is supported for SSH
- 1. `root` is unable to ever SSH in and the account is also passwordless
- 1. to become `root` you use `su`
+ 1. each all accounts are password-less
  1. to add a password to an account, use `passwd`
+ 1. password-less accounts can only log in via the serial port (SSH rejects password authentication)
+ 1. only public key authentication is supported for SSH
+ 1. `root` is never permitted to SSH in (as well as being password-less)
+ 1. to become `root` you use `su`
 
 ## Running
 
