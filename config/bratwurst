@@ -5,7 +5,7 @@
 #UPLINK_PORT=0		# 0..9, eg. 0 -> eth0/atm0
 
 # if using a PPP link, you need to specify the ATM settings
-# N.B. fakeisp expects pppoa:0,32 pppoe:8,35 (default: 8/35)
+# (default is pppoe:8,35 and pppoa:0,32 respectively)
 #ATM_VPI=8
 #ATM_VCI=35
 # optional: ATM encapulation method (default: 'vcmux')

@@ -9,4 +9,4 @@ llc)		ENCAP=0;;
 vcmux)		ENCAP=1;;
 esac
 
-exec /usr/sbin/br2684ctl -c ${UPLINK_PORT:-0} -e $ENCAP -a ${UPLINK_PORT:-0}.${ATM_VPI:-8}.${ATM_VCI:-32}
+exec /usr/sbin/br2684ctl -c ${UPLINK_PORT:-0} -e $ENCAP -a ${UPLINK_PORT:-0}.${ATM_VPI:-8}.${ATM_VCI:-35}

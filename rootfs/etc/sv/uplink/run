@@ -32,7 +32,7 @@ fi
 
 case $NETWORK in
 pppoa)	/sbin/modprobe pppoatm
-	exec /usr/sbin/pppd $PPP_OPTIONS plugin pppoatm.so ${UPLINK_PORT:-0}.${ATM_VPI:-8}.${ATM_VCI:-32}
+	exec /usr/sbin/pppd $PPP_OPTIONS plugin pppoatm.so ${UPLINK_PORT:-0}.${ATM_VPI:-0}.${ATM_VCI:-32}
 	;;
 pppoe)	/sbin/modprobe pppoe
 	sv start br2684ctl
