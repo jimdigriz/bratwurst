@@ -20,6 +20,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * improve the automatic ULA prefix choice, currently you effectively end up with the uptime (~9 seconds)
   * maybe use: cat /sys/class/net/$IFACE/address | cut -d: -f3-
   * maybe use: dd if=/dev/urandom bs=1 count=5 2>/dev/null | od -v -An -t x1
+ * fix fc00::/7, rfc1918 and ::1/127.0.0.1 appearing in dnsmasq externally
 
 ## Roadmap
 
