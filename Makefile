@@ -42,8 +42,11 @@ help:
 	@echo
 	@echo 'See README.md for further details'
 
+.PHONY: clean-bratwurst
+clean-bratwurst:
+
 .PHONY: clean
-clean:
+clean: clean-bratwurst
 	# http://lists.busybox.net/pipermail/buildroot/2012-September/058323.html
 	rm -rf buildroot/output/target
 	mkdir -p buildroot/output/target/bin
@@ -72,7 +75,7 @@ clean:
 	rm -f .users .buildroot.defconfig .uclibc.config .qemu-arch
 
 .PHONY: distclean
-distclean: clean
+distclean: clean-bratwurst
 	make -C buildroot distclean
 
 .PHONY: bratwurst
