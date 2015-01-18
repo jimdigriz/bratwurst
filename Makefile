@@ -76,6 +76,7 @@ clean: clean-bratwurst
 
 .PHONY: distclean
 distclean: clean-bratwurst
+	rm -rf ccache
 	make -C buildroot distclean
 
 .PHONY: bratwurst
