@@ -120,7 +120,21 @@ table inet filter {
 		# clients should not try to use 6to4 themselves
 		ip daddr 192.88.99.1 reject with icmp type host-unreachable;
 
-		counter accept;
+		# https://tools.ietf.org/html/draft-ietf-opsec-icmp-filtering
+		# http://tools.ietf.org/html/rfc4890
+		ip6 nexthdr icmpv6 jump icmpv6_packet
+		ip protocol icmp   jump icmpv4_packet
+
+		ct state established,related counter accept;
+		ct state invalid counter drop;
+
+		iif br0 accept;
+
+		# ssh
+		tcp dport 22 ct state new limit rate 10/minute accept;
+
+		counter limit rate 10/minute reject;
+		counter drop;
 	}
 
 	chain output {
