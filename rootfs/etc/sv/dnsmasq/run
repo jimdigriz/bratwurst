@@ -8,22 +8,23 @@ NETWORK="${NETWORK:-pppoe}"
 [ "${NETWORK%?}" = "pppo" ] && IFNAME=ppp0 || IFNAME=eth${UPLINK_PORT:-0}
 
 if [ "${DOMAIN:-localnet}" != "localnet" ]; then
-	OPTIONS="	--no-dhcp-interface=$IFNAME
-			--server=/$DOMAIN/ \
+	OPTIONS="	--auth-server=$DOMAIN,$IFNAME
+			--server=/$DOMAIN/
 			--interface-name=$DOMAIN,lo
 			--interface-name=$DOMAIN,$IFNAME
 			--auth-zone=$DOMAIN,lo,$IFNAME,br0/6
 			--domain=$DOMAIN,192.168.1.0/24,local"
-else
-	OPTIONS="	--except-interface=$IFNAME"
 fi
 
 exec 2>&1
-exec /usr/sbin/dnsmasq \
+exec /usr/sbin/dnsmasq ${OPTIONS:-} \
 	--keep-in-foreground \
 	--expand-hosts \
 	--log-facility=- \
 	--pid-file \
+	--except-interface=$IFNAME \
+	--except-interface=6to4 \
+	--local-service \
 	--localise-queries \
 	--bogus-priv \
 	--stop-dns-rebind \
@@ -36,5 +37,4 @@ exec /usr/sbin/dnsmasq \
 	--read-ethers \
 	--dhcp-authoritative \
 	--dhcp-leasefile=/run/dnsmasq.leases \
-	--enable-ra \
-	$OPTIONS
+	--enable-ra
