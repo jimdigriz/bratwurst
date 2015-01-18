@@ -109,7 +109,7 @@ bratwurst.config:
 	@echo "missing $@, type 'make defconfig' first?"
 	@false
 
-.users:
+.users: users
 	ls -1 users | sed -n '/^[a-z0-9]*$$/ s~.*~& -1 & -1 * /home/& /bin/sh - &~ p' > .users
 
 .buildroot.defconfig: board/$(BOARD)/buildroot config/buildroot
