@@ -9,8 +9,8 @@ if [ "${NETWORK:-}" = "dhcp" ]; then
 	exit 0
 fi
 
-SERVER=172.21.0.0
-CLIENT=172.21.0.1
+SERVER=172.20.0.0
+CLIENT=172.20.0.1
 
 /sbin/ip addr add $CLIENT peer $SERVER dev eth0 2>/dev/null || true
 /sbin/ip link set dev eth0 up

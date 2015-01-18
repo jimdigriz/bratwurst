@@ -48,7 +48,9 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist with the followi
   * **IPv6:** `2002:[public-IPv4-address]:08::/64` - when connected a [6to4](http://en.wikipedia.org/wiki/6to4) assignment
   * **IPv6:** `[DHCPv6-PD]:08::/64` - when connected and a prefix has been allocated
  * **`eth0`:** link into fakeisp for uplink
-  * **IPv4:** 172.21.0.1/32
+  * **IPv4:**
+   * `192.0.2.0/24` - DHCP 'cable' network [not supported]
+   * `172.20.0.1` to `172.20.0.0` - point-to-point ATMTCP connection (RFC1918 choosen so ignored by dnsmasq)
  * **`eth1`:** LAN interface
  * **`wlan0` [not supported]:** provided by `mac80211_hwsim` testing is performed on (as in the real world)
  * **`br0`:** Ethernet bridge made up of `eth1` and `wlan0`
@@ -61,10 +63,10 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist with the followi
 
 `eth0` is multi-purpose interface that is used to provide emulation of real world typical xDSL configurations.
 
- * **Ethernet (cable modem) [not supported]:** eth0 <- dhcp
+ * **Ethernet (cable modem) [not supported] (`192.0.2.0/24`):** eth0 <- dhcp
  * **xDSL:**
-     * **PPPoA:** ATM-over-TCP (`atmtcp`) <- ppp
-     * **PPPoE:** ATM-over-TCP (`atmtcp`) <- RFC2684 (`br2684ctl`) <- ppp
+     * **PPPoE (`203.0.113.0/24`):** ATM-over-TCP (`atmtcp`) <- RFC2684 (`br2684ctl`) <- ppp
+     * **PPPoA (`198.51.100.0/24`):** ATM-over-TCP (`atmtcp`) <- ppp
 
 BRatWuRsT communicates with fakeisp using a multicast UDP socket bounded to the loopback interface, the reason is so you do not have to pay attention to the order that you start both VMs.  The disadvantage though is that [QEMU mcast socket's](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html) cause [problems for IPv6 DAD](http://lists.nongnu.org/archive/html/qemu-devel/2013-03/msg05497.html).  Fortunately we can work around this by disabling DAD over this link on both [BRatWuRsT](board/qemu/mipsel/rootfs-overlay/etc/rc.d/85_ptp_no_v6_dad) and [fakeisp](fakeisp/rootfs-overlay/etc/sysctl.d/ptp_no_v6_dad.conf).
 
@@ -74,7 +76,9 @@ BRatWuRsT communicates with fakeisp using a multicast UDP socket bounded to the 
  * **`eth0`:** uplink to the outside world
   * **IPv4:** DHCP to QEMU user mode networking stack
  * **`eth1`:** link into BRatWuRsT QEMU VM
-  * **IPv4:** 172.21.0.0/32
+  * **IPv4:**
+   * `192.0.2.1/24` - DHCP 'cable' network [not supported]
+   * `172.20.0.0` to `172.20.0.1` - point-to-point ATMTCP connection
 
 For `eth0` we use user mode network stack for the convenience of not having to run anything as root but it comes with the disadvantage that IPv6 is not supported routing to the outside world.  Fortunately this does not affect IPv6 support between fakeisp and BRatWuRsT though.
 
@@ -96,11 +100,11 @@ Plumbed into the project, we use a [fork of py9p](https://github.com/svinota/py9
 
     make 9p 9P_SHARE=shared
 
-Then from your router (replacing `192.0.2.0` with the IP address of your workstation):
+Then from your router (replacing `w.x.y.z` with the IP address of your workstation):
 
     mkdir /tmp/shared
     modprobe 9pnet
-    mount -t 9p -o version=9p2000.L,trans=tcp,port=5564 192.0.2.0 /tmp/shared
+    mount -t 9p -o version=9p2000.L,trans=tcp,port=5564 w.x.y.z /tmp/shared
 
 # Customising the Build
 

@@ -10,7 +10,7 @@ silent
 lcp-echo-failure 3
 lcp-echo-interval 1
 +ipv6
-ms-dns 172.20.2.0
+ms-dns 203.0.113.0
 EOF
 
 [ "$(ss -tpn sport = :2812 | sed -n '/^ESTAB.*"atmtcp"/ p')" ] || exit 1
@@ -18,4 +18,4 @@ EOF
 sv start br2684ctl
 /sbin/ip link set address 00:00:01:00:00:57 dev nas0 up
 
-exec /usr/sbin/pppoe-server -F -L 172.20.2.0 -R 172.20.2.128 -N 1 -I nas0
+exec /usr/sbin/pppoe-server -F -L 203.0.113.0 -R 203.0.113.1 -N 1 -I nas0

@@ -2,6 +2,6 @@
 
 set -eu
 
-SERVER=172.21.0.0
+SERVER=172.20.0.0
 
 exec timeout -t 3 -s INT nc $SERVER 2813 </dev/null >/dev/null 2>/dev/null

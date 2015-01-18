@@ -12,8 +12,8 @@ PPP_OPTIONS="	nodetach
 		lcp-echo-failure 3
 		lcp-echo-interval 1
 		+ipv6
-		ms-dns 172.20.1.0
-		172.20.1.0:172.20.1.128"
+		ms-dns 198.51.100.0
+		198.51.100.0:198.51.100.1"
 
 [ "$(ss -tpn sport = :2812 | sed -n '/^ESTAB.*"atmtcp"/ p')" ] || exit 1
 
