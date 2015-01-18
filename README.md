@@ -22,9 +22,13 @@ Related Links:
  * complete development supported within a [QEMU](http://www.qemu.org/) VM
  * includes a 'fake ISP' VM to emulates xDSL connectivity, the ISP and Internet
  * PPPoA/PPPoE support
- * full native IPv6 support, including [DHCPv6-PD](http://en.wikipedia.org/wiki/Prefix_delegation) to automatically assign IPv6 subnets locally
+ * full native IPv6 support
+  * including [DHCPv6-PD](http://en.wikipedia.org/wiki/Prefix_delegation) to automatically assign IPv6 subnets locally
+  * [6to4](http://en.wikipedia.org/wiki/6to4) support so that those without native IPv6 do not miss out
  * combined IPv6/IPv4 (inet) firewalling with [nftables](http://wiki.nftables.org/)
  * [runit](http://smarden.org/runit/) ([tutorial](http://www.sanityinc.com/articles/init-scripts-considered-harmful/)) as PID 1
+ * DNS authoritive server, including reverse zones
+  * use the [6to4reverse form](https://6to4.nro.net/) if you use 6to4
  * client services:
   * SSH with [public keys](https://macnugget.org/projects/publickeys/)
   * DNS
