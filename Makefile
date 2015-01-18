@@ -44,6 +44,7 @@ help:
 
 .PHONY: clean-bratwurst
 clean-bratwurst:
+	rm -f .users .buildroot.defconfig .uclibc.config .qemu-arch
 
 .PHONY: clean
 clean: clean-bratwurst
@@ -72,7 +73,6 @@ clean: clean-bratwurst
 			find buildroot -name .stamp_host_installed -path '*/host-gcc-final-*' \
 				| xargs rm -f; \
 		}
-	rm -f .users .buildroot.defconfig .uclibc.config .qemu-arch
 
 .PHONY: distclean
 distclean: clean-bratwurst
