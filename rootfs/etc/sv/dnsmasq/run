@@ -9,6 +9,8 @@ NETWORK="${NETWORK:-pppoe}"
 
 if [ "${DOMAIN:-localnet}" != "localnet" ]; then
 	OPTIONS="	--auth-server=$DOMAIN,$IFNAME
+			--interface-name=${HOSTNAME:-bratwurst}.$DOMAIN,lo
+			--interface-name=${HOSTNAME:-bratwurst}.$DOMAIN,$IFNAME
 			--interface-name=$DOMAIN,lo
 			--interface-name=$DOMAIN,$IFNAME
 			--auth-zone=$DOMAIN,lo,$IFNAME,br0"
