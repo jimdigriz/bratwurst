@@ -22,7 +22,7 @@ Work through [Configuration](../../../README.md#configuration) and then type the
 
 If you have a serial console, power on the device and press any key to interrupt the ADAM2 boot up.  Once interrupted, type:
 
-    printf 'mode binary\nconnect 192.168.1.1\nput buildroot/output/images/firmware-code.bin\n' | tftp
+    ( cd buildroot/output/images && printf 'mode binary\nconnect 192.168.1.1\nput firmware-code.bin\n' | tftp )
 
 You should see over the serial port the router state that a firmware update is underway and about 90 seconds later the router will reset and boot into BRatWuRsT.
 
