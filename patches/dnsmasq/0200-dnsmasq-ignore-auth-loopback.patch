@@ -6,10 +6,10 @@
      }
 -  
 +
-+  if ((addr->sa.sa_family == AF_INET && (*(unsigned int*)&addr->in.sin_addr >> IN_CLASSA_NSHIFT) != IN_LOOPBACKNET)
++  if ((addr->sa.sa_family == AF_INET && !private_net(addr->in.sin_addr, 1))
  #ifdef HAVE_IPV6
 -  if (addr->sa.sa_family != AF_INET6 || !IN6_IS_ADDR_LINKLOCAL(&addr->in6.sin6_addr))
-+    || (addr->sa.sa_family == AF_INET6 && !IN6_IS_ADDR_LOOPBACK(&addr->in6.sin6_addr) && !IN6_IS_ADDR_LINKLOCAL(&addr->in6.sin6_addr))
++    || (addr->sa.sa_family == AF_INET6 && !IN6_IS_ADDR_LOOPBACK(&addr->in6.sin6_addr) && !IN6_IS_ADDR_LINKLOCAL(&addr->in6.sin6_addr) && !IN6_IS_ADDR_ULA(&addr->in6.sin6_addr))
  #endif
 +    )
      {
