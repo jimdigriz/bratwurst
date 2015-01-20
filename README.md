@@ -113,6 +113,8 @@ Note that:
  1. `root` is never permitted to SSH in (as well as being password-less)
  1. to become `root` you use `su`
 
+**N.B.** on first boot the system has to generate SSH host keys which takes typically around five minutes to complete.  Until this process is finished you will get 'Connection Refused' as the SSH server cannot start till this process completes
+
 ## Running
 
 To build the `qemu/mipsel` board firmware and automatically start up QEMU instance of BRatWuRsT you run:
