@@ -8,8 +8,7 @@ H=${HOSTNAME:-bratwurst}
 
 hostname $H
 
-grep -q ^fd /etc/hosts || sed -i "2i \
-$ULA:10::	$H.${DOMAIN:-localnet}	$H
-192.168.1.1	$H.${DOMAIN:-localnet}	$H" /etc/hosts
+grep -q 127.1.0.1 /etc/hosts || sed -i "2i \
+127.1.0.1	$H.${DOMAIN:-localnet} $H" /etc/hosts
 
 exit 0
