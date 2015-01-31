@@ -1,4 +1,4 @@
-This section primary concerns version 2 of the Linksys WAG54G, but it should work equally well with the version 3 modle which has just twice the amount of RAM and NAND (CFI changes looks to change from AMD to Intel CFI).
+This section primary concerns the TP-Link TD-W8980, but it will probably be useful to users who have the [TD-W9980](http://wiki.openwrt.org/toh/tp-link/td-w9980) and possibly also the [TD-W8970](http://wiki.openwrt.org/toh/tp-link/td-w8970).
 
 # Preflight
 
