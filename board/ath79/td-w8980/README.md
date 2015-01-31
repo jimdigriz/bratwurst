@@ -32,7 +32,7 @@ Here is some helpful information regarding the device.
 
 ## Serial Cable
 
-The serial port mod I use is to place a standard stereo 3.5mm headphone jack onto the back of the unit immediately above the reset switch.  You will want to measure up about ~12.5mm from the centre of the reset switch to where you are to bore your hole for the socket.
+The serial port mod I use is to place a standard stereo 3.5mm headphone jack onto the back of the unit immediately above the reset switch.  You will want to measure up about ~15mm from the centre of the reset switch to where you are to bore your hole for the socket.
 
 The process is made easier by that [FTDI](http://ftdichip.com/) make very nice serial cables that work great under Linux, including the [TTL-232R-3V3-AJ](http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm) which means you do not need to mess with a MAX-232 chip or soldering.  For the cabling inside I used some spare [ribbon cable](http://en.wikipedia.org/wiki/Ribbon_cable).
 
