@@ -1,4 +1,4 @@
-This section primary concerns version 2 of the Linksys WAG54G, but it should work equally well with the version 3 modle which has just twice the amount of RAM and NAND (CFI changes looks to change from AMD to Intel CFI).
+This page applies to version 2 of the Linksys WAG54G, but it should work equally well with the version 3 modle which has just twice the amount of RAM and NAND (CFI changes looks to change from AMD to Intel CFI).
 
 # Preflight
 

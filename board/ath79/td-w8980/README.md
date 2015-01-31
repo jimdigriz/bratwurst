@@ -1,4 +1,4 @@
-This section primary concerns the TP-Link TD-W8980, but it will probably be useful to users who have the [TD-W9980](http://wiki.openwrt.org/toh/tp-link/td-w9980) and possibly also the [TD-W8970](http://wiki.openwrt.org/toh/tp-link/td-w8970).
+This page applies to the TP-Link TD-W8980, however it will probably be of use to users who have the [TD-W9980](http://wiki.openwrt.org/toh/tp-link/td-w9980) and possibly also the [TD-W8970](http://wiki.openwrt.org/toh/tp-link/td-w8970).
 
 # Preflight
 
