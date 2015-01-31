@@ -40,7 +40,7 @@ The process is made easier by that [FTDI](http://ftdichip.com/) make very nice s
 
 Wiring it up is straight forward by using the [headphone jack pinout of the TTL-232R-3V3-AJ](http://www.ftdichip.com/Images/TTL-232R-AJ%20pinout.jpg) with the pinout of the router below:
 
-      Towards Front of the Linksys TD-W8980
+                Towards Front
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
      __
     |  |    <- Pin 4, Router's Serial TX
@@ -58,7 +58,7 @@ Wiring it up is straight forward by using the [headphone jack pinout of the TTL-
        CPU/SoC     |
     
     vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-      Towards Rear of the Linksys TD-W8980
+                Towards Rear
 
 **N.B.** remember that when wiring you attach the TX pin of one end to the RX pin of the other and of course GND to GND
 

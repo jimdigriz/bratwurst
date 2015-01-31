@@ -63,7 +63,7 @@ Wiring it up is straight forward by using the [headphone jack pinout of the TTL-
     |   JP3
     |
      \__led__led__led__led____________________
-                    Front of WAG54G
+                    Front
 
 **N.B.** remember that when wiring you attach the TX pin of one end to the RX pin of the other and of course GND to GND
 
