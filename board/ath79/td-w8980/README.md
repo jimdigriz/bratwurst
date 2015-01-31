@@ -28,7 +28,13 @@ Here is some helpful information regarding the device.
 
 ## Opening the Unit
 
+There are four screws underneath the unit that need to be removed, and then you need to use a thin flat screw driver to pop the clips that fortunately give way easily without snapping.
 
+![The Unit Opened](http://www.mediafire.com/convkey/6e26/7r7ns40xjd3rq4hfg.jpg "The Unit Opened")
+
+In total there are nine clips, three on the left, three on the right, two on the front and one (hard to see in the above photo) at the centre rear.
+
+The board is not fixed to the chassis, and can just be easily lifted out (and put back in) by carefully lifting the front and sliding out; take not of the structs that the screws went into that keep the board in place.
 
 ## Serial Cable
 
