@@ -32,38 +32,40 @@ If you do not have a serial port, then you will need to prep to run the `tftp` c
 
 Here is some helpful information regarding the device.
 
+## Opening the Unit
+
+There is a single screw beneath each of the four removable rubber feet.  Once you remove them, and break the 'security' sticker, you should be able to pop off the front by pulling either the left or right hand side where there are latches; they are firm but you should be able to do all the work with your thumb and forefinger.  Once popped everything should slide apart, but be careful with the cable inside that attaches the wireless card to the aerial.
+
+To detach the board from the chassis, there is a single larger screw in the center, the board then slides out from some clips with no trouble.
+
 ## Serial Cable
 
 The best serial port mod I have seen, and the one I use, is by placing a standard stereo 3.5mm headphone jack onto the front leg of the box.  A top tip is when making the hole, try to put it as high up as you can on the leg otherwise the headphone socket will make contact with the board and cause problems.
 
-![Headphone Jack As a Serial Port](http://duff.dk/wrt54gs/pics/Reuter_complete.jpg "Headphone Jack As a Serial Port").
+![Headphone Jack As a Serial Port](http://duff.dk/wrt54gs/pics/Reuter_complete.jpg "Headphone Jack As a Serial Port")
 
-Wiring it up is made easier by that [FTDI](http://ftdichip.com/) make very nice serial cables that work great under Linux, including the [TTL-232R-3V3-AJ](http://apple.clickandbuild.com/cnb/shop/ftdichip?productID=70&op=catalogue-product_info-null&prodCategoryID=47) which means you do not need to mess with a MAX-232 chip or soldering.  For the cabling inside, I used an old skool CD to soundcard cable.
+The process is made easier by that [FTDI](http://ftdichip.com/) make very nice serial cables that work great under Linux, including the [TTL-232R-3V3-AJ](http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm) which means you do not need to mess with a MAX-232 chip or soldering.  For the cabling inside I used some spare [ribbon cable](http://en.wikipedia.org/wiki/Ribbon_cable).
 
-![Old Soundcard to CD cable](http://www.home-computer-support.org/images/how-to-install-sound-card-cd-dvd-audio-cable.jpg "Old Soundcard to CD cable")
-
-Wiring it up is straight forward by using the headphone jack pinout of the TTL-232R-3V3-AJ with the pinout of the router included below (shamelessly stolen from the [OpenWrt wiki](http://wiki.openwrt.org/toh/linksys/wag54g#serial).
-
-![TTL-232R-3V3-AJ Jack Pinout](http://www.ftdichip.com/Images/TTL-232R-AJ%20pinout.jpg "TTL-232R-3V3-AJ Jack Pinout")
-
-**N.B.** remember that when wiring you attach the TX pin of one end to the RX pin of the other and of course GND to GND
+Wiring it up is straight forward by using the [headphone jack pinout of the TTL-232R-3V3-AJ](http://www.ftdichip.com/Images/TTL-232R-AJ%20pinout.jpg) with the pinout of the router included below (shamelessly stolen from the [OpenWRT wiki](http://wiki.openwrt.org/toh/linksys/wag54g#serial).
 
     |
     |    __
-    |   |  |        <- Pin 1, GND
+    |   |  |    <- Pin 1, GND
     |    --
-    |   |  |        <- Pin 2, Not Connected
+    |   |  |    <- Pin 2, Not Connected
     |    --
-    |   |  |        <- Pin 3, Router's Serial RX
+    |   |  |    <- Pin 3, Router's Serial RX
     |    --
-    |   |  |        <- Pin 4, Router's Serial TX
+    |   |  |    <- Pin 4, Router's Serial TX
     |    --
-    |   |  |        <- Pin 5, VCC [not used for serial port]
+    |   |  |    <- Pin 5, VCC [not used for serial port]
     |    --
     |   JP3
     |
      \__led__led__led__led____________________
                     Front of WAG54G
+
+**N.B.** remember that when wiring you attach the TX pin of one end to the RX pin of the other and of course GND to GND
 
 Once all hooked up, you should use [minicom](http://alioth.debian.org/projects/minicom/) and configure the serial port to run at `38400 8N1` with *no* hardware or software flow control.
 
