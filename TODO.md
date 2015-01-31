@@ -26,7 +26,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
 ## Roadmap
 
- * dnsmasq with public authoritive DNS server
+ * the WAG54G has GPIOs to control the LEDs, we should probably use them
  * supporting straight Ethernet with DHCP (a la cable)
  * improve firewalling
   * better use of the nftables run-parts, flush to only cleans its own sections
