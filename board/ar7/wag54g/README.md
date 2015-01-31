@@ -42,7 +42,7 @@ Wiring it up is made easier by that [FTDI](http://ftdichip.com/) make very nice 
 
 ![Old Soundcard to CD cable](http://www.home-computer-support.org/images/how-to-install-sound-card-cd-dvd-audio-cable.jpg "Old Soundcard to CD cable")
 
-Wiring it up is straight forward by using the headphone jack pinout of the TTL-232R-3V3-AJ with the pinout of the router included below (shamelessly stolen from the [OpenWRT wiki](http://wiki.openwrt.org/toh/linksys/wag54g#serial).
+Wiring it up is straight forward by using the headphone jack pinout of the TTL-232R-3V3-AJ with the pinout of the router included below (shamelessly stolen from the [OpenWrt wiki](http://wiki.openwrt.org/toh/linksys/wag54g#serial).
 
 ![TTL-232R-3V3-AJ Jack Pinout](http://www.ftdichip.com/Images/TTL-232R-AJ%20pinout.jpg "TTL-232R-3V3-AJ Jack Pinout")
 
@@ -236,7 +236,7 @@ A list of issues and hints I have found with the kernel:
 
 # Related Links
 
- * [OpenWRT WAG54G](http://wiki.openwrt.org/toh/linksys/wag54g)
+ * [OpenWrt Linksys WAG54G](http://wiki.openwrt.org/toh/linksys/wag54g)
  * [Linux MIPS AR7 Information](http://www.linux-mips.org/wiki/AR7)
  * [Original Linksys Sourcecode](http://download.modem-help.co.uk/mfcs-L/LinkSys/WAG54G/GPL/v2/)
  * [cpmaccfg](http://www.heimpold.de/freetz/index.html)

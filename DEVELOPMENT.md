@@ -37,7 +37,7 @@ In lieu of anyone having contributed to this project as of yet, the only hurdle 
 
 If you are looking to chip in on nothing in particular, then do look at the [TODO](TODO.md) list.
 
-For those feeling daring, I would rather your effort is put into digging through [OpenWRT](https://openwrt.org/) and to get their [Linux patches upstreamed](http://git.openwrt.org/?p=openwrt.git;a=tree;f=target/linux).
+For those feeling daring, I would rather your effort is put into digging through [OpenWrt](https://openwrt.org/) and to get their [Linux patches upstreamed](http://git.openwrt.org/?p=openwrt.git;a=tree;f=target/linux).
 
 # Networking
 

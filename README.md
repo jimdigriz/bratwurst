@@ -1,4 +1,4 @@
-BRatWuRsT (aka 'Buildroot WRT') is a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWRT](https://openwrt.org/).
+BRatWuRsT (aka 'Buildroot WRT') is a [buildroot](http://buildroot.uclibc.org/) based home router firmware, similar in scope to [OpenWrt](https://openwrt.org/).
 
 Buildroot is used as it [provides a means for very straight forward development and build cycles](http://elinux.org/images/2/2a/Using-buildroot-real-project.pdf).
 
@@ -38,8 +38,8 @@ Related Links:
 ## Supported Physical Targets
 
  * [Linksys WAG54G](board/ar7/wag54g/README.md)
- * [TP-Link TL-W8970](board/tp-link/tl-w8970/README.md) - currently not supported
- * [TP-Link TL-MR3020](board/tp-link/tl-mr3020/README.md) - currently not supported
+ * [TP-Link TD-W8980](board/ath79/td-w8980/README.md) - currently not supported
+ * [TP-Link TL-MR3020](board/ath79/tl-mr3020/README.md) - currently not supported
 
 # Preflight
 

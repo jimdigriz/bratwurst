@@ -5,7 +5,7 @@ config BR2_PACKAGE_AR7_ATM
           build and include the TI Sangam ATM driver as found on the
 	  Linksys WAG54Gv2.
 
-	  Patches and tarball from OpenWRT:package/kernel/ar7-atm.
+	  Patches and tarball from OpenWrt:package/kernel/ar7-atm.
 
 comment "TI Sangam ATM driver needs a Linux kernel to be built"
         depends on !BR2_LINUX_KERNEL
