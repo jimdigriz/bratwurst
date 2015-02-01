@@ -20,7 +20,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * improve the automatic ULA prefix choice, currently you effectively end up with the uptime (~9 seconds)
   * maybe use: cat /sys/class/net/$IFACE/address | cut -d: -f3-
   * maybe use: dd if=/dev/urandom bs=1 count=5 2>/dev/null | od -v -An -t x1
- * fix dnsmasq to exclude non-global addresses, my patch is bad :)
+ * fix dnsmasq to exclude non-global addresses, [my patch was bad](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2015q1/009122.html) :)
   * reverse zone file for fc00::/7 and 2002:: too
  * svlogd/syslog to printk/dmesg
 
