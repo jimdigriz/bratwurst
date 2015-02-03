@@ -57,7 +57,7 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist with the followi
   * **IPv6:** `$ULA:10::/64`
   * **IPv6:** `2002:[public-IPv4-address]:10::/64` - when connected
   * **IPv6:** `[DHCPv6-PD]:10::/64` - when connected and a prefix has been allocated
-  * **IPv4:** `192.168.1.1/24` (`192.168.1.{65...254}` used for client DHCP leases)
+  * **IPv4:** `192.168.1.1/24` (`192.168.1.{64...254}` used for client DHCP leases)
 
 **N.B.** it is [normal to have multiple IPv6 addresses on hosts](https://tools.ietf.org/html/rfc6724) and in a normal BRatWuRsT LAN you may find your hosts have as many as 10 IPv6 address if not more.  This actually makes routing easier as most [modern operating system](https://www.nanog.org/sites/default/files/monday_general_deccio_quantifyingIPv6_62.6.pdf#page=15) pick the [right address to use automatically](http://biplane.com.au/blog/?p=22); some older systems may need to you experiment with [/etc/gai.conf](http://linux.die.net/man/5/gai.conf)/[ip6addrctl](https://www.freebsd.org/cgi/man.cgi?query=ip6addrctl&sektion=8).
 
