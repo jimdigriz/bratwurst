@@ -35,6 +35,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * QoS
  * in place firmware upgrade
   * ...without losing config and customisations?
+  * [OverlayFS](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/overlayfs.txt) is now an option to combine SquashFS with JFFS2
   * "OTA"?
  * development instructions to be expanded to work under Mac OS X
  * fakeisp really could do with IPv6 on the uplink, we could accomplish this with:
