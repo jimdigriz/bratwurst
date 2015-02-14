@@ -49,10 +49,10 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist with the followi
   * **IPv6:** `[DHCPv6-PD]:08::/64` - when connected and a prefix has been allocated
  * **`eth0`:** link into fakeisp for uplink
   * **IPv4:**
-   * `192.0.2.0/24` - DHCP 'cable' network [not supported]
+   * `192.0.2.0/24` - DHCP 'cable' network {not supported}
    * `172.20.0.1` to `172.20.0.0` - point-to-point ATMTCP connection (RFC1918 choosen so ignored by dnsmasq)
  * **`eth1`:** LAN interface
- * **`wlan0` [not supported]:** provided by `mac80211_hwsim` testing is performed on (as in the real world)
+ * **`wlan0` {not supported}:** provided by `mac80211_hwsim` testing is performed on (as in the real world)
  * **`br0`:** Ethernet bridge made up of `eth1` and `wlan0`
   * **IPv6:** `$ULA:10::/64`
   * **IPv6:** `2002:[public-IPv4-address]:10::/64` - when connected
@@ -63,7 +63,7 @@ For the BRatWuRsT QEMU VM, a number of network interfaces exist with the followi
 
 `eth0` is multi-purpose interface that is used to provide emulation of real world typical xDSL configurations.
 
- * **Ethernet (cable modem) [not supported] (`192.0.2.0/24`):** eth0 <- dhcp
+ * **Ethernet (cable modem) {not supported} (`192.0.2.0/24`):** eth0 <- dhcp
  * **xDSL:**
      * **PPPoE (`203.0.113.0/24`):** ATM-over-TCP (`atmtcp`) <- RFC2684 (`br2684ctl`) <- ppp
      * **PPPoA (`198.51.100.0/24`):** ATM-over-TCP (`atmtcp`) <- ppp
@@ -77,7 +77,7 @@ BRatWuRsT communicates with fakeisp using a multicast UDP socket bounded to the 
   * **IPv4:** DHCP to QEMU user mode networking stack
  * **`eth1`:** link into BRatWuRsT QEMU VM
   * **IPv4:**
-   * `192.0.2.1/24` - DHCP 'cable' network [not supported]
+   * `192.0.2.1/24` - DHCP 'cable' network {not supported}
    * `172.20.0.0` to `172.20.0.1` - point-to-point ATMTCP connection
 
 For `eth0` we use user mode network stack for the convenience of not having to run anything as root but it comes with the disadvantage that IPv6 is not supported routing to the outside world.  Fortunately this does not affect IPv6 support between fakeisp and BRatWuRsT though.
