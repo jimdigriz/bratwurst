@@ -38,7 +38,7 @@ Related Links:
 ## Supported Physical Targets
 
  * [Linksys WAG54G](board/ar7/wag54g/README.md)
- * [TP-Link TD-W8980](board/ath79/td-w8980/README.md) - currently not supported
+ * [TP-Link TD-W8980](board/lantiq/td-w8980/README.md) - currently not supported
  * [TP-Link TL-MR3020](board/ath79/tl-mr3020/README.md) - currently not supported
 
 # Preflight

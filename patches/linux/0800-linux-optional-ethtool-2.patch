@@ -1,3 +1,9 @@
+net drivers to ethtool ops convert:
+
+$ spatch --dir buildroot/output/build/linux-3.18.6 \
+	buildroot/output/build/linux-3.18.6/scripts/coccinelle/api/ethtool_ops.cocci \
+	> patches/linux/0800-linux-optional-ethtool-2.patch 2>/dev/null
+
 diff -u -p a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
 --- a/arch/um/drivers/net_kern.c
 +++ b/arch/um/drivers/net_kern.c
@@ -37,7 +43,7 @@ diff -u -p a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
 diff -u -p a/net/core/dev.c b/net/core/dev.c
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -6585,7 +6585,7 @@ void netdev_set_default_ethtool_ops(stru
+@@ -6595,7 +6595,7 @@ void netdev_set_default_ethtool_ops(stru
  				    const struct ethtool_ops *ops)
  {
  	if (dev->ethtool_ops == &default_ethtool_ops)
@@ -45,8 +51,8 @@ diff -u -p a/net/core/dev.c b/net/core/dev.c
 +		SET_ETHTOOL_OPS(dev, ops);
  }
  EXPORT_SYMBOL_GPL(netdev_set_default_ethtool_ops);
- 
-@@ -6693,7 +6693,7 @@ struct net_device *alloc_netdev_mqs(int
+ #endif
+@@ -6704,7 +6704,7 @@ struct net_device *alloc_netdev_mqs(int
  	dev->name_assign_type = name_assign_type;
  	dev->group = INIT_NETDEV_GROUP;
  	if (!dev->ethtool_ops)
@@ -413,15 +419,15 @@ diff -u -p a/drivers/net/ethernet/microchip/enc28j60.c b/drivers/net/ethernet/mi
 diff -u -p a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
 --- a/drivers/net/ethernet/lantiq_etop.c
 +++ b/drivers/net/ethernet/lantiq_etop.c
-@@ -740,7 +740,7 @@ ltq_etop_probe(struct platform_device *p
- 	}
- 	strcpy(dev->name, "eth%d");
- 	dev->netdev_ops = &ltq_eth_netdev_ops;
--	dev->ethtool_ops = &ltq_etop_ethtool_ops;
-+	SET_ETHTOOL_OPS(dev, &ltq_etop_ethtool_ops);
- 	priv = netdev_priv(dev);
- 	priv->res = res;
- 	priv->pdev = pdev;
+@@ -861,7 +861,7 @@ ltq_etop_init(struct net_device *dev)
+ 
+ 	ltq_etop_set_multicast_list(dev);
+ 	if (!ltq_etop_mdio_init(dev))
+-		dev->ethtool_ops = &ltq_etop_ethtool_ops;
++		SET_ETHTOOL_OPS(dev, &ltq_etop_ethtool_ops);
+ 	else
+ 		pr_warn("etop: mdio probe failed\n");;
+ 	return 0;
 diff -u -p a/drivers/net/ethernet/octeon/octeon_mgmt.c b/drivers/net/ethernet/octeon/octeon_mgmt.c
 --- a/drivers/net/ethernet/octeon/octeon_mgmt.c
 +++ b/drivers/net/ethernet/octeon/octeon_mgmt.c
@@ -525,7 +531,7 @@ diff -u -p a/drivers/net/ethernet/atheros/atl1e/atl1e_ethtool.c b/drivers/net/et
 diff -u -p a/drivers/net/ethernet/atheros/alx/main.c b/drivers/net/ethernet/atheros/alx/main.c
 --- a/drivers/net/ethernet/atheros/alx/main.c
 +++ b/drivers/net/ethernet/atheros/alx/main.c
-@@ -1302,7 +1302,7 @@ static int alx_probe(struct pci_dev *pde
+@@ -1304,7 +1304,7 @@ static int alx_probe(struct pci_dev *pde
  	}
  
  	netdev->netdev_ops = &alx_netdev_ops;
@@ -537,7 +543,7 @@ diff -u -p a/drivers/net/ethernet/atheros/alx/main.c b/drivers/net/ethernet/athe
 diff -u -p a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
 --- a/drivers/net/ethernet/emulex/benet/be_main.c
 +++ b/drivers/net/ethernet/emulex/benet/be_main.c
-@@ -4494,7 +4494,7 @@ static void be_netdev_init(struct net_de
+@@ -4496,7 +4496,7 @@ static void be_netdev_init(struct net_de
  
  	netdev->netdev_ops = &be_netdev_ops;
  
@@ -1379,7 +1385,7 @@ diff -u -p a/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c b/drivers/net/
 diff -u -p a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
 --- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
 +++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-@@ -2287,8 +2287,8 @@ qlcnic_setup_netdev(struct qlcnic_adapte
+@@ -2289,8 +2289,8 @@ qlcnic_setup_netdev(struct qlcnic_adapte
  
  	qlcnic_change_mtu(netdev, netdev->mtu);
  
@@ -1390,7 +1396,7 @@ diff -u -p a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethe
  
  	netdev->features |= (NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_RXCSUM |
  			     NETIF_F_IPV6_CSUM | NETIF_F_GRO |
-@@ -2703,7 +2703,7 @@ err_out_disable_pdev:
+@@ -2705,7 +2705,7 @@ err_out_disable_pdev:
  err_out_maintenance_mode:
  	set_bit(__QLCNIC_MAINTENANCE_MODE, &adapter->state);
  	netdev->netdev_ops = &qlcnic_netdev_failed_ops;
@@ -2072,7 +2078,7 @@ diff -u -p a/drivers/net/ethernet/ti/tlan.c b/drivers/net/ethernet/ti/tlan.c
 diff -u -p a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
 --- a/drivers/net/ethernet/ti/cpsw.c
 +++ b/drivers/net/ethernet/ti/cpsw.c
-@@ -2134,7 +2134,7 @@ static int cpsw_probe_dual_emac(struct p
+@@ -2160,7 +2160,7 @@ static int cpsw_probe_dual_emac(struct p
  	ndev->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
  
  	ndev->netdev_ops = &cpsw_netdev_ops;
@@ -2081,7 +2087,7 @@ diff -u -p a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
  	netif_napi_add(ndev, &priv_sl2->napi, cpsw_poll, CPSW_POLL_WEIGHT);
  
  	/* register the network device */
-@@ -2370,7 +2370,7 @@ static int cpsw_probe(struct platform_de
+@@ -2396,7 +2396,7 @@ static int cpsw_probe(struct platform_de
  	ndev->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
  
  	ndev->netdev_ops = &cpsw_netdev_ops;
@@ -2105,7 +2111,7 @@ diff -u -p a/drivers/net/ethernet/cirrus/ep93xx_eth.c b/drivers/net/ethernet/cir
 diff -u -p a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
 --- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
 +++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -2568,7 +2568,7 @@ int mlx4_en_init_netdev(struct mlx4_en_d
+@@ -2577,7 +2577,7 @@ int mlx4_en_init_netdev(struct mlx4_en_d
  	netif_set_real_num_tx_queues(dev, priv->tx_ring_num);
  	netif_set_real_num_rx_queues(dev, priv->rx_ring_num);
  
@@ -2386,7 +2392,7 @@ diff -u -p a/drivers/net/wireless/hostap/hostap_main.c b/drivers/net/wireless/ho
 diff -u -p a/drivers/net/team/team.c b/drivers/net/team/team.c
 --- a/drivers/net/team/team.c
 +++ b/drivers/net/team/team.c
-@@ -2032,7 +2032,7 @@ static void team_setup(struct net_device
+@@ -2044,7 +2044,7 @@ static void team_setup(struct net_device
  	ether_setup(dev);
  
  	dev->netdev_ops = &team_netdev_ops;
@@ -2422,7 +2428,7 @@ diff -u -p a/drivers/net/veth.c b/drivers/net/veth.c
 diff -u -p a/drivers/net/xen-netback/interface.c b/drivers/net/xen-netback/interface.c
 --- a/drivers/net/xen-netback/interface.c
 +++ b/drivers/net/xen-netback/interface.c
-@@ -426,7 +426,7 @@ struct xenvif *xenvif_alloc(struct devic
+@@ -428,7 +428,7 @@ struct xenvif *xenvif_alloc(struct devic
  		NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
  		NETIF_F_TSO | NETIF_F_TSO6;
  	dev->features = dev->hw_features | NETIF_F_RXCSUM;
