@@ -27,6 +27,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 ## Roadmap
 
  * look at the [Homenet WG](http://tools.ietf.org/wg/homenet/) docs, especially [RFC7368](http://tools.ietf.org/html/rfc7368)
+ * create an SSHFP record for the router using [dnsmasq's dns-rr](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2012q2/005941.html) feature
  * the WAG54G has GPIOs to control the LEDs, we should probably use them
  * supporting straight Ethernet with DHCP (a la cable)
  * improve firewalling
