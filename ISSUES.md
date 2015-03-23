@@ -23,6 +23,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * fix dnsmasq to exclude non-global addresses, [my patch was bad](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2015q1/009122.html) :)
   * reverse zone file for fc00::/7 and 2002:: too
  * svlogd/syslog to printk/dmesg
+ * 6to4 route does not clean up on disconnect, and native IPv6 route is missing occasionly
 
 ## Roadmap
 
