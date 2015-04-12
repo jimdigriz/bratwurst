@@ -158,7 +158,7 @@ uclibc-update-defconfig:
 	rm .list
 
 .PHONY: busybox-update-defconfig
-busybox-update-defconfig: BUSYBOX_VERSION=1.23.0
+busybox-update-defconfig: BUSYBOX_VERSION=1.23.1
 busybox-update-defconfig:
 	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config config/busybox
 
