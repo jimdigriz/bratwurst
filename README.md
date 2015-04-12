@@ -27,7 +27,7 @@ Related Links:
   * [6to4](http://en.wikipedia.org/wiki/6to4) support so that those without native IPv6 do not miss out
  * combined IPv6/IPv4 (inet) firewalling with [nftables](http://wiki.nftables.org/)
  * [runit](http://smarden.org/runit/) ([tutorial](http://www.sanityinc.com/articles/init-scripts-considered-harmful/)) as PID 1
- * DNS authoritive server, including reverse zones
+ * DNS authoritative server, including reverse zones
   * use the [6to4reverse form](https://6to4.nro.net/) if you use 6to4
  * client services:
   * SSH with [public keys](https://macnugget.org/projects/publickeys/)
@@ -107,11 +107,11 @@ Here we have added an account for 'bob' using the SSH keys from the local workst
 Note that:
 
  1. each all accounts are password-less
- 1. to add a password to an account, use `passwd`
+ 1. to add a password to an account, use `passwd` when logged into the device
  1. password-less accounts can only log in via the serial port (SSH rejects password authentication)
  1. only public key authentication is supported for SSH
  1. `root` is never permitted to SSH in (as well as being password-less)
- 1. to become `root` you use `su`
+ 1. to become `root` you use `su -` when logged in at a terminal
 
 **N.B.** on first boot the system has to generate SSH host keys which takes typically around five minutes to complete.  Until this process is finished you will get 'Connection Refused' as the SSH server cannot start till this process completes
 

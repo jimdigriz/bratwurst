@@ -1,4 +1,4 @@
-This page applies to version 2 of the Linksys WAG54G, but it should work equally well with the version 3 modle which has just twice the amount of RAM and NAND (CFI changes looks to change from AMD to Intel CFI).
+This page applies to version 2 of the Linksys WAG54G, but it should work equally well with the version 3 model which has just twice the amount of RAM and NAND (CFI changes looks to change from AMD to Intel CFI).
 
 # Preflight
 
@@ -36,7 +36,7 @@ Here is some helpful information regarding the device.
 
 There is a single screw beneath each of the four removable rubber feet.  Once you remove them, and break the 'security' sticker, you should be able to pop off the front by pulling either the left or right hand side where there are latches; they are firm but you should be able to do all the work with your thumb and forefinger.  Once popped everything should slide apart, but be careful with the cable inside that attaches the wireless card to the aerial.
 
-To detach the board from the chassis, there is a single larger screw in the center, the board then slides out from some clips with no trouble.
+To detach the board from the chassis, there is a single larger screw in the centre, the board then slides out from some clips with no trouble.
 
 ## Serial Cable
 
@@ -62,7 +62,7 @@ Wiring it up is straight forward by using the [headphone jack pinout of the TTL-
     |    --
     |   JP3
     |
-     \__led__led__led__led____________________
+     \__LED__LED__LED__LED____________________
                     Front
 
 **N.B.** remember that when wiring you attach the TX pin of one end to the RX pin of the other and of course GND to GND
@@ -82,7 +82,7 @@ The onboard 4MB (64kB erase size) NAND is partition as follows:
  * `mtd0` (`0x900e0000-0x903f0000`, size: 3136kB): rootfs
  * `mtd1` (`0x90020000-0x900e0000`, size: 768kB): kernel
  * `mtd2` (`0x90000000-0x90020000`, size: 128kB): adam2 bootloader
- * `mtd3` (`0x903f0000-0x90400000`, size: 64kB): adam2 configuratino
+ * `mtd3` (`0x903f0000-0x90400000`, size: 64kB): adam2 configuration
  * `mtd4` (`0x90020000-0x903f0000`, size: 3904kB): kernel and rootfs which is where `firmware-code.bin` is flashed to
 
 Under Linux the `ar7part.c` driver is [meant to spit out a suitable partition table](http://marc.info/?l=linux-mips&m=126268121228322&w=3) for both bootloaders (PSPBoot and ADAM2) that are available on the AR7 platform.  However, I found it does not and should not be used as for me the 'rootfs' partition overlaps the 'linux' partition.  Instead I recommend using `cmdlinepart`.
@@ -106,13 +106,13 @@ So far the map I have been able to piece together is (all pins have `active_low`
  * pin 01, default 1, dir in: fixed on
  * pin 02, default 1, dir in: fixed on
  * pin 03, default 0, dir in: fixed off
- * pin 04, default 0, dir in: status led {0}
- * pin 05, default 1, dir in: status led {1}
- * pin 06, default 1, dir in: WLAN led
+ * pin 04, default 0, dir in: status LED {0}
+ * pin 05, default 1, dir in: status LED {1}
+ * pin 06, default 1, dir in: WLAN LED
  * pin 07, default 0, dir in: ?
- * pin 08, default 1, dir in: status led {2}
+ * pin 08, default 1, dir in: status LED {2}
  * pin 09, default 0, dir in: ?
- * pin 10, default 1, dir in: reset ethernet - CAUTION, it is a latch (0 - reset, 1 - start however lights lock on)
+ * pin 10, default 1, dir in: reset Ethernet - CAUTION, it is a latch (0 - reset, 1 - start however lights lock on)
  * pin 11, default 1, dir in: reset key (0 - off, 1 = pressed)
  * pin 12, default 1, dir in: ?
  * pin 13, default 1, dir in: ?
