@@ -147,9 +147,8 @@ buildroot-update-defconfig:
 	mv .$@ $@
 
 .PHONY: uclibc-update-defconfig
-uclibc-update-defconfig: UCLIBC_VERSION=0.9.33.2
-uclibc-update-defconfig:
-	find buildroot/output/build/uclibc-$(UCLIBC_VERSION)/extra/Configs \
+uclibc-update-defconfig: buildroot/.config
+	find buildroot/output/build/uclibc-$(shell sed -n 's/BR2_UCLIBC_VERSION_STRING="\(.*\)"/\1/ p' buildroot/.config)/extra/Configs \
 			-name 'Config.*' -a ! -name Config.in -a ! -name Config.in.arch \
 		| xargs sed -n 's/^config \(.*\)/\1/ p' | sort | uniq > .list
 	echo TARGET_ >> .list
@@ -158,9 +157,8 @@ uclibc-update-defconfig:
 	rm .list
 
 .PHONY: busybox-update-defconfig
-busybox-update-defconfig: BUSYBOX_VERSION=1.23.1
-busybox-update-defconfig:
-	cp buildroot/output/build/busybox-$(BUSYBOX_VERSION)/.config config/busybox
+busybox-update-defconfig: buildroot
+	cp buildroot/output/build/busybox-$(shell sed -n 's/BUSYBOX_VERSION = // p' buildroot/package/busybox/busybox.mk)/.config config/busybox
 
 .PHONY: world %-menuconfig %-update-defconfig
 world %-menuconfig %-update-defconfig: bratwurst.config .users buildroot/.config .uclibc.config
