@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+
+if [ "${1:-}" = "save" ]; then
+	touch /etc/os-release
+	exit 0
+fi
+
+CUR=$(date -u +%s)
+TIM=$(stat -t /etc/os-release | cut -d' ' -f13)
+
+[ $TIM -gt $CUR ] && date -u -s @$TIM >/dev/null
+
+exit 0

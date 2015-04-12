@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -eu
+
+mkdir -p /var/spool/cron/crontabs
+
+cat <<'EOF' > /var/spool/cron/crontabs/root
+5 *  * * *  /etc/rc.d/40_urandom save
+6 *  * * *  /etc/rc.d/35_time save
+EOF
+
+exec 2>&1
+exec /sbin/crond -f -d 8
