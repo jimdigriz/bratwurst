@@ -4,9 +4,12 @@ set -eu
 
 . /etc/bratwurst
 
-if [ ! "${ULA:-}" ]; then
-	# knowingly using '00' here, and no xxd/sha1sum to do this properly
-	ULA="$(printf "%08x\n" $(date +%s) | sed 's/\(....\)\(....\)/fd00:\1:\2/')"
+if [ -z "${ULA:-}" ]; then
+	# HACK: is a hardcoding of 'eth0' a good idea here?
+	H=$(cat /sys/class/net/eth0/address | cut -d: -f5)
+	L=$((0x$(cat /sys/class/net/eth0/address | cut -d: -f3- | tr -d :) ^ 0x$(dd if=/dev/urandom bs=1 count=4 2>/dev/null | od -X | awk 'NR == 1 { print $2 }')))
+
+	ULA=$(printf "%08x\n" ${L#-} | sed "s/\(....\)\(....\)/fd$H:\1:\2/")
 	printf "\nULA=%s\n" $ULA >> /etc/bratwurst
 fi
 
