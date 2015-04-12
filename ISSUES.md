@@ -17,13 +17,11 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * how to use it (should be more obvious once we have real hardware)
   * IP ranges used
   * how to strap in another VM as a client on the LAN
- * improve the automatic ULA prefix choice, currently you effectively end up with the uptime (~9 seconds)
-  * maybe use: cat /sys/class/net/$IFACE/address | cut -d: -f3-
-  * maybe use: dd if=/dev/urandom bs=1 count=5 2>/dev/null | od -v -An -t x1
  * fix dnsmasq to exclude non-global addresses, [my patch was bad](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2015q1/009122.html) :)
   * reverse zone file for fc00::/7 and 2002:: too
  * svlogd/syslog to printk/dmesg
  * 6to4 route does not clean up on disconnect, and native IPv6 route is missing occasionly
+ * move RAM/MTDPARTS/etc into board and have post-image.sh use these variables rather than duping them
 
 ## Roadmap
 
@@ -36,6 +34,7 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * make use of the inet nftable (icmpx, etc) now we are using a 3.18 kernel
  * wireless
  * QoS
+ * `rootfs/etc/rc.d/50_networking` has `ULA` hardcoded to be generated from `eth0`
  * in place firmware upgrade
   * ...without losing config and customisations?
   * [OverlayFS](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/overlayfs.txt) is now an option to combine SquashFS with JFFS2
