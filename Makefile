@@ -2,7 +2,7 @@ BOARD		?= qemu/mipsel
 
 RAM		?= 16
 NAND		?= 4
-MTDPARTS	?= 128k(boot)ro,1024k(kernel),2880k(rootfs),64k(config)ro
+MTDPARTS	?= 128k(boot)ro,832k(kernel),3072k(rootfs),64k(config)ro
 ROOTFSDEV	?= mtd$(shell echo "$(MTDPARTS)" | sed 's/(rootfs).*//' | awk -F, '{ print NF-1 }')
 FSAPPEND	:= mtdparts=physmap-flash.0:$(MTDPARTS) rootfstype=jffs2 root=$(ROOTFSDEV)
 APPEND		?=
