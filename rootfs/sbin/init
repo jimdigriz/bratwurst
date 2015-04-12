@@ -2,6 +2,12 @@
 
 set -eu
 
+panic () {
+	echo init died, existing to shell
+	exec /bin/sh
+}
+trap panic 0
+
 run-parts /etc/rc.d
 
 mkdir -p /var/spool/sv
