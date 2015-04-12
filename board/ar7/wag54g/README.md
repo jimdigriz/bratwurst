@@ -160,7 +160,7 @@ The status pin map looks like (for pin settings 4, 5 and 8 respectively):
 
 ## JTAG
 
-Fortunately there is a full sized standard [EJTAG 14 pin header(http://wiki.openwrt.org/doc/hardware/port.jtag#pin.header2) lurking at JP1, only problem is that it is headless so you have to solder it on.
+Fortunately there is a full sized standard [EJTAG 14 pin header](http://wiki.openwrt.org/doc/hardware/port.jtag#pin.header2) lurking at JP1, only problem is that it is headless so you have to solder it on.
 
 Once soldered though, you can hookup your JTAG tools of choice (I have the [Flyswatter 2](http://www.tincantools.com/JTAG/Flyswatter2.html) with the [ARM20 to MIPS14 converter](http://www.tincantools.com/JTAG/ARM20MIPS14.html)) and fire up [openocd](http://openocd.sourceforge.net/):
 

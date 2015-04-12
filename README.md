@@ -93,7 +93,7 @@ For a fresh build you will need a configuration file:
 
     make defconfig
 
-This creates the default `bratwurst.config` configuration file which contains documentation inline.  Later this file is used during the firmware building process and installed on the target at `/etc/bratwurst`.  Open this file in an editor and edit it to suit your environment, the defaults can be left as is if you just want to spin up the VM.
+This creates the default `bratwurst.config` configuration file which contains inline documentation.  Later this file is used during the firmware building process and installed on the target at `/etc/bratwurst`.  Open this file in an editor and edit it to suit your environment, the defaults can be left as is if you just want to spin up the VM.
 
 ### User Accounts
 
