@@ -6,10 +6,10 @@ set -eu
 
 if [ -z "${ULA:-}" ]; then
 	# HACK: is a hardcoding of 'eth0' a good idea here?
-	H=$(cat /sys/class/net/eth0/address | cut -d: -f5)
 	L=$((0x$(cat /sys/class/net/eth0/address | cut -d: -f3- | tr -d :) ^ 0x$(dd if=/dev/urandom bs=1 count=4 2>/dev/null | od -X | awk 'NR == 1 { print $2 }')))
+	L=${L#-}
 
-	ULA=$(printf "%08x\n" ${L#-} | sed "s/\(....\)\(....\)/fd$H:\1:\2/")
+	ULA=$(printf "fd%02x:%04x:%04x\n" $((L % 256)) $((L >> 16)) $((L % 65536)))
 	printf "\nULA=%s\n" $ULA >> /etc/bratwurst
 fi
 
