@@ -10,4 +10,4 @@ qemu/mipsel: | qemu/mipsel-remove-pflash world
 .PHONY: qemu/mipsel-remove-pflash
 qemu/mipsel-remove-pflash:
 	rm -f $(PFLASH)
-	rsync -qrl rootfs/ buildroot/output/target/
+	test ! -d buildroot/output/target/ || rsync -qrl rootfs/ buildroot/output/target/

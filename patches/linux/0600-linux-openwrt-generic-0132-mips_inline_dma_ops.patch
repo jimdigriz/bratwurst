@@ -19,7 +19,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
 
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -1450,6 +1450,7 @@ config CPU_CAVIUM_OCTEON
+@@ -1526,6 +1526,7 @@ config CPU_CAVIUM_OCTEON
  	select CPU_SUPPORTS_HUGEPAGES
  	select USB_EHCI_BIG_ENDIAN_MMIO
  	select MIPS_L1_CACHE_SHIFT_7
@@ -27,7 +27,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  	help
  	  The Cavium Octeon processor is a highly integrated chip containing
  	  many ethernet hardware widgets for networking tasks. The processor
-@@ -1705,6 +1706,9 @@ config MIPS_MALTA_PM
+@@ -1790,6 +1791,9 @@ config MIPS_MALTA_PM
  	bool
  	default y
  
@@ -468,7 +468,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  int hw_coherentio = 0;	/* Actual hardware supported DMA coherency setting. */
  
  static int __init setcoherentio(char *str)
-@@ -46,30 +46,6 @@ static int __init setnocoherentio(char *
+@@ -46,35 +46,6 @@ static int __init setnocoherentio(char *
  early_param("nocoherentio", setnocoherentio);
  #endif
  
@@ -487,6 +487,11 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
 - * Warning on the terminology - Linux calls an uncached area coherent;
 - * MIPS terminology calls memory areas with hardware maintained coherency
 - * coherent.
+- *
+- * Note that the R14000 and R16000 should also be checked for in this
+- * condition.  However this function is only called on non-I/O-coherent
+- * systems and only the R10000 and R12000 are used in such systems, the
+- * SGI IP28 Indigo² rsp. SGI IP32 aka O2.
 - */
 -static inline int cpu_needs_post_dma_flush(struct device *dev)
 -{
@@ -499,7 +504,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  static gfp_t massage_gfp_flags(const struct device *dev, gfp_t gfp)
  {
  	gfp_t dma_flag;
-@@ -125,8 +101,9 @@ void *dma_alloc_noncoherent(struct devic
+@@ -130,8 +101,9 @@ void *dma_alloc_noncoherent(struct devic
  }
  EXPORT_SYMBOL(dma_alloc_noncoherent);
  
@@ -511,7 +516,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  {
  	void *ret;
  	struct page *page = NULL;
-@@ -157,6 +134,7 @@ static void *mips_dma_alloc_coherent(str
+@@ -162,6 +134,7 @@ static void *mips_dma_alloc_coherent(str
  
  	return ret;
  }
@@ -519,7 +524,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  
  
  void dma_free_noncoherent(struct device *dev, size_t size, void *vaddr,
-@@ -167,8 +145,8 @@ void dma_free_noncoherent(struct device
+@@ -172,8 +145,8 @@ void dma_free_noncoherent(struct device
  }
  EXPORT_SYMBOL(dma_free_noncoherent);
  
@@ -530,7 +535,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  {
  	unsigned long addr = (unsigned long) vaddr;
  	int order = get_order(size);
-@@ -188,6 +166,7 @@ static void mips_dma_free_coherent(struc
+@@ -193,6 +166,7 @@ static void mips_dma_free_coherent(struc
  	if (!dma_release_from_contiguous(dev, page, count))
  		__free_pages(page, get_order(size));
  }
@@ -538,7 +543,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  
  static inline void __dma_sync_virtual(void *addr, size_t size,
  	enum dma_data_direction direction)
-@@ -216,8 +195,8 @@ static inline void __dma_sync_virtual(vo
+@@ -221,8 +195,8 @@ static inline void __dma_sync_virtual(vo
   * If highmem is not configured then the bulk of this loop gets
   * optimized out.
   */
@@ -549,7 +554,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  {
  	size_t left = size;
  
-@@ -246,108 +225,7 @@ static inline void __dma_sync(struct pag
+@@ -251,108 +225,7 @@ static inline void __dma_sync(struct pag
  		left -= len;
  	} while (left);
  }
@@ -659,7 +664,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  
  void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
  			 enum dma_data_direction direction)
-@@ -360,23 +238,10 @@ void dma_cache_sync(struct device *dev,
+@@ -365,23 +238,10 @@ void dma_cache_sync(struct device *dev,
  
  EXPORT_SYMBOL(dma_cache_sync);
  

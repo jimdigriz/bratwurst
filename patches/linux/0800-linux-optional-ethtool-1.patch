@@ -1,6 +1,6 @@
-diff -u -N -r linux-3.18.1.orig/include/linux/ethtool.h linux-3.18.1/include/linux/ethtool.h
---- linux-3.18.1.orig/include/linux/ethtool.h	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/include/linux/ethtool.h	2014-12-27 00:06:16.621624475 +0000
+diff -u -r -N linux-4.0.4.orig/include/linux/ethtool.h linux-4.0.4/include/linux/ethtool.h
+--- linux-4.0.4.orig/include/linux/ethtool.h	2015-06-07 17:53:26.897238807 +0100
++++ linux-4.0.4/include/linux/ethtool.h	2015-06-07 17:53:20.961239010 +0100
 @@ -40,8 +40,14 @@
  
  #include <linux/rculist.h>
@@ -16,7 +16,7 @@ diff -u -N -r linux-3.18.1.orig/include/linux/ethtool.h linux-3.18.1/include/lin
  
  /**
   * enum ethtool_phys_id_state - indicator state for physical identification
-@@ -61,9 +67,17 @@
+@@ -81,9 +87,17 @@
  
  struct net_device;
  
@@ -34,12 +34,12 @@ diff -u -N -r linux-3.18.1.orig/include/linux/ethtool.h linux-3.18.1/include/lin
  
  /**
   * ethtool_rxfh_indir_default - get default value for RX flow hash indirection
-diff -u -N -r linux-3.18.1.orig/include/linux/netdevice.h linux-3.18.1/include/linux/netdevice.h
---- linux-3.18.1.orig/include/linux/netdevice.h	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/include/linux/netdevice.h	2014-12-27 00:09:06.545617742 +0000
-@@ -58,8 +58,25 @@
- /* 802.11 specific */
- struct wireless_dev;
+diff -u -r -N linux-4.0.4.orig/include/linux/netdevice.h linux-4.0.4/include/linux/netdevice.h
+--- linux-4.0.4.orig/include/linux/netdevice.h	2015-06-07 17:53:26.901238807 +0100
++++ linux-4.0.4/include/linux/netdevice.h	2015-06-07 17:53:20.965239010 +0100
+@@ -61,8 +61,25 @@
+ /* 802.15.4 specific */
+ struct wpan_dev;
  
 +#ifdef CONFIG_NET_ETHTOOL
 +/* When the driver uses this macro ethtool code can be optimized out
@@ -63,7 +63,7 @@ diff -u -N -r linux-3.18.1.orig/include/linux/netdevice.h linux-3.18.1/include/l
  
  /* Backlog congestion levels */
  #define NET_RX_SUCCESS		0	/* keep 'em coming, baby */
-@@ -2850,7 +2867,6 @@
+@@ -2960,7 +2977,6 @@
  
  bool dev_valid_name(const char *name);
  int dev_ioctl(struct net *net, unsigned int cmd, void __user *);
@@ -71,10 +71,10 @@ diff -u -N -r linux-3.18.1.orig/include/linux/netdevice.h linux-3.18.1/include/l
  unsigned int dev_get_flags(const struct net_device *);
  int __dev_change_flags(struct net_device *, unsigned int flags);
  int dev_change_flags(struct net_device *, unsigned int);
-diff -u -N -r linux-3.18.1.orig/net/core/dev.c linux-3.18.1/net/core/dev.c
---- linux-3.18.1.orig/net/core/dev.c	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/core/dev.c	2014-12-27 00:11:02.297613156 +0000
-@@ -6574,6 +6574,7 @@
+diff -u -r -N linux-4.0.4.orig/net/core/dev.c linux-4.0.4/net/core/dev.c
+--- linux-4.0.4.orig/net/core/dev.c	2015-06-07 17:53:26.901238807 +0100
++++ linux-4.0.4/net/core/dev.c	2015-06-07 17:53:20.965239010 +0100
+@@ -6709,6 +6709,7 @@
  
  static const struct ethtool_ops default_ethtool_ops;
  
@@ -82,18 +82,18 @@ diff -u -N -r linux-3.18.1.orig/net/core/dev.c linux-3.18.1/net/core/dev.c
  void netdev_set_default_ethtool_ops(struct net_device *dev,
  				    const struct ethtool_ops *ops)
  {
-@@ -6581,6 +6582,7 @@
- 		dev->ethtool_ops = ops;
+@@ -6716,6 +6717,7 @@
+ 		SET_ETHTOOL_OPS(dev, ops);
  }
  EXPORT_SYMBOL_GPL(netdev_set_default_ethtool_ops);
 +#endif
  
  void netdev_freemem(struct net_device *dev)
  {
-diff -u -N -r linux-3.18.1.orig/net/core/Makefile linux-3.18.1/net/core/Makefile
---- linux-3.18.1.orig/net/core/Makefile	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/core/Makefile	2014-12-27 00:10:25.613614609 +0000
-@@ -7,12 +7,13 @@
+diff -u -r -N linux-4.0.4.orig/net/core/Makefile linux-4.0.4/net/core/Makefile
+--- linux-4.0.4.orig/net/core/Makefile	2015-06-07 17:53:26.901238807 +0100
++++ linux-4.0.4/net/core/Makefile	2015-06-07 17:53:20.965239010 +0100
+@@ -8,13 +8,14 @@
  
  obj-$(CONFIG_SYSCTL) += sysctl_net_core.o
  
@@ -101,20 +101,39 @@ diff -u -N -r linux-3.18.1.orig/net/core/Makefile linux-3.18.1/net/core/Makefile
 +obj-y		     += dev.o dev_addr_lists.o dst.o netevent.o \
  			neighbour.o rtnetlink.o utils.o link_watch.o filter.o \
  			dev_ioctl.o tso.o
-
+ 
  obj-$(CONFIG_SOCK_DIAG) += sock_diag.o
  obj-$(CONFIG_XFRM) += flow.o
  obj-y += net-sysfs.o
 +obj-$(CONFIG_NET_ETHTOOL) += ethtool.o
  obj-$(CONFIG_PROC_FS) += net-procfs.o
  obj-$(CONFIG_NET_PKTGEN) += pktgen.o
- obj-$(CONFIG_NETPOLL) += netpoll.o
-diff -u -N -r linux-3.18.1.orig/net/Kconfig linux-3.18.1/net/Kconfig
---- linux-3.18.1.orig/net/Kconfig	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/Kconfig	2014-12-27 00:09:49.177616053 +0000
-@@ -83,6 +83,12 @@
- 
- endif # if INET
+ obj-$(CONFIG_LPF_FILTER) += filter.o
+diff -u -r -N linux-4.0.4.orig/net/core/sysctl_net_core.c linux-4.0.4/net/core/sysctl_net_core.c
+--- linux-4.0.4.orig/net/core/sysctl_net_core.c	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/core/sysctl_net_core.c	2015-06-07 17:54:04.057237539 +0100
+@@ -279,6 +279,7 @@
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec
+ 	},
++#ifdef CONFIG_NET_ETHTOOL
+ 	{
+ 		.procname	= "netdev_rss_key",
+ 		.data		= &netdev_rss_key,
+@@ -286,6 +287,7 @@
+ 		.mode		= 0444,
+ 		.proc_handler	= proc_do_rss_key,
+ 	},
++#endif
+ #ifdef CONFIG_BPF_JIT
+ 	{
+ 		.procname	= "bpf_jit_enable",
+diff -u -r -N linux-4.0.4.orig/net/Kconfig linux-4.0.4/net/Kconfig
+--- linux-4.0.4.orig/net/Kconfig	2015-06-07 17:53:26.901238807 +0100
++++ linux-4.0.4/net/Kconfig	2015-06-07 17:53:20.965239010 +0100
+@@ -98,6 +98,12 @@
+ config SOCK_DIAG
+ 	bool
  
 +config NET_ETHTOOL
 +	bool "Ethtool support"

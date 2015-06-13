@@ -1,6 +1,6 @@
 --- a/fs/Kconfig
 +++ b/fs/Kconfig
-@@ -62,6 +62,11 @@ config FILE_LOCKING
+@@ -70,6 +70,11 @@ config FILE_LOCKING
            for filesystems like NFS and for the flock() system
            call. Disabling this option saves about 11k.
  
@@ -15,7 +15,7 @@
 --- a/fs/Makefile
 +++ b/fs/Makefile
 @@ -14,7 +14,8 @@ obj-y :=	open.o read_write.o file_table.
- 		stack.o fs_struct.o statfs.o fs_pin.o
+ 		stack.o fs_struct.o statfs.o fs_pin.o nsfs.o
  
  ifeq ($(CONFIG_BLOCK),y)
 -obj-y +=	buffer.o block_dev.o direct-io.o mpage.o
@@ -26,7 +26,7 @@
  endif
 --- a/include/linux/fs.h
 +++ b/include/linux/fs.h
-@@ -2530,12 +2530,25 @@ enum {
+@@ -2615,12 +2615,25 @@ enum {
  	DIO_ASYNC_EXTEND = 0x04,
  };
  
@@ -67,17 +67,13 @@
  
 --- a/fs/open.c
 +++ b/fs/open.c
-@@ -655,9 +655,12 @@ int open_check_o_direct(struct file *f)
+@@ -667,7 +667,9 @@ int open_check_o_direct(struct file *f)
  {
  	/* NB: we're sure to have correct a_ops only after f_op->open */
  	if (f->f_flags & O_DIRECT) {
 +#ifdef CONFIG_DIRECT_IO
- 		if (!f->f_mapping->a_ops ||
- 		    ((!f->f_mapping->a_ops->direct_IO) &&
--		    (!f->f_mapping->a_ops->get_xip_mem))) {
-+		    (!f->f_mapping->a_ops->get_xip_mem)))
+ 		if (!f->f_mapping->a_ops || !f->f_mapping->a_ops->direct_IO)
 +#endif
-+		{
  			return -EINVAL;
- 		}
  	}
+ 	return 0;

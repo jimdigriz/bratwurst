@@ -84,6 +84,7 @@ bratwurst: qemu/mipsel qemu
 
 VMLINUZ	:= buildroot/output/images/vmlinuz
 PFLASH	:= buildroot/output/images/pflash
+$(VMLINUZ) $(PFLASH): world
 
 .PHONY: qemu
 qemu: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
@@ -152,16 +153,23 @@ uclibc-update-defconfig: buildroot/.config
 			-name 'Config.*' -a ! -name Config.in -a ! -name Config.in.arch \
 		| xargs sed -n 's/^config \(.*\)/\1/ p' | sort | uniq > .list
 	echo TARGET_ >> .list
-	grep    -F -f .list buildroot/output/build/uclibc-$(UCLIBC_VERSION)/.config > board/$(BOARD)/uclibc
-	grep -v -F -f .list buildroot/output/build/uclibc-$(UCLIBC_VERSION)/.config > config/uclibc
+	grep    -F -f .list buildroot/output/build/uclibc-$(shell sed -n 's/BR2_UCLIBC_VERSION_STRING="\(.*\)"/\1/ p' buildroot/.config)/.config > board/$(BOARD)/uclibc
+	grep -v -F -f .list buildroot/output/build/uclibc-$(shell sed -n 's/BR2_UCLIBC_VERSION_STRING="\(.*\)"/\1/ p' buildroot/.config)/.config > config/uclibc
 	rm .list
 
 .PHONY: busybox-update-defconfig
 busybox-update-defconfig: buildroot
 	cp buildroot/output/build/busybox-$(shell sed -n 's/BUSYBOX_VERSION = // p' buildroot/package/busybox/busybox.mk)/.config config/busybox
 
-.PHONY: world %-menuconfig %-update-defconfig
-world %-menuconfig %-update-defconfig: bratwurst.config .users buildroot/.config .uclibc.config
+.PHONY: world
+world: bratwurst.config .users buildroot/.config .uclibc.config
+	make -C buildroot $(subst buildroot-,,$@) \
+		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
+		UCLIBC_CONFIG_FILE="$(CURDIR)/.uclibc.config" \
+		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
+
+.PHONY: %-menuconfig %-update-defconfig
+%-menuconfig %-update-defconfig: bratwurst.config .users buildroot/.config .uclibc.config
 	make -C buildroot $(subst buildroot-,,$@) \
 		BRATWURST_BOARD_DIR="$(CURDIR)/board/$(BOARD)" \
 		UCLIBC_CONFIG_FILE="$(CURDIR)/.uclibc.config" \

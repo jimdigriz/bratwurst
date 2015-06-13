@@ -25,7 +25,7 @@
  obj-$(CONFIG_PROC_FS) += net-procfs.o
 --- a/net/ipv4/Kconfig
 +++ b/net/ipv4/Kconfig
-@@ -419,6 +419,7 @@ config INET_LRO
+@@ -428,6 +428,7 @@ config INET_LRO
  
  config INET_DIAG
  	tristate "INET: socket monitoring interface"

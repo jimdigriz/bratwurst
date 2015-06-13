@@ -1,6 +1,6 @@
-diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/af_packet.c
---- linux-3.18.1.orig/net/packet/af_packet.c	2014-12-26 14:20:32.687017037 +0000
-+++ linux-3.18.1/net/packet/af_packet.c	2014-12-26 14:49:14.350948817 +0000
+diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_packet.c
+--- linux-4.0.4.orig/net/packet/af_packet.c	2015-06-07 18:02:32.817220170 +0100
++++ linux-4.0.4/net/packet/af_packet.c	2015-06-07 18:03:47.665217615 +0100
 @@ -158,6 +158,8 @@
  	unsigned char	mr_address[MAX_ADDR_LEN];
  };
@@ -38,7 +38,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  static inline struct page * __pure pgv_to_page(void *addr)
  {
  	if (is_vmalloc_addr(addr))
-@@ -1201,6 +1206,8 @@
+@@ -1212,6 +1217,8 @@
  	return refcnt;
  }
  
@@ -47,7 +47,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  static int packet_alloc_pending(struct packet_sock *po)
  {
  	po->rx_ring.pending_refcnt = NULL;
-@@ -1217,6 +1224,7 @@
+@@ -1228,6 +1235,7 @@
  	free_percpu(po->tx_ring.pending_refcnt);
  }
  
@@ -55,7 +55,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  static bool packet_rcv_has_room(struct packet_sock *po, struct sk_buff *skb)
  {
  	struct sock *sk = &po->sk;
-@@ -1240,6 +1248,8 @@
+@@ -1251,6 +1259,8 @@
  	return has_room;
  }
  
@@ -64,7 +64,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  static void packet_sock_destruct(struct sock *sk)
  {
  	skb_queue_purge(&sk->sk_error_queue);
-@@ -1255,6 +1265,8 @@
+@@ -1266,6 +1276,8 @@
  	sk_refcnt_debug_dec(sk);
  }
  
@@ -73,7 +73,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  static int fanout_rr_next(struct packet_fanout *f, unsigned int num)
  {
  	int x = atomic_read(&f->rr_cur) + 1;
-@@ -1521,6 +1533,12 @@
+@@ -1532,6 +1544,12 @@
  	mutex_unlock(&fanout_mutex);
  }
  
@@ -86,7 +86,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  static const struct proto_ops packet_ops;
  
  static const struct proto_ops packet_ops_spkt;
-@@ -1858,6 +1876,11 @@
+@@ -1869,6 +1887,11 @@
  	return 0;
  }
  
@@ -98,7 +98,26 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
  		       struct packet_type *pt, struct net_device *orig_dev)
  {
-@@ -2360,6 +2383,35 @@
+@@ -2106,18 +2129,6 @@
+ 	sock_wfree(skb);
+ }
+ 
+-static bool ll_header_truncated(const struct net_device *dev, int len)
+-{
+-	/* net device doesn't like empty head */
+-	if (unlikely(len <= dev->hard_header_len)) {
+-		net_warn_ratelimited("%s: packet size is too short (%d <= %d)\n",
+-				     current->comm, len, dev->hard_header_len);
+-		return true;
+-	}
+-
+-	return false;
+-}
+-
+ static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
+ 		void *frame, struct net_device *dev, int size_max,
+ 		__be16 proto, unsigned char *addr, int hlen)
+@@ -2379,6 +2390,47 @@
  	return err;
  }
  
@@ -131,10 +150,22 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
 +{ return 0; }
 +#endif
 +
++static bool ll_header_truncated(const struct net_device *dev, int len)
++{
++	/* net device doesn't like empty head */
++	if (unlikely(len <= dev->hard_header_len)) {
++		net_warn_ratelimited("%s: packet size is too short (%d <= %d)\n",
++				     current->comm, len, dev->hard_header_len);
++		return true;
++	}
++
++	return false;
++}
++
  static struct sk_buff *packet_alloc_skb(struct sock *sk, size_t prepad,
  				        size_t reserve, size_t len,
  				        size_t linear, int noblock,
-@@ -2579,7 +2631,7 @@
+@@ -2609,7 +2661,7 @@
  	struct sock *sk = sock->sk;
  	struct packet_sock *po = pkt_sk(sk);
  
@@ -143,7 +174,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  		return tpacket_snd(po, msg);
  	else
  		return packet_snd(sock, msg, len);
-@@ -2595,7 +2647,6 @@
+@@ -2625,7 +2677,6 @@
  	struct sock *sk = sock->sk;
  	struct packet_sock *po;
  	struct net *net;
@@ -151,7 +182,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  
  	if (!sk)
  		return 0;
-@@ -2623,15 +2674,7 @@
+@@ -2653,15 +2704,7 @@
  
  	packet_flush_mclist(sk);
  
@@ -168,7 +199,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  
  	fanout_release(sk);
  
-@@ -3204,7 +3247,7 @@
+@@ -3243,7 +3286,7 @@
  packet_setsockopt(struct socket *sock, int level, int optname, char __user *optval, unsigned int optlen)
  {
  	struct sock *sk = sock->sk;
@@ -177,7 +208,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  	int ret;
  
  	if (level != SOL_PACKET)
-@@ -3232,6 +3275,7 @@
+@@ -3271,6 +3314,7 @@
  		return ret;
  	}
  
@@ -185,7 +216,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  	case PACKET_RX_RING:
  	case PACKET_TX_RING:
  	{
-@@ -3315,6 +3359,7 @@
+@@ -3354,6 +3398,7 @@
  		po->tp_loss = !!val;
  		return 0;
  	}
@@ -193,7 +224,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  	case PACKET_AUXDATA:
  	{
  		int val;
-@@ -3367,6 +3412,7 @@
+@@ -3406,6 +3451,7 @@
  		po->tp_tstamp = val;
  		return 0;
  	}
@@ -201,7 +232,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  	case PACKET_FANOUT:
  	{
  		int val;
-@@ -3391,6 +3437,7 @@
+@@ -3430,6 +3476,7 @@
  		po->tp_tx_has_off = !!val;
  		return 0;
  	}
@@ -209,7 +240,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  	case PACKET_QDISC_BYPASS:
  	{
  		int val;
-@@ -3616,6 +3663,7 @@
+@@ -3655,6 +3702,7 @@
  	return 0;
  }
  
@@ -217,7 +248,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  static unsigned int packet_poll(struct file *file, struct socket *sock,
  				poll_table *wait)
  {
-@@ -3860,7 +3908,7 @@
+@@ -3899,7 +3947,7 @@
  		swap(rb->pg_vec_len, req->tp_block_nr);
  
  		rb->pg_vec_pages = req->tp_block_size/PAGE_SIZE;
@@ -226,7 +257,7 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  						tpacket_rcv : packet_rcv;
  		skb_queue_purge(rb_queue);
  		if (atomic_read(&po->mapped))
-@@ -3949,6 +3997,10 @@
+@@ -3988,6 +4036,10 @@
  	mutex_unlock(&po->pg_vec_lock);
  	return err;
  }
@@ -237,9 +268,10 @@ diff -r -N -u linux-3.18.1.orig/net/packet/af_packet.c linux-3.18.1/net/packet/a
  
  static const struct proto_ops packet_ops_spkt = {
  	.family =	PF_PACKET,
-diff -r -N -u linux-3.18.1.orig/net/packet/Kconfig linux-3.18.1/net/packet/Kconfig
---- linux-3.18.1.orig/net/packet/Kconfig	2014-12-26 14:20:32.687017037 +0000
-+++ linux-3.18.1/net/packet/Kconfig	2014-12-26 14:48:25.978950733 +0000
+Binary files linux-4.0.4.orig/net/packet/.af_packet.c.swp and linux-4.0.4/net/packet/.af_packet.c.swp differ
+diff -u -r -N linux-4.0.4.orig/net/packet/Kconfig linux-4.0.4/net/packet/Kconfig
+--- linux-4.0.4.orig/net/packet/Kconfig	2015-06-07 18:02:32.817220170 +0100
++++ linux-4.0.4/net/packet/Kconfig	2015-06-07 17:56:05.989233376 +0100
 @@ -22,3 +22,11 @@
  	---help---
  	  Support for PF_PACKET sockets monitoring interface used by the ss tool.

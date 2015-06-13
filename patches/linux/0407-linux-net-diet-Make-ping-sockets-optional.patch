@@ -1,6 +1,6 @@
-diff -r -N -u linux-3.18.1.orig/include/net/ping.h linux-3.18.1/include/net/ping.h
---- linux-3.18.1.orig/include/net/ping.h	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/include/net/ping.h	2014-12-26 16:09:05.126758984 +0000
+diff -u -r -N linux-4.0.4.orig/include/net/ping.h linux-4.0.4/include/net/ping.h
+--- linux-4.0.4.orig/include/net/ping.h	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/include/net/ping.h	2015-06-07 16:43:39.689381756 +0100
 @@ -71,7 +71,6 @@
  int  ping_init_sock(struct sock *sk);
  void ping_close(struct sock *sk, long timeout);
@@ -13,7 +13,7 @@ diff -r -N -u linux-3.18.1.orig/include/net/ping.h linux-3.18.1/include/net/ping
  int  ping_v6_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
  		     size_t len);
  int  ping_queue_rcv_skb(struct sock *sk, struct sk_buff *skb);
--void ping_rcv(struct sk_buff *skb);
+-bool ping_rcv(struct sk_buff *skb);
  
  #ifdef CONFIG_PROC_FS
  struct ping_seq_afinfo {
@@ -26,7 +26,7 @@ diff -r -N -u linux-3.18.1.orig/include/net/ping.h linux-3.18.1/include/net/ping
  #endif
  
 +#ifdef CONFIG_IP_PING
-+void ping_rcv(struct sk_buff *skb);
++bool ping_rcv(struct sk_buff *skb);
 +void ping_err(struct sk_buff *skb, int offset, u32 info);
  void __init ping_init(void);
  int  __init pingv6_init(void);
@@ -36,14 +36,14 @@ diff -r -N -u linux-3.18.1.orig/include/net/ping.h linux-3.18.1/include/net/ping
 +static inline int pingv6_init(void) { return 0; }
 +static inline void pingv6_exit(void) { }
 +static inline void ping_err(struct sk_buff *skb, int offset, u32 info) {}
-+static inline void ping_rcv(struct sk_buff *skb) {}
++static inline bool ping_rcv(struct sk_buff *skb) {}
 +#endif
 +
  
  #endif /* _PING_H */
-diff -r -N -u linux-3.18.1.orig/include/net/transp_v6.h linux-3.18.1/include/net/transp_v6.h
---- linux-3.18.1.orig/include/net/transp_v6.h	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/include/net/transp_v6.h	2014-12-26 16:09:05.126758984 +0000
+diff -u -r -N linux-4.0.4.orig/include/net/transp_v6.h linux-4.0.4/include/net/transp_v6.h
+--- linux-4.0.4.orig/include/net/transp_v6.h	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/include/net/transp_v6.h	2015-06-07 16:42:17.385384566 +0100
 @@ -19,8 +19,6 @@
  void ipv6_frag_exit(void);
  
@@ -53,10 +53,10 @@ diff -r -N -u linux-3.18.1.orig/include/net/transp_v6.h linux-3.18.1/include/net
  int rawv6_init(void);
  void rawv6_exit(void);
  int udpv6_init(void);
-diff -r -N -u linux-3.18.1.orig/net/ipv4/af_inet.c linux-3.18.1/net/ipv4/af_inet.c
---- linux-3.18.1.orig/net/ipv4/af_inet.c	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/ipv4/af_inet.c	2014-12-26 16:09:05.126758984 +0000
-@@ -1006,7 +1006,7 @@
+diff -u -r -N linux-4.0.4.orig/net/ipv4/af_inet.c linux-4.0.4/net/ipv4/af_inet.c
+--- linux-4.0.4.orig/net/ipv4/af_inet.c	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/ipv4/af_inet.c	2015-06-07 16:42:17.393384566 +0100
+@@ -1004,7 +1004,7 @@
  		.ops =        &inet_dgram_ops,
  		.flags =      INET_PROTOSW_PERMANENT,
         },
@@ -65,7 +65,7 @@ diff -r -N -u linux-3.18.1.orig/net/ipv4/af_inet.c linux-3.18.1/net/ipv4/af_inet
         {
  		.type =       SOCK_DGRAM,
  		.protocol =   IPPROTO_ICMP,
-@@ -1014,6 +1014,7 @@
+@@ -1012,6 +1012,7 @@
  		.ops =        &inet_dgram_ops,
  		.flags =      INET_PROTOSW_REUSE,
         },
@@ -73,7 +73,7 @@ diff -r -N -u linux-3.18.1.orig/net/ipv4/af_inet.c linux-3.18.1/net/ipv4/af_inet
  
         {
  	       .type =       SOCK_RAW,
-@@ -1691,7 +1692,9 @@
+@@ -1689,7 +1690,9 @@
  	if (rc)
  		goto out_unregister_udp_proto;
  
@@ -83,7 +83,7 @@ diff -r -N -u linux-3.18.1.orig/net/ipv4/af_inet.c linux-3.18.1/net/ipv4/af_inet
  	if (rc)
  		goto out_unregister_raw_proto;
  
-@@ -1809,15 +1812,11 @@
+@@ -1807,15 +1810,11 @@
  		goto out_tcp;
  	if (udp4_proc_init())
  		goto out_udp;
@@ -99,10 +99,10 @@ diff -r -N -u linux-3.18.1.orig/net/ipv4/af_inet.c linux-3.18.1/net/ipv4/af_inet
  	udp4_proc_exit();
  out_udp:
  	tcp4_proc_exit();
-diff -r -N -u linux-3.18.1.orig/net/ipv4/icmp.c linux-3.18.1/net/ipv4/icmp.c
---- linux-3.18.1.orig/net/ipv4/icmp.c	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/ipv4/icmp.c	2014-12-26 16:09:05.130758984 +0000
-@@ -1042,6 +1042,7 @@
+diff -u -r -N linux-4.0.4.orig/net/ipv4/icmp.c linux-4.0.4/net/ipv4/icmp.c
+--- linux-4.0.4.orig/net/ipv4/icmp.c	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/ipv4/icmp.c	2015-06-07 16:42:17.393384566 +0100
+@@ -1055,6 +1055,7 @@
  		return;
  	}
  
@@ -110,9 +110,9 @@ diff -r -N -u linux-3.18.1.orig/net/ipv4/icmp.c linux-3.18.1/net/ipv4/icmp.c
  	if (type == ICMP_DEST_UNREACH && code == ICMP_FRAG_NEEDED)
  		ipv4_update_pmtu(skb, net, info, 0, 0, IPPROTO_ICMP, 0);
  	else if (type == ICMP_REDIRECT)
-diff -r -N -u linux-3.18.1.orig/net/ipv4/Kconfig linux-3.18.1/net/ipv4/Kconfig
---- linux-3.18.1.orig/net/ipv4/Kconfig	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/ipv4/Kconfig	2014-12-26 16:09:05.126758984 +0000
+diff -u -r -N linux-4.0.4.orig/net/ipv4/Kconfig linux-4.0.4/net/ipv4/Kconfig
+--- linux-4.0.4.orig/net/ipv4/Kconfig	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/ipv4/Kconfig	2015-06-07 16:42:17.393384566 +0100
 @@ -52,6 +52,11 @@
  
  	  If unsure, say N here.
@@ -125,9 +125,9 @@ diff -r -N -u linux-3.18.1.orig/net/ipv4/Kconfig linux-3.18.1/net/ipv4/Kconfig
  config IP_FIB_TRIE_STATS
  	bool "FIB TRIE statistics"
  	depends on IP_ADVANCED_ROUTER
-diff -r -N -u linux-3.18.1.orig/net/ipv4/Makefile linux-3.18.1/net/ipv4/Makefile
---- linux-3.18.1.orig/net/ipv4/Makefile	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/ipv4/Makefile	2014-12-26 16:09:05.126758984 +0000
+diff -u -r -N linux-4.0.4.orig/net/ipv4/Makefile linux-4.0.4/net/ipv4/Makefile
+--- linux-4.0.4.orig/net/ipv4/Makefile	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/ipv4/Makefile	2015-06-07 16:42:17.393384566 +0100
 @@ -11,9 +11,10 @@
  	     tcp_offload.o datagram.o raw.o udp.o udplite.o \
  	     udp_offload.o arp.o icmp.o devinet.o af_inet.o igmp.o \
@@ -140,10 +140,10 @@ diff -r -N -u linux-3.18.1.orig/net/ipv4/Makefile linux-3.18.1/net/ipv4/Makefile
  obj-$(CONFIG_SYSCTL) += sysctl_net_ipv4.o
  obj-$(CONFIG_PROC_FS) += proc.o
  obj-$(CONFIG_IP_MULTIPLE_TABLES) += fib_rules.o
-diff -r -N -u linux-3.18.1.orig/net/ipv4/ping.c linux-3.18.1/net/ipv4/ping.c
---- linux-3.18.1.orig/net/ipv4/ping.c	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/ipv4/ping.c	2014-12-26 16:09:05.130758984 +0000
-@@ -1200,6 +1200,9 @@
+diff -u -r -N linux-4.0.4.orig/net/ipv4/ping.c linux-4.0.4/net/ipv4/ping.c
+--- linux-4.0.4.orig/net/ipv4/ping.c	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/ipv4/ping.c	2015-06-07 16:42:17.393384566 +0100
+@@ -1212,6 +1212,9 @@
  	unregister_pernet_subsys(&ping_v4_net_ops);
  }
  
@@ -153,9 +153,9 @@ diff -r -N -u linux-3.18.1.orig/net/ipv4/ping.c linux-3.18.1/net/ipv4/ping.c
  #endif
  
  void __init ping_init(void)
-diff -r -N -u linux-3.18.1.orig/net/ipv6/af_inet6.c linux-3.18.1/net/ipv6/af_inet6.c
---- linux-3.18.1.orig/net/ipv6/af_inet6.c	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/ipv6/af_inet6.c	2014-12-26 16:09:05.130758984 +0000
+diff -u -r -N linux-4.0.4.orig/net/ipv6/af_inet6.c linux-4.0.4/net/ipv6/af_inet6.c
+--- linux-4.0.4.orig/net/ipv6/af_inet6.c	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/ipv6/af_inet6.c	2015-06-07 16:42:17.393384566 +0100
 @@ -851,16 +851,18 @@
  	if (err)
  		goto out_unregister_udplite_proto;
@@ -188,9 +188,9 @@ diff -r -N -u linux-3.18.1.orig/net/ipv6/af_inet6.c linux-3.18.1/net/ipv6/af_ine
  	proto_unregister(&rawv6_prot);
  out_unregister_udplite_proto:
  	proto_unregister(&udplitev6_prot);
-diff -r -N -u linux-3.18.1.orig/net/ipv6/Kconfig linux-3.18.1/net/ipv6/Kconfig
---- linux-3.18.1.orig/net/ipv6/Kconfig	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/ipv6/Kconfig	2014-12-26 16:17:05.586739946 +0000
+diff -u -r -N linux-4.0.4.orig/net/ipv6/Kconfig linux-4.0.4/net/ipv6/Kconfig
+--- linux-4.0.4.orig/net/ipv6/Kconfig	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/ipv6/Kconfig	2015-06-07 16:42:17.393384566 +0100
 @@ -6,6 +6,7 @@
  menuconfig IPV6
  	tristate "The IPv6 protocol"
@@ -199,9 +199,9 @@ diff -r -N -u linux-3.18.1.orig/net/ipv6/Kconfig linux-3.18.1/net/ipv6/Kconfig
  	---help---
  	  This is complemental support for the IP version 6.
  	  You will still be able to do traditional IPv4 networking as well.
-diff -r -N -u linux-3.18.1.orig/net/ipv6/Makefile linux-3.18.1/net/ipv6/Makefile
---- linux-3.18.1.orig/net/ipv6/Makefile	2014-12-16 17:39:45.000000000 +0000
-+++ linux-3.18.1/net/ipv6/Makefile	2014-12-26 16:09:05.130758984 +0000
+diff -u -r -N linux-4.0.4.orig/net/ipv6/Makefile linux-4.0.4/net/ipv6/Makefile
+--- linux-4.0.4.orig/net/ipv6/Makefile	2015-05-17 17:55:21.000000000 +0100
++++ linux-4.0.4/net/ipv6/Makefile	2015-06-07 16:42:17.393384566 +0100
 @@ -7,13 +7,14 @@
  ipv6-objs :=	af_inet6.o anycast.o ip6_output.o ip6_input.o addrconf.o \
  		addrlabel.o \

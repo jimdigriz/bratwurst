@@ -54,23 +54,13 @@ Help is available by running:
 
     make help
 
-## Debian 'wheezy' 7
+## Debian 'jessie' 8
 
-You will need to be plumbed into [Debian Backports](http://backports.debian.org/), which if you have not done already is just a case of running:
-
-    sudo cat <<'EOF' > /etc/apt/sources.list.d/debian-backports.list
-    deb http://http.debian.net/debian wheezy-backports main
-    #deb-src http://http.debian.net/debian wheezy-backports main
-    EOF
-    
-    sudo apt-get update
-
-Afterwards, you can get everything you need with:
+You can install everything you need with:
 
     sudo apt-get install --no-install-recommends \
     	build-essential perl \
-    	wget ca-certificates cpio rsync vim-common
-    sudo apt-get install --no-install-recommends -t wheezy-backports \
+    	wget ca-certificates cpio rsync vim-common \
     	qemu-system-$(uname -m | sed 's/\(i[3456]86\|x86_64\)/x86/')
 
 ## Fedora 20
