@@ -1,0 +1,40 @@
+--- a/net/packet/af_packet.c	2015-06-13 15:12:11.056602978 +0100
++++ b/net/packet/af_packet.c	2015-06-13 15:13:08.524601016 +0100
+@@ -2129,18 +2129,6 @@
+ 	sock_wfree(skb);
+ }
+ 
+-static bool ll_header_truncated(const struct net_device *dev, int len)
+-{
+-	/* net device doesn't like empty head */
+-	if (unlikely(len <= dev->hard_header_len)) {
+-		net_warn_ratelimited("%s: packet size is too short (%d <= %d)\n",
+-				     current->comm, len, dev->hard_header_len);
+-		return true;
+-	}
+-
+-	return false;
+-}
+-
+ static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
+ 		void *frame, struct net_device *dev, int size_max,
+ 		__be16 proto, unsigned char *addr, int hlen)
+@@ -2431,6 +2419,18 @@
+ { return 0; }
+ #endif
+ 
++static bool ll_header_truncated(const struct net_device *dev, int len)
++{
++	/* net device doesn't like empty head */
++	if (unlikely(len <= dev->hard_header_len)) {
++		net_warn_ratelimited("%s: packet size is too short (%d <= %d)\n",
++				     current->comm, len, dev->hard_header_len);
++		return true;
++	}
++
++	return false;
++}
++
+ static struct sk_buff *packet_alloc_skb(struct sock *sk, size_t prepad,
+ 				        size_t reserve, size_t len,
+ 				        size_t linear, int noblock,

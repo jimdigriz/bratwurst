@@ -1,7 +1,47 @@
-diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_packet.c
---- linux-4.0.4.orig/net/packet/af_packet.c	2015-06-07 18:02:32.817220170 +0100
-+++ linux-4.0.4/net/packet/af_packet.c	2015-06-07 18:03:47.665217615 +0100
-@@ -158,6 +158,8 @@
+From 636f216f2103d08ebd7cf24fda23bbf88a40a781 Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Mon, 27 Jan 2014 13:59:55 -0800
+Subject: [PATCH 21/27] net, diet: Make packet tpacket/mmap/fanout/rings
+ optional
+
+Many DHCP clients need basic packet sockets, but they don't need
+the fancy zero copy packet capture code, like tpacket, mmap, rings,
+fanouts. This is quite substantial code, so it's worthwhile to
+make it optional
+
+Worth nearly 10k code.
+
+   text	   data	    bss	    dec	    hex	filename
+ 952827	  71874	  25352	1050053	 1005c5	net/built-in.o-with-packet-mmap
+ 943211	  71810	  25352	1040373	  fdff5	net/built-in.o-wo-packet-mmap
+
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+---
+ net/packet/Kconfig     |  8 +++++
+ net/packet/af_packet.c | 82 +++++++++++++++++++++++++++++++++++++++++---------
+ 2 files changed, 75 insertions(+), 15 deletions(-)
+
+diff --git a/net/packet/Kconfig b/net/packet/Kconfig
+index cc55b35..c215d31 100644
+--- a/net/packet/Kconfig
++++ b/net/packet/Kconfig
+@@ -22,3 +22,11 @@ config PACKET_DIAG
+ 	---help---
+ 	  Support for PF_PACKET sockets monitoring interface used by the ss tool.
+ 	  If unsure, say Y.
++
++config PACKET_MMAP
++	bool "Enable packet mmap/ring support"
++	depends on PACKET
++	default y
++	---help---
++	  Enable support to mmap the packet data zero copy. This is useful for
++	  highspeed packet interceptors.
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index b85c67c..723f57f 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -158,6 +158,8 @@ struct packet_mreq_max {
  	unsigned char	mr_address[MAX_ADDR_LEN];
  };
  
@@ -10,7 +50,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  union tpacket_uhdr {
  	struct tpacket_hdr  *h1;
  	struct tpacket2_hdr *h2;
-@@ -165,8 +167,6 @@
+@@ -165,8 +167,6 @@ union tpacket_uhdr {
  	void *raw;
  };
  
@@ -19,7 +59,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  
  #define V3_ALIGNMENT	(8)
  
-@@ -213,6 +213,9 @@
+@@ -213,6 +213,9 @@ static void prb_clear_rxhash(struct tpacket_kbdq_core *,
  		struct tpacket3_hdr *);
  static void prb_fill_vlan_info(struct tpacket_kbdq_core *,
  		struct tpacket3_hdr *);
@@ -29,7 +69,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static void packet_flush_mclist(struct sock *sk);
  
  struct packet_skb_cb {
-@@ -378,6 +381,8 @@
+@@ -384,6 +387,8 @@ static void unregister_prot_hook(struct sock *sk, bool sync)
  		__unregister_prot_hook(sk, sync);
  }
  
@@ -38,7 +78,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static inline struct page * __pure pgv_to_page(void *addr)
  {
  	if (is_vmalloc_addr(addr))
-@@ -1212,6 +1217,8 @@
+@@ -1210,6 +1215,8 @@ static unsigned int packet_read_pending(const struct packet_ring_buffer *rb)
  	return refcnt;
  }
  
@@ -47,7 +87,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static int packet_alloc_pending(struct packet_sock *po)
  {
  	po->rx_ring.pending_refcnt = NULL;
-@@ -1228,6 +1235,7 @@
+@@ -1226,6 +1233,7 @@ static void packet_free_pending(struct packet_sock *po)
  	free_percpu(po->tx_ring.pending_refcnt);
  }
  
@@ -55,7 +95,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static bool packet_rcv_has_room(struct packet_sock *po, struct sk_buff *skb)
  {
  	struct sock *sk = &po->sk;
-@@ -1251,6 +1259,8 @@
+@@ -1249,6 +1257,8 @@ static bool packet_rcv_has_room(struct packet_sock *po, struct sk_buff *skb)
  	return has_room;
  }
  
@@ -64,7 +104,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static void packet_sock_destruct(struct sock *sk)
  {
  	skb_queue_purge(&sk->sk_error_queue);
-@@ -1266,6 +1276,8 @@
+@@ -1264,6 +1274,8 @@ static void packet_sock_destruct(struct sock *sk)
  	sk_refcnt_debug_dec(sk);
  }
  
@@ -73,7 +113,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static int fanout_rr_next(struct packet_fanout *f, unsigned int num)
  {
  	int x = atomic_read(&f->rr_cur) + 1;
-@@ -1532,6 +1544,12 @@
+@@ -1530,6 +1542,12 @@ static void fanout_release(struct sock *sk)
  	mutex_unlock(&fanout_mutex);
  }
  
@@ -86,7 +126,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static const struct proto_ops packet_ops;
  
  static const struct proto_ops packet_ops_spkt;
-@@ -1869,6 +1887,11 @@
+@@ -1867,6 +1885,11 @@ drop:
  	return 0;
  }
  
@@ -98,26 +138,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
  		       struct packet_type *pt, struct net_device *orig_dev)
  {
-@@ -2106,18 +2129,6 @@
- 	sock_wfree(skb);
- }
- 
--static bool ll_header_truncated(const struct net_device *dev, int len)
--{
--	/* net device doesn't like empty head */
--	if (unlikely(len <= dev->hard_header_len)) {
--		net_warn_ratelimited("%s: packet size is too short (%d <= %d)\n",
--				     current->comm, len, dev->hard_header_len);
--		return true;
--	}
--
--	return false;
--}
--
- static int tpacket_fill_skb(struct packet_sock *po, struct sk_buff *skb,
- 		void *frame, struct net_device *dev, int size_max,
- 		__be16 proto, unsigned char *addr, int hlen)
-@@ -2379,6 +2390,47 @@
+@@ -2357,6 +2380,35 @@ out:
  	return err;
  }
  
@@ -150,22 +171,10 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
 +{ return 0; }
 +#endif
 +
-+static bool ll_header_truncated(const struct net_device *dev, int len)
-+{
-+	/* net device doesn't like empty head */
-+	if (unlikely(len <= dev->hard_header_len)) {
-+		net_warn_ratelimited("%s: packet size is too short (%d <= %d)\n",
-+				     current->comm, len, dev->hard_header_len);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
  static struct sk_buff *packet_alloc_skb(struct sock *sk, size_t prepad,
  				        size_t reserve, size_t len,
  				        size_t linear, int noblock,
-@@ -2609,7 +2661,7 @@
+@@ -2576,7 +2628,7 @@ static int packet_sendmsg(struct kiocb *iocb, struct socket *sock,
  	struct sock *sk = sock->sk;
  	struct packet_sock *po = pkt_sk(sk);
  
@@ -174,7 +183,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  		return tpacket_snd(po, msg);
  	else
  		return packet_snd(sock, msg, len);
-@@ -2625,7 +2677,6 @@
+@@ -2592,7 +2644,6 @@ static int packet_release(struct socket *sock)
  	struct sock *sk = sock->sk;
  	struct packet_sock *po;
  	struct net *net;
@@ -182,7 +191,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  
  	if (!sk)
  		return 0;
-@@ -2653,15 +2704,7 @@
+@@ -2620,15 +2671,7 @@ static int packet_release(struct socket *sock)
  
  	packet_flush_mclist(sk);
  
@@ -199,7 +208,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  
  	fanout_release(sk);
  
-@@ -3243,7 +3286,7 @@
+@@ -3203,7 +3246,7 @@ static int
  packet_setsockopt(struct socket *sock, int level, int optname, char __user *optval, unsigned int optlen)
  {
  	struct sock *sk = sock->sk;
@@ -208,7 +217,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  	int ret;
  
  	if (level != SOL_PACKET)
-@@ -3271,6 +3314,7 @@
+@@ -3231,6 +3274,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
  		return ret;
  	}
  
@@ -216,7 +225,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  	case PACKET_RX_RING:
  	case PACKET_TX_RING:
  	{
-@@ -3354,6 +3398,7 @@
+@@ -3314,6 +3358,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
  		po->tp_loss = !!val;
  		return 0;
  	}
@@ -224,7 +233,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  	case PACKET_AUXDATA:
  	{
  		int val;
-@@ -3406,6 +3451,7 @@
+@@ -3366,6 +3411,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
  		po->tp_tstamp = val;
  		return 0;
  	}
@@ -232,7 +241,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  	case PACKET_FANOUT:
  	{
  		int val;
-@@ -3430,6 +3476,7 @@
+@@ -3390,6 +3436,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
  		po->tp_tx_has_off = !!val;
  		return 0;
  	}
@@ -240,7 +249,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  	case PACKET_QDISC_BYPASS:
  	{
  		int val;
-@@ -3655,6 +3702,7 @@
+@@ -3615,6 +3662,7 @@ static int packet_ioctl(struct socket *sock, unsigned int cmd,
  	return 0;
  }
  
@@ -248,7 +257,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  static unsigned int packet_poll(struct file *file, struct socket *sock,
  				poll_table *wait)
  {
-@@ -3899,7 +3947,7 @@
+@@ -3855,7 +3903,7 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
  		swap(rb->pg_vec_len, req->tp_block_nr);
  
  		rb->pg_vec_pages = req->tp_block_size/PAGE_SIZE;
@@ -257,7 +266,7 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  						tpacket_rcv : packet_rcv;
  		skb_queue_purge(rb_queue);
  		if (atomic_read(&po->mapped))
-@@ -3988,6 +4036,10 @@
+@@ -3944,6 +3992,10 @@ out:
  	mutex_unlock(&po->pg_vec_lock);
  	return err;
  }
@@ -268,19 +277,6 @@ diff -u -r -N linux-4.0.4.orig/net/packet/af_packet.c linux-4.0.4/net/packet/af_
  
  static const struct proto_ops packet_ops_spkt = {
  	.family =	PF_PACKET,
-Binary files linux-4.0.4.orig/net/packet/.af_packet.c.swp and linux-4.0.4/net/packet/.af_packet.c.swp differ
-diff -u -r -N linux-4.0.4.orig/net/packet/Kconfig linux-4.0.4/net/packet/Kconfig
---- linux-4.0.4.orig/net/packet/Kconfig	2015-06-07 18:02:32.817220170 +0100
-+++ linux-4.0.4/net/packet/Kconfig	2015-06-07 17:56:05.989233376 +0100
-@@ -22,3 +22,11 @@
- 	---help---
- 	  Support for PF_PACKET sockets monitoring interface used by the ss tool.
- 	  If unsure, say Y.
-+
-+config PACKET_MMAP
-+	bool "Enable packet mmap/ring support"
-+	depends on PACKET
-+	default y
-+	---help---
-+	  Enable support to mmap the packet data zero copy. This is useful for
-+	  highspeed packet interceptors.
+-- 
+2.1.4
+

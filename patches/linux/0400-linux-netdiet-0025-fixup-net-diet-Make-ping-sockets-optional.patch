@@ -4,7 +4,7 @@ Date: Mon, 5 May 2014 15:38:46 -0700
 Subject: [PATCH 25/27] fixup! net, diet: Make ping sockets optional
 
 ---
- net/ipv4/ping.c |    2 +-
+ net/ipv4/ping.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
@@ -21,5 +21,5 @@ index 3f79243..ea5516c 100644
  #endif
  
 -- 
-1.7.10.4
+2.1.4
 

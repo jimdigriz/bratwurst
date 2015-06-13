@@ -1,0 +1,246 @@
+From 2bee9957c858a0280f9fa4be3153f2459dd3bb4e Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Sat, 11 Jan 2014 22:18:24 -0800
+Subject: [PATCH 07/27] net, diet: Make ping sockets optional
+
+This saves about 6k text/data. ping still works fine using raw
+sockets like it always did.
+
+   text	   data	    bss	    dec	    hex	filename
+ 268128	  11555	   7872	 287555	  46343	net/ipv4/built-in.o-noping
+ 273610	  11843	   8176	 293629	  47afd	net/ipv4/built-in.o-ping
+
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+---
+ include/net/ping.h      | 15 +++++++++++----
+ include/net/transp_v6.h |  2 --
+ net/ipv4/Kconfig        |  5 +++++
+ net/ipv4/Makefile       |  3 ++-
+ net/ipv4/af_inet.c      |  9 ++++-----
+ net/ipv4/icmp.c         |  1 +
+ net/ipv4/ping.c         |  3 +++
+ net/ipv6/Makefile       |  3 ++-
+ net/ipv6/af_inet6.c     |  8 ++++++--
+ 9 files changed, 34 insertions(+), 15 deletions(-)
+
+diff --git a/include/net/ping.h b/include/net/ping.h
+index 026479b..ca6b89d 100644
+--- a/include/net/ping.h
++++ b/include/net/ping.h
+@@ -71,7 +71,6 @@ void ping_unhash(struct sock *sk);
+ int  ping_init_sock(struct sock *sk);
+ void ping_close(struct sock *sk, long timeout);
+ int  ping_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len);
+-void ping_err(struct sk_buff *skb, int offset, u32 info);
+ int  ping_getfrag(void *from, char *to, int offset, int fraglen, int odd,
+ 		  struct sk_buff *);
+ 
+@@ -82,7 +81,6 @@ int  ping_common_sendmsg(int family, struct msghdr *msg, size_t len,
+ int  ping_v6_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
+ 		     size_t len);
+ int  ping_queue_rcv_skb(struct sock *sk, struct sk_buff *skb);
+-bool ping_rcv(struct sk_buff *skb);
+ 
+ #ifdef CONFIG_PROC_FS
+ struct ping_seq_afinfo {
+@@ -100,12 +98,21 @@ void ping_seq_stop(struct seq_file *seq, void *v);
+ int ping_proc_register(struct net *net, struct ping_seq_afinfo *afinfo);
+ void ping_proc_unregister(struct net *net, struct ping_seq_afinfo *afinfo);
+ 
+-int __init ping_proc_init(void);
+-void ping_proc_exit(void);
+ #endif
+ 
++#ifdef CONFIG_IP_PING
++bool ping_rcv(struct sk_buff *skb);
++void ping_err(struct sk_buff *skb, int offset, u32 info);
+ void __init ping_init(void);
+ int  __init pingv6_init(void);
+ void pingv6_exit(void);
++#else
++static inline void ping_init(void) {}
++static inline int pingv6_init(void) { return 0; }
++static inline void pingv6_exit(void) { }
++static inline void ping_err(struct sk_buff *skb, int offset, u32 info) {}
++static inline bool ping_rcv(struct sk_buff *skb) { return false }
++#endif
++
+ 
+ #endif /* _PING_H */
+diff --git a/include/net/transp_v6.h b/include/net/transp_v6.h
+index b927413..7a0e229 100644
+--- a/include/net/transp_v6.h
++++ b/include/net/transp_v6.h
+@@ -19,8 +19,6 @@ int ipv6_frag_init(void);
+ void ipv6_frag_exit(void);
+ 
+ /* transport protocols */
+-int pingv6_init(void);
+-void pingv6_exit(void);
+ int rawv6_init(void);
+ void rawv6_exit(void);
+ int udpv6_init(void);
+diff --git a/net/ipv4/Kconfig b/net/ipv4/Kconfig
+index 05c57f0..6146b1b 100644
+--- a/net/ipv4/Kconfig
++++ b/net/ipv4/Kconfig
+@@ -52,6 +52,11 @@ config IP_ADVANCED_ROUTER
+ 
+ 	  If unsure, say N here.
+ 
++config IP_PING
++	bool "IP: ping sockets"
++	---help---
++	  Enable ping sockets to enable suid-less ping.
++
+ config IP_FIB_TRIE_STATS
+ 	bool "FIB TRIE statistics"
+ 	depends on IP_ADVANCED_ROUTER
+diff --git a/net/ipv4/Makefile b/net/ipv4/Makefile
+index f032688..756855c 100644
+--- a/net/ipv4/Makefile
++++ b/net/ipv4/Makefile
+@@ -11,9 +11,10 @@ obj-y     := route.o inetpeer.o protocol.o \
+ 	     tcp_offload.o datagram.o raw.o udp.o udplite.o \
+ 	     udp_offload.o arp.o icmp.o devinet.o af_inet.o igmp.o \
+ 	     fib_frontend.o fib_semantics.o fib_trie.o \
+-	     inet_fragment.o ping.o ip_tunnel_core.o gre_offload.o
++	     inet_fragment.o ip_tunnel_core.o gre_offload.o
+ 
+ obj-$(CONFIG_NET_IP_TUNNEL) += ip_tunnel.o
++obj-$(CONFIG_IP_PING) += ping.o
+ obj-$(CONFIG_SYSCTL) += sysctl_net_ipv4.o
+ obj-$(CONFIG_PROC_FS) += proc.o
+ obj-$(CONFIG_IP_MULTIPLE_TABLES) += fib_rules.o
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 8c54870..c275ce5 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -1015,7 +1015,7 @@ static struct inet_protosw inetsw_array[] =
+ 		.no_check =   UDP_CSUM_DEFAULT,
+ 		.flags =      INET_PROTOSW_PERMANENT,
+        },
+-
++#ifdef CONFIG_IP_PING
+        {
+ 		.type =       SOCK_DGRAM,
+ 		.protocol =   IPPROTO_ICMP,
+@@ -1024,6 +1024,7 @@ static struct inet_protosw inetsw_array[] =
+ 		.no_check =   UDP_CSUM_DEFAULT,
+ 		.flags =      INET_PROTOSW_REUSE,
+        },
++#endif
+ 
+        {
+ 	       .type =       SOCK_RAW,
+@@ -1719,7 +1720,9 @@ static int __init inet_init(void)
+ 	if (rc)
+ 		goto out_unregister_udp_proto;
+ 
++#ifdef CONFIG_IP_PING
+ 	rc = proto_register(&ping_prot, 1);
++#endif
+ 	if (rc)
+ 		goto out_unregister_raw_proto;
+ 
+@@ -1836,15 +1839,11 @@ static int __init ipv4_proc_init(void)
+ 		goto out_tcp;
+ 	if (udp4_proc_init())
+ 		goto out_udp;
+-	if (ping_proc_init())
+-		goto out_ping;
+ 	if (ip_misc_proc_init())
+ 		goto out_misc;
+ out:
+ 	return rc;
+ out_misc:
+-	ping_proc_exit();
+-out_ping:
+ 	udp4_proc_exit();
+ out_udp:
+ 	tcp4_proc_exit();
+diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+index 0134663..df3872b 100644
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -989,6 +989,7 @@ void icmp_err(struct sk_buff *skb, u32 info)
+ 		return;
+ 	}
+ 
++	/* RED-PEN dead code? the if above will eat all. */
+ 	if (type == ICMP_DEST_UNREACH && code == ICMP_FRAG_NEEDED)
+ 		ipv4_update_pmtu(skb, net, info, 0, 0, IPPROTO_ICMP, 0);
+ 	else if (type == ICMP_REDIRECT)
+diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+index 8210964..3f79243 100644
+--- a/net/ipv4/ping.c
++++ b/net/ipv4/ping.c
+@@ -1206,6 +1206,9 @@ void ping_proc_exit(void)
+ 	unregister_pernet_subsys(&ping_v4_net_ops);
+ }
+ 
++module_init(ping_proc_init);
++module_exit(ping_proc_init);
++
+ #endif
+ 
+ void __init ping_init(void)
+diff --git a/net/ipv6/Makefile b/net/ipv6/Makefile
+index 2fe6836..6ff7cfd 100644
+--- a/net/ipv6/Makefile
++++ b/net/ipv6/Makefile
+@@ -7,13 +7,14 @@ obj-$(CONFIG_IPV6) += ipv6.o
+ ipv6-objs :=	af_inet6.o anycast.o ip6_output.o ip6_input.o addrconf.o \
+ 		addrlabel.o \
+ 		route.o ip6_fib.o ipv6_sockglue.o ndisc.o udp.o udplite.o \
+-		raw.o icmp.o mcast.o reassembly.o tcp_ipv6.o ping.o \
++		raw.o icmp.o mcast.o reassembly.o tcp_ipv6.o \
+ 		exthdrs.o datagram.o ip6_flowlabel.o inet6_connection_sock.o
+ 
+ ipv6-offload :=	ip6_offload.o tcpv6_offload.o udp_offload.o exthdrs_offload.o
+ 
+ ipv6-$(CONFIG_SYSCTL) = sysctl_net_ipv6.o
+ ipv6-$(CONFIG_IPV6_MROUTE) += ip6mr.o
++ipv6-$(CONFIG_IP_PING) += ping.o
+ 
+ ipv6-$(CONFIG_XFRM) += xfrm6_policy.o xfrm6_state.o xfrm6_input.o \
+ 	xfrm6_output.o xfrm6_protocol.o
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index d935889..68ac214 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -861,16 +861,18 @@ static int __init inet6_init(void)
+ 	if (err)
+ 		goto out_unregister_udplite_proto;
+ 
++#ifdef CONFIG_IP_PING
+ 	err = proto_register(&pingv6_prot, 1);
+ 	if (err)
+-		goto out_unregister_ping_proto;
++		goto out_unregister_raw_proto;
++#endif
+ 
+ 	/* We MUST register RAW sockets before we create the ICMP6,
+ 	 * IGMP6, or NDISC control sockets.
+ 	 */
+ 	err = rawv6_init();
+ 	if (err)
+-		goto out_unregister_raw_proto;
++		goto out_unregister_ping_proto;
+ 
+ 	/* Register the family here so that the init calls below will
+ 	 * be able to create sockets. (?? is this dangerous ??)
+@@ -1022,8 +1024,10 @@ register_pernet_fail:
+ out_sock_register_fail:
+ 	rawv6_exit();
+ out_unregister_ping_proto:
++#ifdef CONFIG_IP_PING
+ 	proto_unregister(&pingv6_prot);
+ out_unregister_raw_proto:
++#endif
+ 	proto_unregister(&rawv6_prot);
+ out_unregister_udplite_proto:
+ 	proto_unregister(&udplitev6_prot);
+-- 
+2.1.4
+
