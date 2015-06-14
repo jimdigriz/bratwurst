@@ -62,7 +62,7 @@ index 026479b..ca6b89d 100644
 +static inline int pingv6_init(void) { return 0; }
 +static inline void pingv6_exit(void) { }
 +static inline void ping_err(struct sk_buff *skb, int offset, u32 info) {}
-+static inline bool ping_rcv(struct sk_buff *skb) { return false }
++static inline bool ping_rcv(struct sk_buff *skb) { return false; }
 +#endif
 +
  
