@@ -5,10 +5,11 @@
 ################################################################################
 
 ADDPATTERN_SOURCE = addpattern.c
-ADDPATTERN_SITE = http://git.openwrt.org/?p=openwrt.git;a=blob_plain;f=tools/firmware-utils/src/
+ADDPATTERN_VERSION = 38685
+ADDPATTERN_SITE = https://dev.openwrt.org/export/$(ADDPATTERN_VERSION)/trunk/tools/firmware-utils/src
 
 define HOST_ADDPATTERN_EXTRACT_CMDS
-	cp $(DL_DIR)/addpattern.c output/build/host-addpattern-undefined/$(ADDPATTERN_SOURCE)
+	cp $(DL_DIR)/addpattern.c output/build/host-addpattern-$(ADDPATTERN_VERSION)/$(ADDPATTERN_SOURCE)
 endef
 
 define HOST_ADDPATTERN_BUILD_CMDS
