@@ -4,7 +4,7 @@
  	ia64)           BCJ=--ia64; LZMA2OPTS=pb=4 ;;
  	arm)            BCJ=--arm ;;
  	sparc)          BCJ=--sparc ;;
-+	mips)		LZMA2OPTS=lp=1,pb=2 ;;
++	mips)		LZMA2OPTS=mf=bt2,lp=1,pb=2 ;;
  esac
  
  exec xz --check=crc32 $BCJ --lzma2=$LZMA2OPTS,dict=32MiB
