@@ -4,8 +4,6 @@ set -eu
 
 cd "$1"
 
-[ ! -e vmlinuz -a -f bzImage ] && ln -s bzImage vmlinuz
-
 objcopy -S -O srec --srec-forceS3 vmlinuz vmlinuz.srec
 
 ../host/usr/bin/srec2bin vmlinuz.srec vmlinuz.bin
