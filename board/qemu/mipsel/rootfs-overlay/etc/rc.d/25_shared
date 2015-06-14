@@ -2,8 +2,11 @@
 
 set -eu
 
+/sbin/modprobe 9p
 /sbin/modprobe 9pnet_virtio
+
 mkdir /tmp/shared
+
 mount -t 9p -o version=9p2000.L,trans=virtio shared /tmp/shared
 
 exit 0
