@@ -26,12 +26,13 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 ## Roadmap
 
  * look at the [Homenet WG](http://tools.ietf.org/wg/homenet/) docs, especially [RFC7368](http://tools.ietf.org/html/rfc7368)
+ * fix `atmtcp` connection where we see the following errors `invalid QOS "ubr,aal5:..."`; seems to have non-printable characters in there
  * create an SSHFP record for the router using [dnsmasq's dns-rr](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2012q2/005941.html) feature
  * the WAG54G has GPIOs to control the LEDs, we should probably use them
  * supporting straight Ethernet with DHCP (a la cable)
  * improve firewalling
   * better use of the nftables run-parts, flush to only cleans its own sections
-  * make use of the inet nftable (icmpx, etc) now we are using a 3.18 kernel
+  * make use of the inet nftable (icmpx, etc) now we are using a 3.18+ kernel
  * wireless
  * QoS
  * `rootfs/etc/rc.d/50_networking` has `ULA` hardcoded to be generated from `eth0`

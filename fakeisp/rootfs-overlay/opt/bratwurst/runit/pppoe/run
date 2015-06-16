@@ -13,6 +13,8 @@ lcp-echo-interval 1
 ms-dns 203.0.113.0
 EOF
 
+exec 2>&1
+
 [ "$(ss -tpn sport = :2812 | sed -n '/^ESTAB.*"atmtcp"/ p')" ] || exit 1
 
 sv start br2684ctl

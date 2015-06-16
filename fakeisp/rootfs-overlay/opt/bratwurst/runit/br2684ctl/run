@@ -11,4 +11,5 @@ ENCAP=1
 # 0:routed 1:bridged
 PAYLOAD=1
 
+exec 2>&1
 exec /usr/sbin/br2684ctl -c 0 -e $ENCAP -p $PAYLOAD -a 0.$VPI.$VCI

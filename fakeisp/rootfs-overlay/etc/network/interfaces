@@ -4,10 +4,10 @@ iface lo inet loopback
 	up /sbin/ip addr add 203.0.113.0 dev lo
 	up /sbin/ip addr add 198.51.100.0 dev lo
 
-auto eth0
+allow-hotplug eth0
 iface eth0 inet dhcp
 
-auto eth1
+allow-hotplug eth1
 iface eth1 inet static
 	address 192.0.2.1
 	netmask 255.255.255.0

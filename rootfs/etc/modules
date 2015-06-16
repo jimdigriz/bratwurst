@@ -16,3 +16,6 @@ nft_reject_inet
 nf_conntrack_ipv4
 nf_conntrack_ipv6
 nft_chain_nat_ipv4
+
+# ip link set address
+af_packet

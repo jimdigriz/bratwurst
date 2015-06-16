@@ -3,7 +3,7 @@ ARCH_NATIVE_KEB	:= $(ARCH_NATIVE)
 
 ifneq ($(filter $(ARCH_NATIVE),i386 i486 i586 i686 x86_64),)
 ARCH_NATIVE	:= i386
-ARCH_NATIVE_KEB	:= 686
+ARCH_NATIVE_KEB	:= 686-pae
 endif
 
 .PHONY: fakeisp
@@ -13,7 +13,7 @@ fakeisp: fakeisp/vmlinuz fakeisp/initrd $(9P_SHARE)
 		-m 512 \
 		-kernel fakeisp/vmlinuz \
 		-initrd fakeisp/initrd \
-		-append "console=ttyS0" \
+		-append "console=ttyS0 rdinit=/sbin/init root=/dev/ram0" \
 		-net nic,model=virtio \
 			-net user \
 		-net nic,vlan=1,model=virtio \
@@ -23,31 +23,31 @@ fakeisp: fakeisp/vmlinuz fakeisp/initrd $(9P_SHARE)
 
 .PHONY: fakeisp-clean
 fakeisp-clean:
-	rm -f fakeisp/vmlinuz fakeisp/initrd*
+	rm -f fakeisp/vmlinuz* fakeisp/initrd*
 	test ! -d fakeisp/rootfs || sudo rm -rf fakeisp/rootfs
 
 dl:
 	mkdir dl
 
 FAKEISP_PKGS := linux-image-$(ARCH_NATIVE_KEB)
-FAKEISP_PKGS += netbase ifupdown iproute dhcpcd runit
+FAKEISP_PKGS += netbase ifupdown iproute isc-dhcp-client
 FAKEISP_PKGS += iptables iptables-persistent ppp
 FAKEISP_PKGS += unbound isc-dhcp-server atm-tools
 FAKEISP_PKGS += atm-tools br2684ctl pppoe radvd
-FAKEISP_PKGS += netcat-traditional
+FAKEISP_PKGS += runit netcat-traditional
 DEBSITE ?= http://http.debian.net/debian
 dl/debs.tgz: | dl
 	/usr/sbin/debootstrap --arch=$(ARCH_NATIVE) --variant=minbase \
 		--include=$(shell printf "$(FAKEISP_PKGS)" | tr ' ' ,) \
-		--make-tarball="$(CURDIR)/$@" wheezy fakeisp/.rootfs.debs $(DEBSITE)
+		--make-tarball="$(CURDIR)/$@" jessie fakeisp/.rootfs.debs $(DEBSITE)
 
 # https://bugs.debian.org/773878
-dl/wide-dhcpv6-server_20080615-11.1_i386.deb: | dl
-	curl -f -L -o dl/.wide-dhcpv6-server_20080615-11.1_i386.deb \
-		http://http.debian.net/debian/pool/main/w/wide-dhcpv6/wide-dhcpv6-server_20080615-11.1_i386.deb
-	mv dl/.wide-dhcpv6-server_20080615-11.1_i386.deb $@
+dl/wide-dhcpv6-server_20080615-12_i386.deb: | dl
+	curl -f -L -o dl/.wide-dhcpv6-server_20080615-12_i386.deb \
+		http://http.debian.net/debian/pool/main/w/wide-dhcpv6/wide-dhcpv6-server_20080615-12_i386.deb
+	mv dl/.wide-dhcpv6-server_20080615-12_i386.deb $@
 
-fakeisp/rootfs: dl/debs.tgz dl/wide-dhcpv6-server_20080615-11.1_i386.deb
+fakeisp/rootfs: dl/debs.tgz dl/wide-dhcpv6-server_20080615-12_i386.deb
 ifneq (,$(shell mount | tac | awk '/noexec|nodev/ { if ($$3 == "$(shell df -l . | sed '$$!d; s/.*% //')") print }'))
 	@echo '"$(CURDIR)" is a noexec and/or nodev mountpoint'
 	@false
@@ -55,7 +55,7 @@ endif
 	sudo rm -rf fakeisp/.rootfs
 	sudo debootstrap --arch=$(ARCH_NATIVE) --variant=minbase \
 		--include=$(shell printf "$(FAKEISP_PKGS)" | tr ' ' ,) \
-		--unpack-tarball="$(CURDIR)/dl/debs.tgz" wheezy fakeisp/.rootfs $(DEBSITE)
+		--unpack-tarball="$(CURDIR)/dl/debs.tgz" jessie fakeisp/.rootfs $(DEBSITE)
 	sudo chroot fakeisp/.rootfs /bin/sh -c "dpkg --get-selections | awk '/deinstall/ { print \$$1 }' | xargs -r dpkg --purge"
 	sudo chroot fakeisp/.rootfs apt-get -yy autoremove
 	sudo chroot fakeisp/.rootfs apt-get clean
@@ -63,10 +63,10 @@ endif
 	sudo find fakeisp/.rootfs/etc/unbound -type f \( -name '*.key' -o -name '*.pem' \) -delete
 
 	# https://bugs.debian.org/773878
-	sudo ln dl/wide-dhcpv6-server_20080615-11.1_i386.deb fakeisp/.rootfs
+	sudo ln dl/wide-dhcpv6-server_20080615-12_i386.deb fakeisp/.rootfs
 	sudo sh -c 'echo INTERFACES=\"\" > fakeisp/.rootfs/etc/default/wide-dhcpv6-server'
-	sudo chroot fakeisp/.rootfs env DEBIAN_FRONTEND=noninteractive dpkg -i /wide-dhcpv6-server_20080615-11.1_i386.deb
-	sudo rm fakeisp/.rootfs/wide-dhcpv6-server_20080615-11.1_i386.deb
+	sudo chroot fakeisp/.rootfs env DEBIAN_FRONTEND=noninteractive dpkg -i /wide-dhcpv6-server_20080615-12_i386.deb
+	sudo rm fakeisp/.rootfs/wide-dhcpv6-server_20080615-12_i386.deb
 
 	mv fakeisp/.rootfs $@
 
@@ -94,10 +94,7 @@ fakeisp/initrd.base: | dl
 	ln -f -s ../dl/fakeisp.initrd.base.$(ARCH_NATIVE) $@
 
 fakeisp/initrd.rootfs-overlay: fakeisp/initrd.base
-	cd fakeisp/rootfs-overlay; gunzip -c ../initrd.base | cpio -iv --make-directories etc/init.d/.depend.boot
-	sed -i -e '/^TARGETS = / s/$$/ bratwurst.sh/; /^networking: / s/$$/ bratwurst.sh/; $$a bratwurst.sh: urandom' fakeisp/rootfs-overlay/etc/init.d/.depend.boot
 	cd fakeisp/rootfs-overlay; find . | cpio --create --format='newc' -R root:root | gzip -c > ../.initrd.rootfs-overlay
-	rm fakeisp/rootfs-overlay/etc/init.d/.depend.boot
 	mv fakeisp/.initrd.rootfs-overlay $@
 
 fakeisp/initrd: DDPARAMS = status=noxfer of=fakeisp/.initrd bs=4k ibs=4

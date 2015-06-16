@@ -1,12 +1,22 @@
 #!/bin/sh
+#
+### BEGIN INIT INFO
+# Provides:          bratwurst
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: BRatWuRsT hooks
+# Description:
+### END INIT INFO
 
 set -eu
 
 runit () {
-	update-rc.d unbound remove				>/dev/null
-	update-rc.d isc-dhcp-server remove			>/dev/null
-	update-rc.d wide-dhcpv6-server remove			>/dev/null
-	update-rc.d radvd remove				>/dev/null
+	systemctl disable wide-dhcpv6-server.service		>/dev/null
+	systemctl disable radvd.service				>/dev/null
 
 	for S in $(ls -1 /opt/bratwurst/runit); do
 		update-service --add /opt/bratwurst/runit/$S	>/dev/null
@@ -14,15 +24,11 @@ runit () {
 }
 
 shared () {
-	modprobe 9p
-	modprobe 9pnet_virtio
-
 	mkdir /tmp/shared
 	mount -t 9p -o version=9p2000.L,trans=virtio shared /tmp/shared
 }
 
 passwd -q -d root
-modprobe virtio_pci
 runit
 shared
 

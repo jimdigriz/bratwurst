@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-exec 2>&1
-exec /usr/sbin/unbound -d -v -c /opt/bratwurst/services/unbound/unbound.conf

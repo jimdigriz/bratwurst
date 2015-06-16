@@ -20,7 +20,7 @@ To build and run it, all you need to do is type:
 
     make fakeisp
 
-Part of this process utilises a pre-built base Debian root filesystem (`fakeisp/initrd.base`), a component which rarely changes, to simplify the build.  However, if you prefer to build your own locally you can run the following on a Debian 'wheezy' 7 workstation:
+Part of this process utilises a pre-built base Debian root filesystem (`fakeisp/initrd.base`), a component which rarely changes, to simplify the build.  However, if you prefer to build your own locally you can run the following on a Debian 'jessie' 8 workstation:
 
     make fakeisp-diy
     make fakeisp

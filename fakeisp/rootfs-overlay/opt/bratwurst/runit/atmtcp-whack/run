@@ -2,4 +2,5 @@
 
 set -eu
 
+exec 2>&1
 exec nc -l -p 2813 </dev/null 2>/dev/null
