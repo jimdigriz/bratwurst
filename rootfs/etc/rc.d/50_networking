@@ -5,8 +5,8 @@ set -eu
 . /etc/bratwurst
 
 if [ -z "${ULA:-}" ]; then
-	# HACK: is a hardcoding of 'eth0' a good idea here?
-	L=$((0x$(cat /sys/class/net/eth0/address | cut -d: -f3- | tr -d :) ^ 0x$(dd if=/dev/urandom bs=1 count=4 2>/dev/null | od -X | awk 'NR == 1 { print $2 }')))
+	I=$(grep -l ^1$ /sys/class/net/*/type | cut -d/ -f5 | sort -nr | head -n1)
+	L=$((0x$(cat /sys/class/net/$I/address | cut -d: -f3- | tr -d :) ^ 0x$(dd if=/dev/urandom bs=1 count=4 2>/dev/null | od -X | awk 'NR == 1 { print $2 }')))
 	L=${L#-}
 
 	ULA=$(printf "fd%02x:%04x:%04x\n" $((L % 256)) $((L >> 16)) $((L % 65536)))

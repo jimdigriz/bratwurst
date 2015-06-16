@@ -35,7 +35,6 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * make use of the inet nftable (icmpx, etc) now we are using a 3.18+ kernel
  * wireless
  * QoS
- * `rootfs/etc/rc.d/50_networking` has `ULA` hardcoded to be generated from `eth0`
  * in place firmware upgrade
   * ...without losing config and customisations?
   * [OverlayFS](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/overlayfs.txt) is now an option to combine SquashFS with JFFS2
