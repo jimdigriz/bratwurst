@@ -1,6 +1,6 @@
 # Layout
 
-The project structure tries to follow [buildroot's project-specific customisation](http://buildroot.uclibc.org/downloads/manual/manual.html#_project_specific_customization) recommendations where possible but with the following deviations:
+The project structure tries to follow [buildroot's project-specific customisation](http://buildroot.uclibc.org/downloads/manual/manual.html#customize) recommendations where possible but with the following deviations:
 
  * buildroot is a [git submodule](http://git-scm.com/docs/git-submodule) and so our customisation's live in its parent directory
  * the root (skeleton) filesystem is `rootfs` - this is where all the interesting bits live
