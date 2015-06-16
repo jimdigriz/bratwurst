@@ -20,7 +20,7 @@ Related Links:
 ## Features
 
  * complete development supported within a [QEMU](http://www.qemu.org/) VM
- * includes a '[fake ISP](DEVELOPMENT.md#fakeisp)' VM than emulates xDSL connectivity, the ISP and Internet
+ * includes a '[fake ISP](DEVELOPMENT.md#fakeisp)' VM that emulates xDSL connectivity, the ISP and Internet
  * PPPoA/PPPoE support
  * full native IPv6 support
   * including [DHCPv6-PD](http://en.wikipedia.org/wiki/Prefix_delegation) to automatically assign IPv6 subnets locally
