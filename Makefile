@@ -18,27 +18,32 @@ include $(wildcard board/*/*/board.mk)
 .PHONY: help
 help:
 	@echo 'Cleaning:'
-	@echo '  clean            - clean ready to rebuild filesystem'
-	@echo '  distclean        - prepare for buildroot changes'
+	@echo '  clean              - clean ready to rebuild filesystem'
+	@echo '  distclean          - prepare for buildroot changes'
 	@echo
 	@echo 'Build Firmware:'
 	@$(foreach board, $(sort $(BOARDS)), \
-	  printf "  %-16s - %s\\n" $(board) "$(NAME-$(board))";)
+	  printf "  %-18s - %s\\n" $(board) "$(NAME-$(board))";)
 	@echo
 	@echo 'Run:'
-	@echo '  defconfig        - Create default configuration file'
-	@echo '  bratwurst        - Spin up BRatWuRsT QEMU (currently: $(BOARD))'
+	@echo '  defconfig          - Create default configuration file'
+	@echo '  bratwurst          - Spin up BRatWuRsT QEMU (currently: $(BOARD))'
 	@echo '    RAM=<size-in-megabytes>         (currently: $(RAM))'
 	@echo '    NAND=<size-in-megabytes>        (currently: $(NAND))'
-	@echo
 	@echo '    MTDPARTS=<drivers/mtd/cmdlinepart.c>'
 	@echo '      Currently: $(MTDPARTS)'
 	@echo '    APPEND=<kernel-parameters.txt>  (currently: "$(APPEND)")'
 	@echo
 	@echo 'Misc:'
-	@echo '  fakeisp          - Spin up a fake ISP'
-	@echo '  9p               - Export a share over 9P/TCP'
+	@echo '  fakeisp            - Spin up a fake ISP'
+	@echo '  9p                 - Export a share over 9P/TCP'
 	@echo '    9P_SHARE=<directory>            (currently: "$(9P_SHARE)")'
+	@echo
+	@echo 'Development:'
+	@echo '  {buildroot,uclibc,busybox,linux}-menuconfig'
+	@echo '    BOARD=soc/board  - edit configuration'
+	@echo '  {buildroot,uclibc,busybox,linux}-update-defconfig'
+	@echo '    BOARD=soc/board  - save configuration to project'
 	@echo
 	@echo 'See README.md for further details'
 
