@@ -1,0 +1,28 @@
+https://lkml.org/lkml/2015/3/12/571
+
+diff --git a/arch/mips/ar7/platform.c b/arch/mips/ar7/platform.c
+index be9ff16..5b1132c 100644
+--- a/arch/mips/ar7/platform.c
++++ b/arch/mips/ar7/platform.c
+@@ -666,6 +666,8 @@ static int __init ar7_register_devices(void)
+ 	if (ar7_is_titan())
+ 		titan_fixup_devices();
+ 
++	ar7_gpio_init();
++
+ 	ar7_device_disable(vlynq_low_data.reset_bit);
+ 	res = platform_device_register(&vlynq_low);
+ 	if (res)
+diff --git a/arch/mips/ar7/prom.c b/arch/mips/ar7/prom.c
+index a23adc4..36aabee 100644
+--- a/arch/mips/ar7/prom.c
++++ b/arch/mips/ar7/prom.c
+@@ -246,8 +246,6 @@ void __init prom_init(void)
+ 	ar7_init_cmdline(fw_arg0, (char **)fw_arg1);
+ 	ar7_init_env((struct env_var *)fw_arg2);
+ 	console_config();
+-
+-	ar7_gpio_init();
+ }
+ 
+ #define PORT(offset) (KSEG1ADDR(AR7_REGS_UART0 + (offset * 4)))
