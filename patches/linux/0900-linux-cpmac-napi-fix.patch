@@ -1,0 +1,26 @@
+Author: Alexander Clouter <alex@digriz.org.uk>
+
+From 3.19 onwards (probably d75b1ade567ffab085e8adbbdacf0092d10cd09c),
+cpmac stalls on Rx, which was similar in sounding to
+6a6dc08ff6395f58be3ee568cb970ea956f16819 (xen-netfront: use
+napi_complete() correctly to prevent Rx stalling)
+
+diff --git a/drivers/net/ethernet/ti/cpmac.c b/drivers/net/ethernet/ti/cpmac.c
+index dd94300..d50c5db 100644
+--- a/drivers/net/ethernet/ti/cpmac.c
++++ b/drivers/net/ethernet/ti/cpmac.c
+@@ -516,7 +516,13 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
+ 		return 0;
+ 	}
+ 
+-	return 1;
++	napi_complete(napi);
++
++	if (received < budget) {
++		napi_schedule(napi);
++	}
++
++	return processed;
+ 
+ fatal_error:
+ 	/* Something went horribly wrong.
