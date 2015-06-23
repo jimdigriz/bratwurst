@@ -6,34 +6,31 @@ cpmac stalls on Rx, which was similar in sounding to
 napi_complete() correctly to prevent Rx stalling)
 
 diff --git a/drivers/net/ethernet/ti/cpmac.c b/drivers/net/ethernet/ti/cpmac.c
-index dd94300..34d25a9 100644
+index dd94300..9cbbb4d 100644
 --- a/drivers/net/ethernet/ti/cpmac.c
 +++ b/drivers/net/ethernet/ti/cpmac.c
-@@ -417,6 +417,8 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
- 	struct cpmac_desc *desc, *restart;
- 	struct cpmac_priv *priv = container_of(napi, struct cpmac_priv, napi);
- 	int received = 0, processed = 0;
-+	int queue;
-+	u32 status;
+@@ -507,16 +509,17 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
+ 	if (unlikely(netif_msg_rx_status(priv)))
+ 		netdev_dbg(priv->dev, "poll processed %d packets\n", received);
  
- 	spin_lock(&priv->rx_lock);
- 	if (unlikely(!priv->rx_head)) {
-@@ -516,7 +518,18 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
- 		return 0;
- 	}
- 
--	return 1;
+-	if (processed == 0) {
+-		/* we ran out of packets to read,
+-		 * revert to interrupt-driven mode
+-		 */
+-		napi_complete(napi);
 +	napi_complete(napi);
 +
-+	if (received < budget) {
-+		status = cpmac_read(priv->regs, CPMAC_MAC_INT_VECTOR);
-+		queue = (status >> 8) & 7;
-+		if (napi_schedule_prep(napi)) {
-+			cpmac_write(priv->regs, CPMAC_RX_INT_CLEAR, 1 << queue);
-+			__napi_schedule(napi);
-+		}
-+	}
-+
++	/* we ran out of packets to read,
++	 * revert to interrupt-driven mode
++	 */
++	if (processed == 0)
+ 		cpmac_write(priv->regs, CPMAC_RX_INT_ENABLE, 1);
+-		return 0;
+-	}
++	else if (received < budget)
++		napi_schedule(napi);
+ 
+-	return 1;
 +	return received;
  
  fatal_error:
