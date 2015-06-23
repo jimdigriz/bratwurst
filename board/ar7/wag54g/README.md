@@ -203,7 +203,7 @@ Once soldered though, you can hookup your JTAG tools of choice (I have the [Flys
 
 ### Resurrecting a Brick
 
-You will require the ADAM2 0.22.12 bootloader blob ([adam2-0.22.12.bin.xz](board/ar7/wag54g/adam2-0.22.12.bin.xz]), uncompress it and then from the `openocd` console (via telnet) type:
+You will require the ADAM2 0.22.12 bootloader blob ([adam2-0.22.12.bin.xz](board/ar7/wag54g/adam2-0.22.12.bin.xz), uncompress it and then from the `openocd` console (via telnet) type:
 
     > flash list
     {name cfi base 2415919104 size 4194304 bus_width 2 chip_width 2}
