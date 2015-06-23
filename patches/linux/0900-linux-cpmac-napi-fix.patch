@@ -6,10 +6,37 @@ cpmac stalls on Rx, which was similar in sounding to
 napi_complete() correctly to prevent Rx stalling)
 
 diff --git a/drivers/net/ethernet/ti/cpmac.c b/drivers/net/ethernet/ti/cpmac.c
-index dd94300..a4cd355 100644
+index dd94300..df8361e 100644
 --- a/drivers/net/ethernet/ti/cpmac.c
 +++ b/drivers/net/ethernet/ti/cpmac.c
-@@ -507,16 +507,17 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
+@@ -416,7 +416,9 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
+ 	struct sk_buff *skb;
+ 	struct cpmac_desc *desc, *restart;
+ 	struct cpmac_priv *priv = container_of(napi, struct cpmac_priv, napi);
+-	int received = 0, processed = 0;
++	int received = 0;
++	int queue;
++	u32 status;
+ 
+ 	spin_lock(&priv->rx_lock);
+ 	if (unlikely(!priv->rx_head)) {
+@@ -425,14 +427,13 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
+ 
+ 		spin_unlock(&priv->rx_lock);
+ 		napi_complete(napi);
++		cpmac_write(priv->regs, CPMAC_RX_INT_ENABLE, 1);
+ 		return 0;
+ 	}
+ 
+ 	desc = priv->rx_head;
+ 	restart = NULL;
+ 	while (((desc->dataflags & CPMAC_OWN) == 0) && (received < budget)) {
+-		processed++;
+-
+ 		if ((desc->dataflags & CPMAC_EOQ) != 0) {
+ 			/* The last update to eoq->hw_next didn't happen
+ 			 * soon enough, and the receiver stopped here.
+@@ -507,16 +508,19 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
  	if (unlikely(netif_msg_rx_status(priv)))
  		netdev_dbg(priv->dev, "poll processed %d packets\n", received);
  
@@ -17,21 +44,30 @@ index dd94300..a4cd355 100644
 -		/* we ran out of packets to read,
 -		 * revert to interrupt-driven mode
 -		 */
--		napi_complete(napi);
-+	napi_complete(napi);
-+
-+	/* we ran out of packets to read,
-+	 * revert to interrupt-driven mode
-+	 */
-+	if (processed == 0 || restart)
++	if (received < budget) {
+ 		napi_complete(napi);
  		cpmac_write(priv->regs, CPMAC_RX_INT_ENABLE, 1);
 -		return 0;
--	}
-+	else if (received < budget)
-+		napi_schedule(napi);
++	} else if (desc->dataflags & CPMAC_OWN) {
++		status = cpmac_read(priv->regs, CPMAC_MAC_INT_VECTOR);
++		queue = (status >> 8) & 7;
++		if (napi_schedule_prep(napi)) {
++			cpmac_write(priv->regs, CPMAC_RX_INT_CLEAR, 1 << queue);
++			__napi_schedule(napi);
++		}
+ 	}
  
 -	return 1;
 +	return received;
  
  fatal_error:
  	/* Something went horribly wrong.
+@@ -1151,7 +1155,7 @@ static int cpmac_probe(struct platform_device *pdev)
+ 	dev->netdev_ops = &cpmac_netdev_ops;
+ 	dev->ethtool_ops = &cpmac_ethtool_ops;
+ 
+-	netif_napi_add(dev, &priv->napi, cpmac_poll, 64);
++	netif_napi_add(dev, &priv->napi, cpmac_poll, NAPI_POLL_WEIGHT);
+ 
+ 	spin_lock_init(&priv->lock);
+ 	spin_lock_init(&priv->rx_lock);
