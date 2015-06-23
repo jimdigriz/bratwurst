@@ -9,7 +9,7 @@ fi
 
 ROOTDIR="$1"
 
-VERSION=$(git log -n1 --abbrev=10 --format=%h)$(git diff-files --quiet || printf -- -dirty)
+VERSION=$(git --git-dir=../.git log -n1 --abbrev=10 --format=%h)$(git --git-dir=../.git diff-files --quiet || printf -- -dirty)
 sed -i "\$aBRATWURST_VERSION=$VERSION
 /BRATWURST_VERSION/ d;" "$ROOTDIR/etc/os-release"
 
