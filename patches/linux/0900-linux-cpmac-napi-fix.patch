@@ -6,10 +6,10 @@ cpmac stalls on Rx, which was similar in sounding to
 napi_complete() correctly to prevent Rx stalling)
 
 diff --git a/drivers/net/ethernet/ti/cpmac.c b/drivers/net/ethernet/ti/cpmac.c
-index dd94300..9cbbb4d 100644
+index dd94300..a4cd355 100644
 --- a/drivers/net/ethernet/ti/cpmac.c
 +++ b/drivers/net/ethernet/ti/cpmac.c
-@@ -507,16 +509,17 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
+@@ -507,16 +507,17 @@ static int cpmac_poll(struct napi_struct *napi, int budget)
  	if (unlikely(netif_msg_rx_status(priv)))
  		netdev_dbg(priv->dev, "poll processed %d packets\n", received);
  
@@ -23,7 +23,7 @@ index dd94300..9cbbb4d 100644
 +	/* we ran out of packets to read,
 +	 * revert to interrupt-driven mode
 +	 */
-+	if (processed == 0)
++	if (processed == 0 || restart)
  		cpmac_write(priv->regs, CPMAC_RX_INT_ENABLE, 1);
 -		return 0;
 -	}
