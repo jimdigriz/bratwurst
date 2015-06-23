@@ -105,7 +105,7 @@ renew|bound|informed|ra-updated|rebound)
 		flock 9
 		sed -i -e "/ #$PNAME:$INTERFACE:$/ d" /etc/resolv.conf
 
-		for D in ${DOMAINS:-}; do
+		for D in ${DOMAINS:-} ${RA_DOMAINS:-}; do
 			echo "search $D #$PNAME:$INTERFACE:" >> /etc/resolv.conf
 		done
 		for D in ${DNS:-}; do
