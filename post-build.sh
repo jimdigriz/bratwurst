@@ -24,6 +24,13 @@ for U in $(ls -1 ../users | sed -n '/^[a-z0-9]*$/ p'); do
 	chmod 640 "$ROOTDIR/home/$U/.ssh/authorized_keys"
 done
 
+for K in dropbear_rsa_host_key dropbear_dss_host_key; do
+	[ -f ../dropbear/$K ] || continue
+
+	cp ../dropbear/$K "$ROOTDIR/dropbear"
+	chmod 600 "$ROOTDIR/dropbear/$K"
+done
+
 FILES="	etc/atmsigd.conf
 	etc/hosts.atm
 	usr/sbin/hediag
