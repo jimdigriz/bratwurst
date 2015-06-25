@@ -1,5 +1,7 @@
 ipv6
 
+unix
+
 nf_tables_inet
 nft_ct
 nft_hash
