@@ -24,7 +24,6 @@ exec /usr/sbin/dnsmasq ${OPTIONS:-} \
 	--pid-file \
 	--except-interface=$IFNAME \
 	--except-interface=6to4 \
-	--local-service \
 	--localise-queries \
 	--bogus-priv \
 	--stop-dns-rebind \
