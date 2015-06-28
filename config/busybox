@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.23.2
-# Thu Jun 25 14:00:29 2015
+# Sun Jun 28 18:52:33 2015
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -949,7 +949,7 @@ CONFIG_RUNSVDIR=y
 CONFIG_SV=y
 CONFIG_SV_DEFAULT_SERVICE_DIR="/var/service"
 # CONFIG_SVLOGD is not set
-# CONFIG_CHPST is not set
+CONFIG_CHPST=y
 # CONFIG_SETUIDGID is not set
 # CONFIG_ENVUIDGID is not set
 # CONFIG_ENVDIR is not set
