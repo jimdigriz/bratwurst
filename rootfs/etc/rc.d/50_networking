@@ -23,14 +23,20 @@ fi
 /sbin/ip addr add 192.168.1.1/24 dev br0
 /sbin/ip link set dev br0 up
 
-# HACK: make sure fakeisp is not added to the bridge
-test -d /etc/sv/atmtcp && ip link set dev eth0 up
+for IFACE in $(ls -1 /sys/class/net); do
+	# HACK: make sure fakeisp is not added to the bridge
+	[ -d /etc/sv/atmtcp -a "$IFACE" = "eth0" ] && continue || true
 
-for IFACE in $(/sbin/ip link | sed -n '/UP/! s/[0-9]*: \([^:]*\).*/\1/ p'); do
+	[ ! -d /sys/class/net/$IFACE/bridge ] || continue
+
+	# only ETHER (include/uapi/linux/if_arp.h)
+	[ $(cat /sys/class/net/$IFACE/type) -eq 1 ] || continue
+
+	# only DOWN (include/uapi/linux/if.h)
+	[ $(($(cat /sys/class/net/$IFACE/flags) & 1)) -eq 0 ] || continue
+
 	/sbin/ip link set dev $IFACE up
 	/sbin/brctl addif br0 $IFACE
 done
-
-test -d /etc/sv/atmtcp && ip link set dev eth0 down
 
 exit 0
