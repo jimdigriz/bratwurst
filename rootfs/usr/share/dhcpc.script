@@ -41,7 +41,12 @@ deconfig|unbound|stopped|started)
 	case $V in
 	4)	[ $STATE != 'started' ] || /sbin/ip link set dev $INTERFACE up
 		;;
-	6)	for P in ${IP6PREFIX:-}; do
+	6)	for A in ${ADDRESSES:-}; do
+			set -- $(echo $A | tr , ' ')
+
+			/sbin/ip addr del $1 dev $INTERFACE 2>/dev/null || true
+		done
+		for P in ${IP6PREFIX:-}; do
 			set -- $(echo $P | tr , ' ')
 
 			S=$(echo $1 | cut -d/ -f1)
