@@ -37,10 +37,8 @@ esac
 . /run/uplink
 
 case $STATE in
-deconfig|unbound|stopped|started)
+deconfig|unbound|stopped)
 	case $V in
-	4)	[ $STATE != 'started' ] || /sbin/ip link set dev $INTERFACE up
-		;;
 	6)	for A in ${ADDRESSES:-}; do
 			set -- $(echo $A | tr , ' ')
 
