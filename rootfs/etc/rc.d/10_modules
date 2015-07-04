@@ -1,7 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-grep '^[^$#]' /etc/modules | xargs -r -n1 /sbin/modprobe
-
-exit 0

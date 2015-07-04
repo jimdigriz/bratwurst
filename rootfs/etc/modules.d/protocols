@@ -1,0 +1,7 @@
+ipv6
+sit
+
+unix
+
+# ip link set address
+af_packet

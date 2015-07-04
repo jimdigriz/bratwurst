@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+/sbin/depmod
+
+find /etc/modules.d -type f | xargs grep -h '^[^$#]' | xargs -r -n1 /sbin/modprobe
+
+exit 0
