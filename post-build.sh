@@ -13,6 +13,8 @@ VERSION=$(git --git-dir=../.git log -n1 --abbrev=10 --format=%h)$(git --git-dir=
 sed -i "\$aBRATWURST_VERSION=$VERSION
 /BRATWURST_VERSION/ d;" "$ROOTDIR/etc/os-release"
 
+find output/target/lib/modules -type f -name 'modules.*' -delete
+
 cp ../bratwurst.config "$ROOTDIR/etc/bratwurst"
 
 find "$ROOTDIR" -type f -name .keep -delete
