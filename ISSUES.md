@@ -25,6 +25,8 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
 
  * look at the [Homenet WG](http://tools.ietf.org/wg/homenet/) docs, especially [RFC7368](http://tools.ietf.org/html/rfc7368)
  * fix `atmtcp` connection where we see the following errors `invalid QOS "ubr,aal5:..."`; seems to have non-printable characters in there
+ * disabling sysfs causes an unaligned access in the `ipv6_addrconf` kernel workqueue during PPP just before sending `IPV6CP ConfReq`
+ * for AR7, when making `8250` a module, the serial console is not properly detected or configured
  * create an SSHFP record for the router using [dnsmasq's dns-rr](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2012q2/005941.html) feature
  * the WAG54G has GPIOs to control the LEDs, we should probably use them
  * supporting straight Ethernet with DHCP (a la cable)

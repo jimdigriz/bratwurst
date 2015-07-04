@@ -89,7 +89,7 @@ Under Linux the `ar7part.c` driver is [meant to spit out a suitable partition ta
 
 ## GPIOs
 
-To expose the pins, you just use the GPIO sysfs interface like so:
+To expose the pins, you just use the GPIO sysfs interface by recompiling the kernel with `GPIO_SYSFS` enabled like so:
 
     for I in $(seq 0 31); do echo $I > /sys/class/gpio/export; done
 

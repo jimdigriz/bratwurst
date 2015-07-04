@@ -26,9 +26,6 @@ if [ "${NETWORK%?}" = "pppo" ]; then
 
 	# wait for the ATM interface to become available
 	[ -n "$TYPE" ] || exit 1
-
-	# wait for carrier, do nothing
-	grep -q 1 /sys/class/atm/$TYPE${UPLINK_PORT:-0}/carrier || exit 1
 fi
 
 case $NETWORK in
