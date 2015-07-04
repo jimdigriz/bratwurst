@@ -158,6 +158,8 @@ uclibc-update-defconfig: buildroot/.config
 			-name 'Config.*' -a ! -name Config.in -a ! -name Config.in.arch \
 		| xargs sed -n 's/^config \(.*\)/\1/ p' | sort | uniq > .list
 	echo TARGET_ >> .list
+	echo ARCH_ >> .list
+	echo CROSS_COMPILER_PREFIX >> .list
 	grep    -F -f .list buildroot/output/build/uclibc-$(shell sed -n 's/BR2_UCLIBC_VERSION_STRING="\(.*\)"/\1/ p' buildroot/.config)/.config > board/$(BOARD)/uclibc
 	grep -v -F -f .list buildroot/output/build/uclibc-$(shell sed -n 's/BR2_UCLIBC_VERSION_STRING="\(.*\)"/\1/ p' buildroot/.config)/.config > config/uclibc
 	rm .list
