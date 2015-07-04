@@ -2,8 +2,6 @@
 
 set -eu
 
-rm -f /run/uplink
-
 sv force-stop odhcp6c
 
 exit 0

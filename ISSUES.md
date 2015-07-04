@@ -19,12 +19,10 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * how to strap in another VM as a client on the LAN
  * fix dnsmasq to exclude non-global addresses, [my patch was bad](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2015q1/009122.html) :)
   * reverse zone file for fc00::/7 and 2002:: too
- * 6to4 route does not clean up on disconnect, and native IPv6 route is missing occasionly
  * move RAM/MTDPARTS/etc into board and have post-image.sh use these variables rather than duping them
 
 ## Roadmap
 
- * 6to4 IP's go via native uplink rather than over tunnel, fix with 'ip rule'
  * look at the [Homenet WG](http://tools.ietf.org/wg/homenet/) docs, especially [RFC7368](http://tools.ietf.org/html/rfc7368)
  * fix `atmtcp` connection where we see the following errors `invalid QOS "ubr,aal5:..."`; seems to have non-printable characters in there
  * create an SSHFP record for the router using [dnsmasq's dns-rr](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2012q2/005941.html) feature

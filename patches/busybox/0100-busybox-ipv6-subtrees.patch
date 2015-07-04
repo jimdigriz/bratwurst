@@ -1,0 +1,37 @@
+diff --git a/networking/libiproute/iproute.c b/networking/libiproute/iproute.c
+index 170c67b..a3c8d78 100644
+--- a/networking/libiproute/iproute.c
++++ b/networking/libiproute/iproute.c
+@@ -343,13 +343,14 @@ static int iproute_modify(int cmd, unsigned flags, char **argv)
+ {
+ 	static const char keywords[] ALIGN1 =
+ 		"src\0""via\0""mtu\0""lock\0""protocol\0"IF_FEATURE_IP_RULE("table\0")
+-		"dev\0""oif\0""to\0""metric\0""onlink\0";
++		"from\0""dev\0""oif\0""to\0""metric\0""onlink\0";
+ 	enum {
+ 		ARG_src,
+ 		ARG_via,
+ 		ARG_mtu, PARM_lock,
+ 		ARG_protocol,
+ IF_FEATURE_IP_RULE(ARG_table,)
++		ARG_from,
+ 		ARG_dev,
+ 		ARG_oif,
+ 		ARG_to,
+@@ -447,6 +448,16 @@ IF_FEATURE_IP_RULE(ARG_table,)
+ 			addattr32(&req.n, sizeof(req), RTA_PRIORITY, metric);
+ 		} else if (arg == ARG_onlink) {
+ 			req.r.rtm_flags |= RTNH_F_ONLINK;
++		} else if (arg == ARG_from) {
++			inet_prefix src;
++			NEXT_ARG();
++
++			get_prefix(&src, *argv, req.r.rtm_family);
++			if (req.r.rtm_family == AF_UNSPEC) {
++				req.r.rtm_family = src.family;
++			}
++			req.r.rtm_src_len = src.bitlen;
++			addattr_l(&req.n, sizeof(req), RTA_SRC, &src.data, src.bytelen);
+ 		} else {
+ 			int type;
+ 			inet_prefix dst;

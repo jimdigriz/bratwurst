@@ -19,6 +19,7 @@ SIX2FOUR=$(printf "2002:%02x%02x:%02x%02x" $(echo $IPLOCAL | tr . ' '))
 /sbin/ip link set dev 6to4 up
 /sbin/ip addr add $SIX2FOUR::/16 dev 6to4
 /sbin/ip route add 192.88.99.1 dev $IFNAME
+/sbin/ip route add default from 2002::/16 via ::192.88.99.1 dev 6to4
 /sbin/ip route add default via ::192.88.99.1 dev 6to4 metric 4096
 /sbin/ip addr add $SIX2FOUR:08::/64 dev lo
 /sbin/ip addr add $SIX2FOUR:10::/64 dev br0

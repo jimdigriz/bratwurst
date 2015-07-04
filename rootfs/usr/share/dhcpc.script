@@ -34,21 +34,34 @@ esac
 [ -n "$ADDRESSES" ] && ADDRESSES="$(echo $ADDRESSES | tr ' ' '\n' | sort | uniq | tr '\n' ' ')"
 [ -n "$DNS" ] && DNS="$(echo $DNS | tr ' ' '\n' | sort | uniq | tr '\n' ' ')"
 
-# TODO: handle removing stale addresses and routes
+. /run/uplink
 
 case $STATE in
 deconfig|unbound|stopped|started)
-	/sbin/ip link set dev $INTERFACE up
-
 	case $V in
-	6)	for A in $(/sbin/ip -6 addr show dev $INTERFACE scope global | awk '/inet/ { print $2 }'); do
-			/sbin/ip -6 addr del $A dev $INTERFACE
+	4)	[ $STATE != 'started' ] || /sbin/ip link set dev $INTERFACE up
+		;;
+	6)	for P in ${IP6PREFIX:-}; do
+			set -- $(echo $P | tr , ' ')
+
+			S=$(echo $1 | cut -d/ -f1)
+
+			/sbin/ip -6 addr show dev lo scope global \
+				| awk "/inet6 ${S%::}:/ { print \$2 }" \
+				| xargs -r -n1 /sbin/ip -6 addr delete dev lo
+			/sbin/ip -6 addr show dev br0 scope global \
+				| awk "/inet6 ${S%::}:/ { print \$2 }" \
+				| xargs -r -n1 /sbin/ip -6 addr delete dev br0
 		done
+		(
+			flock 9
+
+			sed -i '/^IP6PREFIX=/ d' /run/uplink
+		) 9>>/run/uplink
 		;;
 	4)	/sbin/ip -4 addr flush dev $INTERFACE
 		;;
 	esac
-
 	(
 		flock 9
 		sed -i -e "/ #$PNAME:$INTERFACE:$/ d" /etc/resolv.conf
@@ -75,6 +88,8 @@ renew|bound|informed|ra-updated|rebound)
 			S=$(echo $1 | cut -d/ -f1)
 			L=$(echo $1 | cut -d/ -f2)
 
+			IP6PREFIX=${IP6PREFIX:+$IP6PREFIX }$P
+
 			if [ $L -eq 64 ]; then
 				/sbin/ip addr add $1 dev br0 2>/dev/null || true
 			else
@@ -86,6 +101,12 @@ renew|bound|informed|ra-updated|rebound)
 				fi
 			fi
 		done
+		(
+			flock 9
+
+			echo "${IP6PREFIX:+IP6PREFIX=\"$IP6PREFIX\"}" >> /run/uplink
+			sed -n -i "/^IP6PREFIX=/!p; /^IP6PREFIX=/h; \${g;p}" /run/uplink
+		) 9>>/run/uplink
 		;;
 	4)	/sbin/ip addr add $ADDRESS${NETMASK:+/$NETMASK} ${BROADCAST:+broadcast $BROADCAST} dev $INTERFACE 2>/dev/null || true
 
