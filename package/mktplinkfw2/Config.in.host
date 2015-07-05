@@ -1,0 +1,6 @@
+config BR2_PACKAGE_HOST_MKTPLINKFW2
+	bool "host mktplinkfw2"
+	help
+	  mktplinkfw2 tool used in generating images for TP-Link bootloaders
+
+	  http://git.openwrt.org/?p=openwrt.git;a=tree;f=tools/firmware-utils/src
