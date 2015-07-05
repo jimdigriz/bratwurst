@@ -2,8 +2,10 @@
 
 set -eu
 
-DEV=ttyS0
-BAUD=38400
+set -- $(sed -n 's/.*console=\([^, ]*\),\([0-9]*\).*/\1 \2/ p' /proc/cmdline)
+
+DEV=${1:-ttyS0}
+BAUD=${2:-38400}
 
 exec </dev/$DEV >/dev/$DEV 2>&1
 
@@ -11,7 +13,7 @@ exec </dev/$DEV >/dev/$DEV 2>&1
 stty sane; stty ispeed $BAUD; stty ospeed $BAUD
 
 printf "%s login: " "$(hostname)"
-read -r login
+read -r LOGIN
 
 # http://www.busybox.net/FAQ.html#job_control
-exec chpst -P sh -c "exec login '$login' </dev/$DEV >/dev/$DEV 2>&1"
+exec chpst -P sh -c "exec login '$LOGIN' </dev/$DEV >/dev/$DEV 2>&1"
