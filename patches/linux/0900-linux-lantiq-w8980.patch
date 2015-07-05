@@ -1,0 +1,488 @@
+diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+index 4f49fa4..27ed74f 100644
+--- a/arch/mips/boot/dts/Makefile
++++ b/arch/mips/boot/dts/Makefile
+@@ -1,6 +1,7 @@
+ dtb-$(CONFIG_BCM3384)			+= bcm93384wvg.dtb
+ dtb-$(CONFIG_CAVIUM_OCTEON_SOC)		+= octeon_3xxx.dtb octeon_68xx.dtb
+ dtb-$(CONFIG_DT_EASY50712)		+= easy50712.dtb
++dtb-$(CONFIG_DT_TDW8980)		+= tdw8980.dtb
+ dtb-$(CONFIG_DT_XLP_EVP)		+= xlp_evp.dtb
+ dtb-$(CONFIG_DT_XLP_SVP)		+= xlp_svp.dtb
+ dtb-$(CONFIG_DT_XLP_FVP)		+= xlp_fvp.dtb
+diff --git a/arch/mips/boot/dts/tdw8980.dts b/arch/mips/boot/dts/tdw8980.dts
+new file mode 100644
+index 0000000..08cbbc8
+--- /dev/null
++++ b/arch/mips/boot/dts/tdw8980.dts
+@@ -0,0 +1,256 @@
++/dts-v1/;
++
++/include/ "vr9.dtsi"
++
++/ {
++	model = "TDW8980 - TP-LINK TD-W8980";
++
++	chosen {
++		bootargs = "console=ttyLTQ0,115200 earlyprintk";
++	};
++
++	memory@0 {
++		reg = <0x0 0x4000000>;
++	};
++
++	fpi@10000000 {
++		gpio: pinmux@E100B10 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&state_default>;
++
++			state_default: pinmux {
++				mdio {
++					lantiq,groups = "mdio";
++					lantiq,function = "mdio";
++				};
++				gphy-leds {
++					lantiq,groups = "gphy0 led1", "gphy1 led1";
++					lantiq,function = "gphy";
++					lantiq,pull = <2>;
++					lantiq,open-drain = <0>;
++					lantiq,output = <1>;
++				};
++				phy-rst {
++					lantiq,pins = "io42";
++					lantiq,pull = <0>;
++					lantiq,open-drain = <0>;
++					lantiq,output = <1>;
++				};
++				spi-in {
++					lantiq,pins = "io16";
++					lantiq,open-drain = <1>;
++					lantiq,pull = <2>;
++				};
++				spi-out {
++					lantiq,pins = "io10", "io17", "io18", "io21";
++					lantiq,open-drain = <0>;
++					lantiq,pull = <2>;
++				};
++				pcie-rst {
++					lantiq,pins = "io38";
++					lantiq,pull = <0>;
++					lantiq,output = <1>;
++				};
++			};
++		};
++
++		eth@E108000 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			compatible = "lantiq,xrx200-net";
++			reg = <	0xE108000 0x3000 /* switch */
++				0xE10B100 0x70 /* mdio */
++				0xE10B1D8 0x30 /* mii */
++				0xE10B308 0x30 /* pmac */
++			>;
++			interrupt-parent = <&icu0>;
++			interrupts = <73 72>;
++
++			lan: interface@0 {
++				compatible = "lantiq,xrx200-pdi";
++				#address-cells = <1>;
++				#size-cells = <0>;
++				reg = <0>;
++				mtd-mac-address = <&ath9k_cal 0xf100>;
++				lantiq,switch;
++
++				ethernet@0 {
++					compatible = "lantiq,xrx200-pdi-port";
++					reg = <0>;
++					phy-mode = "rgmii";
++					phy-handle = <&phy0>;
++					// gpios = <&gpio 42 1>;
++				};
++				ethernet@5 {
++					compatible = "lantiq,xrx200-pdi-port";
++					reg = <5>;
++					phy-mode = "rgmii";
++					phy-handle = <&phy5>;
++				};
++				ethernet@2 {
++					compatible = "lantiq,xrx200-pdi-port";
++					reg = <2>;
++					phy-mode = "gmii";
++					phy-handle = <&phy11>;
++				};
++				ethernet@3 {
++					compatible = "lantiq,xrx200-pdi-port";
++					reg = <4>;
++					phy-mode = "gmii";
++					phy-handle = <&phy13>;
++				};
++			};
++
++			mdio@0 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "lantiq,xrx200-mdio";
++				phy0: ethernet-phy@0 {
++					reg = <0x0>;
++					compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
++				};
++				phy5: ethernet-phy@5 {
++					reg = <0x5>;
++					compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
++				};
++				phy11: ethernet-phy@11 {
++					reg = <0x11>;
++					compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
++				};
++				phy13: ethernet-phy@13 {
++					reg = <0x13>;
++					compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
++				};
++			};
++		};
++
++		ifxhcd@E101000 {
++			status = "okay";
++			gpios = <&gpio 33 0>;
++			lantiq,portmask = <0x3>;
++		};
++
++		ifxhcd@E106000 {
++			status = "okay";
++			gpios = <&gpio 33 0>;
++		};
++	};
++
++	gphy-xrx200 {
++		compatible = "lantiq,phy-xrx200";
++		firmware = "lantiq/vr9_phy11g_a2x.bin";
++		phys = [ 00 01 ];
++	};
++
++	pcie {
++		compatible = "lantiq,pcie-xway";
++	};
++
++	spi {
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		compatible = "spi-gpio";
++
++		gpio-miso = <&gpio 16 0>;
++		gpio-mosi = <&gpio 17 0>;
++		gpio-sck = <&gpio 18 0>;
++		num-chipselects = <1>;
++		cs-gpios = <&gpio 10 1>;
++
++		m25p80@0 {
++			#address-cells = <1>;
++			#size-cells = <1>;
++			compatible = "en25q64", "m25p80";
++			reg = <0 0>;
++			linux,modalias = "en25q64";
++			spi-max-frequency = <1000000>;
++
++			partition@0 {
++				reg = <0x0 0x20000>;
++				label = "u-boot";
++				read-only;
++			};
++
++			partition@20000 {
++				reg = <0x20000 0x6a0000>;
++				label = "firmware";
++			};
++
++			partition@6c0000 {
++				reg = <0x6c0000 0x100000>;
++				label = "dsl_fw";
++			};
++
++			partition@7c0000 {
++				reg = <0x7c0000 0x10000>;
++				label = "config";
++				read-only;
++			};
++
++			ath9k_cal: partition@7d0000 {
++				reg = <0x7d0000 0x30000>;
++				label = "boardconfig";
++				read-only;
++			};
++		};
++	};
++
++	ath9k_eep {
++		compatible = "ath9k,eeprom";
++		ath,eep-flash = <&ath9k_cal 0x21000>;
++		ath,mac-offset = <0xf100>;
++		ath,mac-increment;
++		ath,led-pin = <0>;
++	};
++
++	gpio-keys-polled {
++		compatible = "gpio-keys-polled";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		poll-interval = <100>;
++		reset {
++			label = "reset";
++			gpios = <&gpio 0 1>;
++			linux,code = <0x198>;
++		};
++
++		wifi {
++			label = "wifi";
++			gpios = <&gpio 9 0>;
++			linux,code = <0xf7>;
++			linux,input-type = <5>; /* EV_SW */
++		};
++
++		wps {
++			label = "wps";
++			gpios = <&gpio 39 1>;
++			linux,code = <0x211>;
++		};
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		dsl {
++			label = "dsl";
++			gpios = <&gpio 4 0>;
++		};
++		internet {
++			label = "internet";
++			gpios = <&gpio 5 0>;
++		};
++		usb0 {
++			label = "usb";
++			gpios = <&gpio 19 0>;
++		};
++		usb2 {
++			label = "usb2";
++			gpios = <&gpio 20 0>;
++		};
++		wps {
++			label = "wps";
++			gpios = <&gpio 37 0>;
++		};
++	};
++};
+diff --git a/arch/mips/boot/dts/vr9.dtsi b/arch/mips/boot/dts/vr9.dtsi
+new file mode 100644
+index 0000000..bdb1270
+--- /dev/null
++++ b/arch/mips/boot/dts/vr9.dtsi
+@@ -0,0 +1,192 @@
++/ {
++	#address-cells = <1>;
++	#size-cells = <1>;
++	compatible = "lantiq,xway", "lantiq,vr9";
++
++	cpus {
++		cpu@0 {
++			compatible = "mips,mips34Kc";
++		};
++	};
++
++	memory@0 {
++		device_type = "memory";
++	};
++
++	biu@1F800000 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "lantiq,biu", "simple-bus";
++		reg = <0x1F800000 0x800000>;
++		ranges = <0x0 0x1F800000 0x7FFFFF>;
++
++		icu0: icu@80200 {
++			#interrupt-cells = <1>;
++			interrupt-controller;
++			compatible = "lantiq,icu";
++			reg = <0x80200 0x28
++				0x80228 0x28
++				0x80250 0x28
++				0x80278 0x28
++				0x802a0 0x28>;
++		};
++
++		watchdog@803F0 {
++			compatible = "lantiq,wdt";
++			reg = <0x803F0 0x10>;
++		};
++	};
++
++	sram@1F000000 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "lantiq,sram", "simple-bus";
++		reg = <0x1F000000 0x800000>;
++		ranges = <0x0 0x1F000000 0x7FFFFF>;
++
++		eiu0: eiu@101000 {
++			#interrupt-cells = <1>;
++			interrupt-controller;
++			compatible = "lantiq,eiu-xway";
++			reg = <0x101000 0x1000>;
++			interrupt-parent = <&icu0>;
++			interrupts = <166 135 66 40 41 42>;
++		};
++
++		pmu0: pmu@102000 {
++			compatible = "lantiq,pmu-xway";
++			reg = <0x102000 0x1000>;
++		};
++
++		cgu0: cgu@103000 {
++			compatible = "lantiq,cgu-xway";
++			reg = <0x103000 0x1000>;
++		};
++
++		dcdc@106a00 {
++			compatible = "lantiq,dcdc-xrx200";
++			reg = <0x106a00 0x200>;
++		};
++
++		rcu0: rcu@203000 {
++			compatible = "lantiq,rcu-xrx200";
++			reg = <0x203000 0x1000>;
++			/* irq for thermal sensor */
++			interrupt-parent = <&icu0>;
++			interrupts = <115>;
++		};
++	};
++
++	fpi@10000000 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "lantiq,fpi", "simple-bus";
++		ranges = <0x0 0x10000000 0xEEFFFFF>;
++		reg = <0x10000000 0xEF00000>;
++
++		localbus@0 {
++			#address-cells = <2>;
++			#size-cells = <1>;
++			ranges = <0 0 0x0 0x3ffffff /* addrsel0 */
++				1 0 0x4000000 0x4000010>; /* addsel1 */
++			compatible = "lantiq,localbus", "simple-bus";
++		};
++
++		gptu@E100A00 {
++			compatible = "lantiq,gptu-xway";
++			reg = <0xE100A00 0x100>;
++			interrupt-parent = <&icu0>;
++                        interrupts = <126 127 128 129 130 131>;
++		};
++
++		asc0: serial@E100400 {
++			compatible = "lantiq,asc";
++			reg = <0xE100400 0x400>;
++			interrupt-parent = <&icu0>;
++			interrupts = <104 105 106>;
++			status = "disabled";
++		};
++
++		gpio: pinmux@E100B10 {
++			compatible = "lantiq,pinctrl-xr9";
++			#gpio-cells = <2>;
++			gpio-controller;
++			reg = <0xE100B10 0xA0>;
++		};
++
++		asc1: serial@E100C00 {
++			compatible = "lantiq,asc";
++			reg = <0xE100C00 0x400>;
++			interrupt-parent = <&icu0>;
++			interrupts = <112 113 114>;
++		};
++
++		deu@E103100 {
++			compatible = "lantiq,deu-xrx200";
++			reg = <0xE103100 0xf00>;
++		};
++
++		dma0: dma@E104100 {
++			compatible = "lantiq,dma-xway";
++			reg = <0xE104100 0x800>;
++		};
++
++		ebu0: ebu@E105300 {
++			compatible = "lantiq,ebu-xway";
++			reg = <0xE105300 0x100>;
++		};
++
++		ifxhcd@E101000 {
++			status = "disabled";
++			compatible = "lantiq,ifxhcd-xrx200", "lantiq,ifxhcd-xrx200-dwc2";
++			reg = <0xE101000 0x1000
++				0xE120000 0x3f000>;
++			interrupt-parent = <&icu0>;
++			interrupts = <62 91>;
++		};
++
++		ifxhcd@E106000 {
++			status = "disabled";
++			compatible = "lantiq,ifxhcd-xrx200-dwc2";
++			reg = <0xE106000 0x1000>;
++			interrupt-parent = <&icu0>;
++			interrupts = <91>;
++		};
++
++		mei@E116000 {
++			compatible = "lantiq,mei-xrx200";
++			interrupt-parent = <&icu0>;
++			interrupts = <63>;
++		};
++
++		ppe@E234000 {
++			compatible = "lantiq,ppe-xrx200";
++			interrupt-parent = <&icu0>;
++			interrupts = <96>;
++		};
++
++		pcie@d900000 {
++			interrupt-parent = <&icu0>;
++			interrupts = <161 144>;
++			compatible = "lantiq,pcie-xrx200";
++		};
++
++		pci0: pci@E105400 {
++			#address-cells = <3>;
++			#size-cells = <2>;
++			#interrupt-cells = <1>;
++			compatible = "lantiq,pci-xway";
++			bus-range = <0x0 0x0>;
++			ranges = <0x2000000 0 0x8000000 0x8000000 0 0x2000000   /* pci memory */
++				0x1000000 0 0x00000000 0xAE00000 0 0x200000>; /* io space */
++			reg = <0x7000000 0x8000         /* config space */
++				0xE105400 0x400>;       /* pci bridge */
++			status = "disabled";
++		};
++
++	};
++
++	vdsl {
++		compatible = "lantiq,vdsl-vrx200";
++	};
++};
+diff --git a/arch/mips/lantiq/Kconfig b/arch/mips/lantiq/Kconfig
+index e10d333..a2d92a3 100644
+--- a/arch/mips/lantiq/Kconfig
++++ b/arch/mips/lantiq/Kconfig
+@@ -31,6 +31,11 @@ config DT_EASY50712
+ 	bool "Easy50712"
+ 	depends on SOC_XWAY
+ 	select BUILTIN_DTB
++
++config DT_TDW8980
++	bool "TP-Link TD-W8980"
++	depends on SOC_XWAY
++	select BUILTIN_DTB
+ endchoice
+ 
+ config PCI_LANTIQ
