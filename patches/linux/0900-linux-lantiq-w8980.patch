@@ -12,10 +12,10 @@ index 4f49fa4..27ed74f 100644
  dtb-$(CONFIG_DT_XLP_FVP)		+= xlp_fvp.dtb
 diff --git a/arch/mips/boot/dts/tdw8980.dts b/arch/mips/boot/dts/tdw8980.dts
 new file mode 100644
-index 0000000..08cbbc8
+index 0000000..34627c2
 --- /dev/null
 +++ b/arch/mips/boot/dts/tdw8980.dts
-@@ -0,0 +1,256 @@
+@@ -0,0 +1,268 @@
 +/dts-v1/;
 +
 +/include/ "vr9.dtsi"
@@ -89,7 +89,7 @@ index 0000000..08cbbc8
 +				#address-cells = <1>;
 +				#size-cells = <0>;
 +				reg = <0>;
-+				mtd-mac-address = <&ath9k_cal 0xf100>;
++				mtd-mac-address = <&xrx200_net 0xf100>;
 +				lantiq,switch;
 +
 +				ethernet@0 {
@@ -186,29 +186,41 @@ index 0000000..08cbbc8
 +
 +			partition@0 {
 +				reg = <0x0 0x20000>;
-+				label = "u-boot";
++				label = "uboot";
 +				read-only;
 +			};
 +
 +			partition@20000 {
-+				reg = <0x20000 0x6a0000>;
-+				label = "firmware";
++				reg = <0x20000 0x140000>;
++				label = "linux";
 +			};
 +
-+			partition@6c0000 {
-+				reg = <0x6c0000 0x100000>;
-+				label = "dsl_fw";
++			partition@160000 {
++				reg = <0x160000 0x660000>;
++				label = "rootfs";
 +			};
 +
 +			partition@7c0000 {
 +				reg = <0x7c0000 0x10000>;
-+				label = "config";
++				label = "uboot_env";
 +				read-only;
 +			};
 +
-+			ath9k_cal: partition@7d0000 {
-+				reg = <0x7d0000 0x30000>;
-+				label = "boardconfig";
++			xrx200_net: partition@7d0000 {
++				reg = <0x7d0000 0x10000>;
++				label = "romfile";
++				read-only;
++			};
++
++			partition@7e0000 {
++				reg = <0x7e0000 0x10000>;
++				label = "rom";
++				read-only;
++			};
++
++			ath9k_cal: partition@7f0000 {
++				reg = <0x7f0000 0x10000>;
++				label = "radio";
 +				read-only;
 +			};
 +		};
@@ -216,7 +228,7 @@ index 0000000..08cbbc8
 +
 +	ath9k_eep {
 +		compatible = "ath9k,eeprom";
-+		ath,eep-flash = <&ath9k_cal 0x21000>;
++		ath,eep-flash = <&ath9k_cal 0x1000>;
 +		ath,mac-offset = <0xf100>;
 +		ath,mac-increment;
 +		ath,led-pin = <0>;

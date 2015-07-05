@@ -2,15 +2,10 @@ This page applies to the TP-Link TD-W8980, however it will probably be of use to
 
 # Preflight
 
-It is *strongly* recommended you have a serial console (see below) working.
-
-You will need a TFTP client.
-
-Plug in your workstation over Ethernet, and assign yourself a static IP in the range `192.168.1.{2...254}/24`.
-
-## Debian
-
-    sudo apt-get install --no-install-recommends -yy tftp
+You will need:
+ * the serial console (see below) working
+ * an TFTP server (Debian users can type `sudo apt-get install --no-install-recommends -yy tftp`)
+ * your workstation plugged in via Ethernet, and assigned with the static IP `192.168.1.100/24` (if you want to change this, you will need to run `setenv` for `ipaddr` and `serverip`)
 
 # Building
 
@@ -20,7 +15,14 @@ Work through [Configuration](../../../README.md#configuration) and then type the
 
 # Installing
 
-...
+You will need to copy `bratwurst.image` to your TFTP server directory (typically `/srv/tftp`).  Then from the serial console type:
+
+    tftp $(loadaddr) bratwurst.image
+    sf erase 0x20000 0x7a0000
+    sf write $(loadaddr) 0x20000 0x$(filesize)
+    reset
+
+The router should now boot into BRatWuRsT.
 
 # Information
 
