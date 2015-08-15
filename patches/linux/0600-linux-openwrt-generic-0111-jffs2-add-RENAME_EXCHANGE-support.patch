@@ -20,9 +20,9 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  	 * the VFS can't check whether the victim is empty. The filesystem
  	 * needs to do that for itself.
  	 */
--	if (new_dentry->d_inode) {
-+	if (new_dentry->d_inode && !(flags & RENAME_EXCHANGE)) {
- 		victim_f = JFFS2_INODE_INFO(new_dentry->d_inode);
+-	if (d_really_is_positive(new_dentry)) {
++	if (d_really_is_positive(new_dentry) && !(flags & RENAME_EXCHANGE)) {
+ 		victim_f = JFFS2_INODE_INFO(d_inode(new_dentry));
  		if (d_is_dir(new_dentry)) {
  			struct jffs2_full_dirent *fd;
 @@ -827,7 +827,7 @@ static int jffs2_rename (struct inode *o
@@ -33,7 +33,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
 +	if (victim_f && !(flags & RENAME_EXCHANGE)) {
  		/* There was a victim. Kill it off nicely */
  		if (d_is_dir(new_dentry))
- 			clear_nlink(new_dentry->d_inode);
+ 			clear_nlink(d_inode(new_dentry));
 @@ -853,6 +853,12 @@ static int jffs2_rename (struct inode *o
  	if (flags & RENAME_WHITEOUT)
  		/* Replace with whiteout */
@@ -41,7 +41,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
 +	else if (flags & RENAME_EXCHANGE)
 +		/* Replace the original */
 +		ret = jffs2_do_link(c, JFFS2_INODE_INFO(old_dir_i),
-+				    new_dentry->d_inode->i_ino, type,
++				    d_inode(new_dentry)->i_ino, type,
 +				    old_dentry->d_name.name, old_dentry->d_name.len,
 +				    now);
  	else

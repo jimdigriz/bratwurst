@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# uClibc 1.0.2 C Library Configuration
+# uClibc-ng 1.0.5 C Library Configuration
 #
 
 #
@@ -16,7 +16,7 @@ UCLIBC_HAS_SOFT_FLOAT=y
 DO_C99_MATH=y
 # DO_XSI_MATH is not set
 # UCLIBC_HAS_FENV is not set
-KERNEL_HEADERS="/usr/src/bratwurst/buildroot/output/build/linux-headers-4.0.4/usr/include"
+KERNEL_HEADERS="/usr/src/bratwurst/buildroot/output/build/linux-headers-4.1.4/usr/include"
 HAVE_DOT_CONFIG=y
 
 #
@@ -54,7 +54,7 @@ UCLIBC_HAS_UTMP=y
 UCLIBC_SUSV3_LEGACY=y
 # UCLIBC_HAS_CONTEXT_FUNCS is not set
 # UCLIBC_SUSV3_LEGACY_MACROS is not set
-# UCLIBC_SUSV4_LEGACY is not set
+UCLIBC_SUSV4_LEGACY=y
 UCLIBC_STRICT_HEADERS=y
 # UCLIBC_HAS_STUBS is not set
 UCLIBC_HAS_SHADOW=y
@@ -160,6 +160,7 @@ UCLIBC_HAS_FNMATCH=y
 UCLIBC_HAS_FNMATCH_OLD=y
 # UCLIBC_HAS_WORDEXP is not set
 # UCLIBC_HAS_NFTW is not set
+# UCLIBC_HAS_FTW is not set
 # UCLIBC_HAS_FTS is not set
 UCLIBC_HAS_GLOB=y
 # UCLIBC_HAS_GNU_GLOB is not set

@@ -11,3 +11,5 @@ GETTEXT_CONF_ENV = \
 FLEX_CONF_ENV = ac_cv_path_M4=/usr/bin/m4 \
 	CFLAGS="$(TARGET_CFLAGS) -fno-lto -fno-whole-program"
 	LDFLAGS="$(TARGET_LDFLAGS) -fno-lto -fno-use-linker-plugin"
+
+DNSMASQ_COPTS += -DNO_INOTIFY

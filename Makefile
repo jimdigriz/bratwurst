@@ -87,16 +87,16 @@ distclean: clean-bratwurst
 .PHONY: bratwurst
 bratwurst: qemu/mipsel qemu
 
-VMLINUZ	:= buildroot/output/images/vmlinuz
+VMLINUX	:= buildroot/output/images/vmlinux
 PFLASH	:= buildroot/output/images/pflash
-$(VMLINUZ) $(PFLASH): world
+$(VMLINUX) $(PFLASH): world
 
 .PHONY: qemu
-qemu: $(VMLINUZ) $(PFLASH) $(9P_SHARE)
+qemu: $(VMLINUX) $(PFLASH) $(9P_SHARE)
 	qemu-system-$(shell cat .qemu-arch) -nodefaults -nographic -machine accel=kvm:tcg \
 		-serial mon:stdio \
 		-m $(RAM) \
-		-kernel $(VMLINUZ) \
+		-kernel $(VMLINUX) \
 		-append "$(FSAPPEND) $(APPEND)" \
 		-drive file=$(PFLASH),snapshot=on,if=pflash \
 		-net nic,vlan=1,model=virtio \

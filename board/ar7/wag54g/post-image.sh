@@ -4,19 +4,16 @@ set -eu
 
 cd "$1"
 
-[ ! -e vmlinuz -a -f bzImage ] && ln -s bzImage vmlinuz
+if [ $(cat rootfs.jffs2 | wc -c) -gt $((3136*1024)) ]; then
+	echo rootfs.jffs2 is too large >&2
+	exit 1
+fi
 
-objcopy -S -O srec --srec-forceS3 vmlinuz vmlinuz.srec
-
+../host/usr/bin/mipsel-buildroot-linux-uclibc-objcopy -S -O srec --srec-forceS3 vmlinuz vmlinuz.srec
 ../host/usr/bin/srec2bin vmlinuz.srec vmlinuz.bin
 
 if [ $(cat vmlinuz.bin | wc -c) -gt $((768*1024)) ]; then
 	echo vmlinuz is too large >&2
-	exit 1
-fi
-
-if [ $(cat rootfs.jffs2 | wc -c) -gt $((3136*1024)) ]; then
-	echo rootfs.jffs2 is too large >&2
 	exit 1
 fi
 

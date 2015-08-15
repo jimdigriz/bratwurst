@@ -4,8 +4,10 @@
 # TARGET_bfin is not set
 # TARGET_c6x is not set
 # TARGET_cris is not set
+# TARGET_h8300 is not set
 # TARGET_i386 is not set
 # TARGET_m68k is not set
+# TARGET_metag is not set
 # TARGET_microblaze is not set
 TARGET_mips=y
 # TARGET_nios2 is not set

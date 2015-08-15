@@ -9,6 +9,7 @@ if [ $(cat rootfs.jffs2 | wc -c) -gt $((0x660000)) ]; then
 	exit 1
 fi
 
+../host/usr/bin/mipsel-buildroot-linux-uclibc-objcopy -O binary vmlinux vmlinux.bin
 xz --format=lzma --stdout --lzma1=lc=1,lp=2,pb=2 vmlinux.bin > vmlinux.bin.lzma
 
 if [ $(cat vmlinux.bin.lzma | wc -c) -gt $((0x140000)) ]; then

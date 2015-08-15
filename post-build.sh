@@ -35,6 +35,7 @@ done
 
 FILES="	etc/atmsigd.conf
 	etc/hosts.atm
+	etc/dropbear
 	usr/sbin/hediag
 	usr/sbin/lecs
 	usr/sbin/atmsigd

@@ -93,7 +93,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1974,6 +1974,13 @@ config MODULE_COMPRESS_XZ
+@@ -1998,6 +1998,13 @@ config MODULE_COMPRESS_XZ
  
  endchoice
  
@@ -109,7 +109,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  config INIT_ALL_POSSIBLE
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -2680,6 +2680,7 @@ static struct module *setup_load_info(st
+@@ -2681,6 +2681,7 @@ static struct module *setup_load_info(st
  
  static int check_modinfo(struct module *mod, struct load_info *info, int flags)
  {
@@ -117,7 +117,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  	const char *modmagic = get_modinfo(info, "vermagic");
  	int err;
  
-@@ -2705,6 +2706,7 @@ static int check_modinfo(struct module *
+@@ -2706,6 +2707,7 @@ static int check_modinfo(struct module *
  		pr_warn("%s: module is from the staging directory, the quality "
  			"is unknown, you have been warned.\n", mod->name);
  	}
@@ -127,7 +127,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  	set_license(mod, get_modinfo(info, "license"));
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
-@@ -1726,7 +1726,9 @@ static void read_symbols(char *modname)
+@@ -1959,7 +1959,9 @@ static void read_symbols(char *modname)
  		symname = remove_dot(info.strtab + sym->st_name);
  
  		handle_modversions(mod, &info, sym, symname);
@@ -137,7 +137,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  	}
  	if (!is_vmlinux(modname) ||
  	     (is_vmlinux(modname) && vmlinux_section_warnings))
-@@ -1870,7 +1872,9 @@ static void add_header(struct buffer *b,
+@@ -2103,7 +2105,9 @@ static void add_header(struct buffer *b,
  	buf_printf(b, "#include <linux/vermagic.h>\n");
  	buf_printf(b, "#include <linux/compiler.h>\n");
  	buf_printf(b, "\n");
@@ -147,7 +147,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  	buf_printf(b, "\n");
  	buf_printf(b, "__visible struct module __this_module\n");
  	buf_printf(b, "__attribute__((section(\".gnu.linkonce.this_module\"))) = {\n");
-@@ -1887,16 +1891,20 @@ static void add_header(struct buffer *b,
+@@ -2120,16 +2124,20 @@ static void add_header(struct buffer *b,
  
  static void add_intree_flag(struct buffer *b, int is_intree)
  {
@@ -168,7 +168,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  }
  
  /**
-@@ -1989,11 +1997,13 @@ static void add_depends(struct buffer *b
+@@ -2222,11 +2230,13 @@ static void add_depends(struct buffer *b
  
  static void add_srcversion(struct buffer *b, struct module *mod)
  {
@@ -182,7 +182,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  }
  
  static void write_if_changed(struct buffer *b, const char *fname)
-@@ -2224,7 +2234,9 @@ int main(int argc, char **argv)
+@@ -2457,7 +2467,9 @@ int main(int argc, char **argv)
  		add_staging_flag(&buf, mod->name);
  		err |= add_versions(&buf, mod);
  		add_depends(&buf, mod, modules);

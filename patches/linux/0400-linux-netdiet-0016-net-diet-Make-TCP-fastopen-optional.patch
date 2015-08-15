@@ -9,29 +9,16 @@ but the main advantage is that CONFIG_INET doesn't
 pull in AES and the crypto subsystem anymore, which
 is worth far more savings.
 
-   text	   data	    bss	    dec	    hex	filename
-6954762	1404960	 765952	9125674	 8b3f2a	vmlinux-with-fastopen
-6951618	1400608	 765952	9118178	 8b21e2	vmlinux-wo-fastopen
+   text    data     bss     dec     hex filename
+6954762 1404960  765952 9125674  8b3f2a vmlinux-with-fastopen
+6951618 1400608  765952 9118178  8b21e2 vmlinux-wo-fastopen
 
 Signed-off-by: Andi Kleen <ak@linux.intel.com>
 ---
- include/linux/tcp.h        | 14 ++++++++++++--
- include/net/request_sock.h |  5 +++++
- include/net/tcp.h          |  9 +++++++++
- net/Kconfig                |  4 ++--
- net/core/request_sock.c    |  2 ++
- net/ipv4/Kconfig           |  4 ++++
- net/ipv4/Makefile          |  3 ++-
- net/ipv4/sysctl_net_ipv4.c |  4 ++++
- net/ipv4/tcp.c             |  4 ++++
- net/ipv4/tcp_ipv4.c        | 18 ++++++++++++++++++
- 10 files changed, 62 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-index 2399468..e0825e2 100644
---- a/include/linux/tcp.h
-+++ b/include/linux/tcp.h
-@@ -359,6 +359,9 @@ static inline struct tcp_timewait_sock *tcp_twsk(const struct sock *sk)
+diff -u -r a/include/linux/tcp.h b/include/linux/tcp.h
+--- a/include/linux/tcp.h	2015-08-03 17:30:08.000000000 +0100
++++ b/include/linux/tcp.h	2015-08-15 17:12:59.729284309 +0100
+@@ -368,14 +368,15 @@
  	return (struct tcp_timewait_sock *)sk;
  }
  
@@ -41,8 +28,7 @@ index 2399468..e0825e2 100644
  static inline bool tcp_passive_fastopen(const struct sock *sk)
  {
  	return (sk->sk_state == TCP_SYN_RECV &&
-@@ -370,8 +373,6 @@ static inline bool fastopen_cookie_present(struct tcp_fastopen_cookie *foc)
- 	return foc->len != -1;
+ 		tcp_sk(sk)->fastopen_rsk != NULL);
  }
  
 -extern void tcp_sock_destruct(struct sock *sk);
@@ -50,43 +36,38 @@ index 2399468..e0825e2 100644
  static inline int fastopen_init_queue(struct sock *sk, int backlog)
  {
  	struct request_sock_queue *queue =
-@@ -391,4 +392,13 @@ static inline int fastopen_init_queue(struct sock *sk, int backlog)
+@@ -395,4 +396,9 @@
  	return 0;
  }
  
 +#else
-+static inline bool tcp_passive_fastopen(const struct sock *sk)
-+{ return false; }
-+static inline bool fastopen_cookie_present(struct tcp_fastopen_cookie *foc)
-+{ return false; }
-+static inline int fastopen_init_queue(struct sock *sk, int backlog)
-+{ return 0; }
++static inline bool tcp_passive_fastopen(const struct sock *sk) { return false; }
++static inline int fastopen_init_queue(struct sock *sk, int backlog) { return 0; }
 +#endif
 +
  #endif	/* _LINUX_TCP_H */
-diff --git a/include/net/request_sock.h b/include/net/request_sock.h
-index 7f830ff..ad1f97a 100644
---- a/include/net/request_sock.h
-+++ b/include/net/request_sock.h
-@@ -168,8 +168,13 @@ int reqsk_queue_alloc(struct request_sock_queue *queue,
+diff -u -r a/include/net/request_sock.h b/include/net/request_sock.h
+--- a/include/net/request_sock.h	2015-08-03 17:30:08.000000000 +0100
++++ b/include/net/request_sock.h	2015-08-15 17:14:01.553281986 +0100
+@@ -195,9 +195,13 @@
  
  void __reqsk_queue_destroy(struct request_sock_queue *queue);
  void reqsk_queue_destroy(struct request_sock_queue *queue);
 +#ifdef CONFIG_TCP_FASTOPEN
  void reqsk_fastopen_remove(struct sock *sk, struct request_sock *req,
  			   bool reset);
+-
 +#else
 +static inline void reqsk_fastopen_remove(struct sock *sk, struct request_sock *req,
-+			   bool reset) {}
++			   bool reset) {};
 +#endif
- 
  static inline struct request_sock *
  	reqsk_queue_yank_acceptq(struct request_sock_queue *queue)
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index ac9f6bd..1a5e91b 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -251,7 +251,11 @@ extern int sysctl_tcp_retries1;
+ {
+diff -u -r a/include/net/tcp.h b/include/net/tcp.h
+--- a/include/net/tcp.h	2015-08-03 17:30:08.000000000 +0100
++++ b/include/net/tcp.h	2015-08-15 17:15:22.153278958 +0100
+@@ -249,7 +249,11 @@
  extern int sysctl_tcp_retries2;
  extern int sysctl_tcp_orphan_retries;
  extern int sysctl_tcp_syncookies;
@@ -98,7 +79,7 @@ index ac9f6bd..1a5e91b 100644
  extern int sysctl_tcp_retrans_collapse;
  extern int sysctl_tcp_stdurg;
  extern int sysctl_tcp_rfc1337;
-@@ -1333,7 +1337,12 @@ struct tcp_fastopen_request {
+@@ -1351,7 +1355,12 @@
  	size_t				size;
  	int				copied;	/* queued in tcp_connect() */
  };
@@ -106,63 +87,44 @@ index ac9f6bd..1a5e91b 100644
 +#ifdef CONFIG_TCP_FASTOPEN
  void tcp_free_fastopen_req(struct tcp_sock *tp);
 +#else
-+static inline void tcp_free_fastopen_req(struct tcp_sock *tp) {}
++static inline void tcp_free_fastopen_req(struct tcp_sock *tp) {};
 +#endif
  
  extern struct tcp_fastopen_context __rcu *tcp_fastopen_ctx;
  int tcp_fastopen_reset_cipher(void *key, unsigned int len);
-diff --git a/net/Kconfig b/net/Kconfig
-index f5196ba..fe6e856 100644
---- a/net/Kconfig
-+++ b/net/Kconfig
-@@ -61,8 +61,8 @@ source "net/iucv/Kconfig"
- 
- config INET
- 	bool "TCP/IP networking"
--	select CRYPTO
--	select CRYPTO_AES
-+	select CRYPTO if TCP_FASTOPEN
-+	select CRYPTO_AES if TCP_FASTOPEN
- 	---help---
- 	  These are the protocols used on the Internet and on most local
- 	  Ethernets. It is highly recommended to say Y here (this will enlarge
-diff --git a/net/core/request_sock.c b/net/core/request_sock.c
-index 467f326..80ad1dd 100644
---- a/net/core/request_sock.c
-+++ b/net/core/request_sock.c
-@@ -131,6 +131,7 @@ void reqsk_queue_destroy(struct request_sock_queue *queue)
- 		kfree(lopt);
+diff -u -r a/net/core/request_sock.c b/net/core/request_sock.c
+--- a/net/core/request_sock.c	2015-08-03 17:30:08.000000000 +0100
++++ b/net/core/request_sock.c	2015-08-15 17:16:46.901275775 +0100
+@@ -117,6 +117,7 @@
+ 	kvfree(lopt);
  }
  
 +#ifdef CONFIG_TCP_FASTOPEN
  /*
   * This function is called to set a Fast Open socket's "fastopen_rsk" field
   * to NULL when a TFO socket no longer needs to access the request_sock.
-@@ -222,3 +223,4 @@ out:
+@@ -204,3 +205,4 @@
+ out:
  	spin_unlock_bh(&fastopenq->lock);
- 	sock_put(lsk);
  }
 +#endif
-diff --git a/net/ipv4/Kconfig b/net/ipv4/Kconfig
-index c1f9899..df5c569 100644
---- a/net/ipv4/Kconfig
-+++ b/net/ipv4/Kconfig
-@@ -320,6 +320,10 @@ config NET_IPVTI
- 	  the notion of a secure tunnel for IPSEC and then use routing protocol
- 	  on top.
+diff -u -r a/net/ipv4/Kconfig b/net/ipv4/Kconfig
+--- a/net/ipv4/Kconfig	2015-08-15 10:06:17.982246060 +0100
++++ b/net/ipv4/Kconfig	2015-08-15 17:17:15.893274686 +0100
+@@ -349,6 +349,9 @@
+ 
+ 	  To compile this driver as a module, choose M here: the module
  
 +config TCP_FASTOPEN
 +	bool "Enable TCP fastopen"
 +	default y
-+
+ 
  config INET_AH
  	tristate "IP: AH transformation"
- 	select XFRM_ALGO
-diff --git a/net/ipv4/Makefile b/net/ipv4/Makefile
-index eb129a4..addecef 100644
---- a/net/ipv4/Makefile
-+++ b/net/ipv4/Makefile
-@@ -7,7 +7,7 @@ obj-y     := route.o inetpeer.o protocol.o \
+diff -u -r a/net/ipv4/Makefile b/net/ipv4/Makefile
+--- a/net/ipv4/Makefile	2015-08-15 10:06:17.922246062 +0100
++++ b/net/ipv4/Makefile	2015-08-15 17:17:34.437273989 +0100
+@@ -7,7 +7,7 @@
  	     ip_output.o ip_sockglue.o inet_hashtables.o \
  	     inet_timewait_sock.o inet_connection_sock.o \
  	     tcp.o tcp_input.o tcp_output.o tcp_timer.o tcp_ipv4.o \
@@ -171,19 +133,18 @@ index eb129a4..addecef 100644
  	     tcp_offload.o datagram.o raw.o udp.o udplite.o \
  	     udp_offload.o arp.o icmp.o devinet.o af_inet.o igmp.o \
  	     fib_frontend.o fib_semantics.o fib_trie.o \
-@@ -55,6 +55,7 @@ obj-$(CONFIG_TCP_CONG_SCALABLE) += tcp_scalable.o
+@@ -55,6 +55,7 @@
  obj-$(CONFIG_TCP_CONG_LP) += tcp_lp.o
  obj-$(CONFIG_TCP_CONG_YEAH) += tcp_yeah.o
  obj-$(CONFIG_TCP_CONG_ILLINOIS) += tcp_illinois.o
 +obj-$(CONFIG_TCP_FASTOPEN) += tcp_fastopen.o
  obj-$(CONFIG_MEMCG_KMEM) += tcp_memcontrol.o
  obj-$(CONFIG_NETLABEL) += cipso_ipv4.o
- 
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index fe5823a..9a9f96c 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -200,6 +200,7 @@ static int proc_allowed_congestion_control(struct ctl_table *ctl,
+ obj-$(CONFIG_GENEVE) += geneve.o
+diff -u -r a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
+--- a/net/ipv4/sysctl_net_ipv4.c	2015-08-03 17:30:08.000000000 +0100
++++ b/net/ipv4/sysctl_net_ipv4.c	2015-08-15 17:25:17.449256596 +0100
+@@ -200,6 +200,7 @@
  	return ret;
  }
  
@@ -191,7 +152,7 @@ index fe5823a..9a9f96c 100644
  static int proc_tcp_fastopen_key(struct ctl_table *ctl, int write,
  				 void __user *buffer, size_t *lenp,
  				 loff_t *ppos)
-@@ -246,6 +247,7 @@ bad_key:
+@@ -246,6 +247,7 @@
  	kfree(tbl.data);
  	return ret;
  }
@@ -199,7 +160,7 @@ index fe5823a..9a9f96c 100644
  
  static struct ctl_table ipv4_table[] = {
  	{
-@@ -388,6 +390,7 @@ static struct ctl_table ipv4_table[] = {
+@@ -381,6 +383,7 @@
  		.proc_handler	= proc_dointvec
  	},
  #endif
@@ -207,7 +168,7 @@ index fe5823a..9a9f96c 100644
  	{
  		.procname	= "tcp_fastopen",
  		.data		= &sysctl_tcp_fastopen,
-@@ -401,6 +404,7 @@ static struct ctl_table ipv4_table[] = {
+@@ -394,6 +397,7 @@
  		.maxlen		= ((TCP_FASTOPEN_KEY_LENGTH * 2) + 10),
  		.proc_handler	= proc_tcp_fastopen_key,
  	},
@@ -215,27 +176,26 @@ index fe5823a..9a9f96c 100644
  	{
  		.procname	= "tcp_tw_recycle",
  		.data		= &tcp_death_row.sysctl_tw_recycle,
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 3fd48421..ef14cb6 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -1036,6 +1036,7 @@ static inline int select_size(const struct sock *sk, bool sg)
+diff -u -r a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+--- a/net/ipv4/tcp.c	2015-08-03 17:30:08.000000000 +0100
++++ b/net/ipv4/tcp.c	2015-08-15 17:37:26.885229194 +0100
+@@ -1030,6 +1030,7 @@
  	return tmp;
  }
  
 +#ifdef CONFIG_TCP_FASTOPEN
  void tcp_free_fastopen_req(struct tcp_sock *tp)
  {
- 	if (tp->fastopen_req != NULL) {
-@@ -1069,6 +1070,7 @@ static int tcp_sendmsg_fastopen(struct sock *sk, struct msghdr *msg,
+ 	if (tp->fastopen_req) {
+@@ -1063,6 +1064,7 @@
  	tcp_free_fastopen_req(tp);
  	return err;
  }
 +#endif
  
- int tcp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
- 		size_t size)
-@@ -1084,6 +1086,7 @@ int tcp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
+ int tcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ {
+@@ -1076,6 +1078,7 @@
  	lock_sock(sk);
  
  	flags = msg->msg_flags;
@@ -243,19 +203,34 @@ index 3fd48421..ef14cb6 100644
  	if (flags & MSG_FASTOPEN) {
  		err = tcp_sendmsg_fastopen(sk, msg, &copied_syn, size);
  		if (err == -EINPROGRESS && copied_syn > 0)
-@@ -1092,6 +1095,7 @@ int tcp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
+@@ -1083,6 +1086,7 @@
+ 		else if (err)
  			goto out_err;
- 		offset = copied_syn;
  	}
 +#endif
  
  	timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
  
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 438f3b9..fbddabb 100644
---- a/net/ipv4/tcp_input.c	2015-06-13 14:40:17.700668299 +0100
-+++ b/net/ipv4/tcp_input.c	2015-06-13 14:47:50.624652836 +0100
-@@ -6031,8 +6031,12 @@
+@@ -2543,6 +2547,7 @@
+ 			icsk->icsk_user_timeout = msecs_to_jiffies(val);
+ 		break;
+ 
++#ifdef CONFIG_TCP_FASTOPEN
+ 	case TCP_FASTOPEN:
+ 		if (val >= 0 && ((1 << sk->sk_state) & (TCPF_CLOSE |
+ 		    TCPF_LISTEN))) {
+@@ -2553,6 +2558,7 @@
+ 			err = -EINVAL;
+ 		}
+ 		break;
++#endif
+ 	case TCP_TIMESTAMP:
+ 		if (!tp->repair)
+ 			err = -EPERM;
+diff -u -r a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+--- a/net/ipv4/tcp_input.c	2015-08-03 17:30:08.000000000 +0100
++++ b/net/ipv4/tcp_input.c	2015-08-15 17:23:23.445260878 +0100
+@@ -6188,8 +6188,12 @@
  
  	tcp_rsk(req)->snt_isn = isn;
  	tcp_openreq_init_rwin(req, sk, dst);
@@ -268,5 +243,17 @@ index 438f3b9..fbddabb 100644
  	err = af_ops->send_synack(sk, dst, &fl, req,
  				  skb_get_queue_mapping(skb), &foc);
  	if (!fastopen) {
--- 
-2.1.4
+diff -u -r a/net/Kconfig b/net/Kconfig
+--- a/net/Kconfig	2015-08-15 10:06:17.982246060 +0100
++++ b/net/Kconfig	2015-08-15 17:15:56.165277681 +0100
+@@ -54,8 +54,8 @@
+ 
+ config INET
+ 	bool "TCP/IP networking"
+-	select CRYPTO
+-	select CRYPTO_AES
++	select CRYPTO if TCP_FASTOPEN
++	select CRYPTO_AES if TCP_FASTOPEN
+ 	---help---
+ 	  These are the protocols used on the Internet and on most local
+ 	  Ethernets. It is highly recommended to say Y here (this will enlarge

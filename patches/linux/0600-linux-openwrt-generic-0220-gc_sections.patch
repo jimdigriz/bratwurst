@@ -86,16 +86,20 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  				VMLINUX_SYMBOL(__stop_kprobe_blacklist) = .;
  #else
  #define KPROBE_BLACKLIST()
-@@ -123,7 +123,7 @@
+@@ -123,10 +123,10 @@
  #ifdef CONFIG_EVENT_TRACING
  #define FTRACE_EVENTS()	. = ALIGN(8);					\
  			VMLINUX_SYMBOL(__start_ftrace_events) = .;	\
 -			*(_ftrace_events)				\
 +			KEEP(*(_ftrace_events))				\
- 			VMLINUX_SYMBOL(__stop_ftrace_events) = .;
+ 			VMLINUX_SYMBOL(__stop_ftrace_events) = .;	\
+ 			VMLINUX_SYMBOL(__start_ftrace_enum_maps) = .;	\
+-			*(_ftrace_enum_map)				\
++			KEEP(*(_ftrace_enum_map))			\
+ 			VMLINUX_SYMBOL(__stop_ftrace_enum_maps) = .;
  #else
  #define FTRACE_EVENTS()
-@@ -131,7 +131,7 @@
+@@ -134,7 +134,7 @@
  
  #ifdef CONFIG_TRACING
  #define TRACE_PRINTKS() VMLINUX_SYMBOL(__start___trace_bprintk_fmt) = .;      \
@@ -104,7 +108,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  			 VMLINUX_SYMBOL(__stop___trace_bprintk_fmt) = .;
  #define TRACEPOINT_STR() VMLINUX_SYMBOL(__start___tracepoint_str) = .;	\
  			 *(__tracepoint_str) /* Trace_printk fmt' pointer */ \
-@@ -144,7 +144,7 @@
+@@ -147,7 +147,7 @@
  #ifdef CONFIG_FTRACE_SYSCALLS
  #define TRACE_SYSCALLS() . = ALIGN(8);					\
  			 VMLINUX_SYMBOL(__start_syscalls_metadata) = .;	\
@@ -113,7 +117,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  			 VMLINUX_SYMBOL(__stop_syscalls_metadata) = .;
  #else
  #define TRACE_SYSCALLS()
-@@ -158,8 +158,8 @@
+@@ -169,8 +169,8 @@
  #define _OF_TABLE_1(name)						\
  	. = ALIGN(8);							\
  	VMLINUX_SYMBOL(__##name##_of_table) = .;			\
@@ -124,7 +128,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  
  #define CLKSRC_OF_TABLES()	OF_TABLE(CONFIG_CLKSRC_OF, clksrc)
  #define IRQCHIP_OF_MATCH_TABLE() OF_TABLE(CONFIG_IRQCHIP, irqchip)
-@@ -172,7 +172,7 @@
+@@ -184,7 +184,7 @@
  #define KERNEL_DTB()							\
  	STRUCT_ALIGN();							\
  	VMLINUX_SYMBOL(__dtb_start) = .;				\
@@ -133,7 +137,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  	VMLINUX_SYMBOL(__dtb_end) = .;
  
  /* .data section */
-@@ -188,16 +188,17 @@
+@@ -200,16 +200,17 @@
  	/* implement dynamic printk debug */				\
  	. = ALIGN(8);                                                   \
  	VMLINUX_SYMBOL(__start___jump_table) = .;                       \
@@ -154,7 +158,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  
  /*
   * Data section helpers
-@@ -251,35 +252,35 @@
+@@ -263,35 +264,35 @@
  	/* PCI quirks */						\
  	.pci_fixup        : AT(ADDR(.pci_fixup) - LOAD_OFFSET) {	\
  		VMLINUX_SYMBOL(__start_pci_fixups_early) = .;		\
@@ -199,7 +203,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		VMLINUX_SYMBOL(__end_builtin_fw) = .;			\
  	}								\
  									\
-@@ -288,49 +289,49 @@
+@@ -300,49 +301,49 @@
  	/* Kernel symbol table: Normal symbols */			\
  	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET) {		\
  		VMLINUX_SYMBOL(__start___ksymtab) = .;			\
@@ -256,7 +260,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		VMLINUX_SYMBOL(__stop___kcrctab_gpl) = .;		\
  	}								\
  									\
-@@ -344,14 +345,14 @@
+@@ -356,14 +357,14 @@
  	/* Kernel symbol table: GPL-only unused symbols */		\
  	__kcrctab_unused_gpl : AT(ADDR(__kcrctab_unused_gpl) - LOAD_OFFSET) { \
  		VMLINUX_SYMBOL(__start___kcrctab_unused_gpl) = .;	\
@@ -273,7 +277,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		VMLINUX_SYMBOL(__stop___kcrctab_gpl_future) = .;	\
  	}								\
  									\
-@@ -370,14 +371,14 @@
+@@ -382,14 +383,14 @@
  	/* Built-in module parameters. */				\
  	__param : AT(ADDR(__param) - LOAD_OFFSET) {			\
  		VMLINUX_SYMBOL(__start___param) = .;			\
@@ -290,7 +294,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		VMLINUX_SYMBOL(__stop___modver) = .;			\
  		. = ALIGN((align));					\
  		VMLINUX_SYMBOL(__end_rodata) = .;			\
-@@ -433,7 +434,7 @@
+@@ -445,7 +446,7 @@
  #define ENTRY_TEXT							\
  		ALIGN_FUNCTION();					\
  		VMLINUX_SYMBOL(__entry_text_start) = .;			\
@@ -299,7 +303,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		VMLINUX_SYMBOL(__entry_text_end) = .;
  
  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-@@ -461,7 +462,7 @@
+@@ -473,7 +474,7 @@
  	. = ALIGN(align);						\
  	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {		\
  		VMLINUX_SYMBOL(__start___ex_table) = .;			\
@@ -308,7 +312,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		VMLINUX_SYMBOL(__stop___ex_table) = .;			\
  	}
  
-@@ -477,9 +478,9 @@
+@@ -489,9 +490,9 @@
  #ifdef CONFIG_CONSTRUCTORS
  #define KERNEL_CTORS()	. = ALIGN(8);			   \
  			VMLINUX_SYMBOL(__ctors_start) = .; \
@@ -320,7 +324,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  			VMLINUX_SYMBOL(__ctors_end) = .;
  #else
  #define KERNEL_CTORS()
-@@ -528,7 +529,7 @@
+@@ -542,7 +543,7 @@
  #define SBSS(sbss_align)						\
  	. = ALIGN(sbss_align);						\
  	.sbss : AT(ADDR(.sbss) - LOAD_OFFSET) {				\
@@ -329,7 +333,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		*(.scommon)						\
  	}
  
-@@ -546,7 +547,7 @@
+@@ -560,7 +561,7 @@
  		BSS_FIRST_SECTIONS					\
  		*(.bss..page_aligned)					\
  		*(.dynbss)						\
@@ -338,7 +342,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		*(COMMON)						\
  	}
  
-@@ -595,7 +596,7 @@
+@@ -609,7 +610,7 @@
  	. = ALIGN(8);							\
  	__bug_table : AT(ADDR(__bug_table) - LOAD_OFFSET) {		\
  		VMLINUX_SYMBOL(__start___bug_table) = .;		\
@@ -347,7 +351,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		VMLINUX_SYMBOL(__stop___bug_table) = .;			\
  	}
  #else
-@@ -607,7 +608,7 @@
+@@ -621,7 +622,7 @@
  	. = ALIGN(4);							\
  	.tracedata : AT(ADDR(.tracedata) - LOAD_OFFSET) {		\
  		VMLINUX_SYMBOL(__tracedata_start) = .;			\
@@ -356,7 +360,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		VMLINUX_SYMBOL(__tracedata_end) = .;			\
  	}
  #else
-@@ -624,17 +625,17 @@
+@@ -638,17 +639,17 @@
  #define INIT_SETUP(initsetup_align)					\
  		. = ALIGN(initsetup_align);				\
  		VMLINUX_SYMBOL(__setup_start) = .;			\
@@ -378,7 +382,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		INIT_CALLS_LEVEL(0)					\
  		INIT_CALLS_LEVEL(1)					\
  		INIT_CALLS_LEVEL(2)					\
-@@ -648,21 +649,21 @@
+@@ -662,21 +663,21 @@
  
  #define CON_INITCALL							\
  		VMLINUX_SYMBOL(__con_initcall_start) = .;		\
@@ -439,18 +443,18 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
 -	*(.idmap.text)							\
 +	KEEP(*(.idmap.text))						\
  	VMLINUX_SYMBOL(__idmap_text_end) = .;				\
- 	. = ALIGN(32);							\
+ 	. = ALIGN(PAGE_SIZE);						\
  	VMLINUX_SYMBOL(__hyp_idmap_text_start) = .;			\
-@@ -101,7 +101,7 @@ SECTIONS
- 	.text : {			/* Real text segment		*/
+@@ -102,7 +102,7 @@ SECTIONS
  		_stext = .;		/* Text and read-only data	*/
+ 			IDMAP_TEXT
  			__exception_text_start = .;
 -			*(.exception.text)
 +			KEEP(*(.exception.text))
  			__exception_text_end = .;
  			IRQENTRY_TEXT
  			TEXT_TEXT
-@@ -129,7 +129,7 @@ SECTIONS
+@@ -126,7 +126,7 @@ SECTIONS
  	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
  		__start___ex_table = .;
  #ifdef CONFIG_MMU
@@ -459,7 +463,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  #endif
  		__stop___ex_table = .;
  	}
-@@ -141,12 +141,12 @@ SECTIONS
+@@ -138,12 +138,12 @@ SECTIONS
  	. = ALIGN(8);
  	.ARM.unwind_idx : {
  		__start_unwind_idx = .;
@@ -474,7 +478,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  		__stop_unwind_tab = .;
  	}
  #endif
-@@ -169,14 +169,14 @@ SECTIONS
+@@ -166,14 +166,14 @@ SECTIONS
  	 */
  	__vectors_start = .;
  	.vectors 0 : AT(__vectors_start) {
@@ -491,7 +495,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  	}
  	. = __stubs_start + SIZEOF(.stubs);
  	__stubs_end = .;
-@@ -190,24 +190,24 @@ SECTIONS
+@@ -187,24 +187,24 @@ SECTIONS
  	}
  	.init.arch.info : {
  		__arch_info_begin = .;
@@ -522,7 +526,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
  	.init.data : {
 --- a/arch/arm/boot/compressed/Makefile
 +++ b/arch/arm/boot/compressed/Makefile
-@@ -122,6 +122,7 @@ ifeq ($(CONFIG_FUNCTION_TRACER),y)
+@@ -107,6 +107,7 @@ ifeq ($(CONFIG_FUNCTION_TRACER),y)
  ORIG_CFLAGS := $(KBUILD_CFLAGS)
  KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
  endif

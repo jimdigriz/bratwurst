@@ -17,7 +17,7 @@
  #include <linux/export.h>
  
  /* Align . to a 8 byte boundary equals to maximum function alignment. */
-@@ -289,14 +299,14 @@
+@@ -301,14 +311,14 @@
  	/* Kernel symbol table: Normal symbols */			\
  	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET) {		\
  		VMLINUX_SYMBOL(__start___ksymtab) = .;			\
@@ -34,7 +34,7 @@
  		VMLINUX_SYMBOL(__stop___ksymtab_gpl) = .;		\
  	}								\
  									\
-@@ -358,7 +368,7 @@
+@@ -370,7 +380,7 @@
  									\
  	/* Kernel symbol table: strings */				\
          __ksymtab_strings : AT(ADDR(__ksymtab_strings) - LOAD_OFFSET) {	\
@@ -43,7 +43,7 @@
  	}								\
  									\
  	/* __*init sections */						\
-@@ -682,6 +692,8 @@
+@@ -696,6 +706,8 @@
  	EXIT_TEXT							\
  	EXIT_DATA							\
  	EXIT_CALL							\

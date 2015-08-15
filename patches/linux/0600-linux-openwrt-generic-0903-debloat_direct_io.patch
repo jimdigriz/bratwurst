@@ -1,6 +1,6 @@
 --- a/fs/Kconfig
 +++ b/fs/Kconfig
-@@ -70,6 +70,11 @@ config FILE_LOCKING
+@@ -71,6 +71,11 @@ config FILE_LOCKING
            for filesystems like NFS and for the flock() system
            call. Disabling this option saves about 11k.
  
@@ -26,22 +26,23 @@
  endif
 --- a/include/linux/fs.h
 +++ b/include/linux/fs.h
-@@ -2615,12 +2615,25 @@ enum {
- 	DIO_ASYNC_EXTEND = 0x04,
+@@ -2649,6 +2649,7 @@ enum {
+ 	DIO_SKIP_DIO_COUNT = 0x08,
  };
  
 +#ifdef CONFIG_DIRECT_IO
  void dio_end_io(struct bio *bio, int error);
  
- ssize_t __blockdev_direct_IO(int rw, struct kiocb *iocb, struct inode *inode,
- 	struct block_device *bdev, struct iov_iter *iter, loff_t offset,
- 	get_block_t get_block, dio_iodone_t end_io,
- 	dio_submit_t submit_io,	int flags);
+ ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+@@ -2656,6 +2657,18 @@ ssize_t __blockdev_direct_IO(struct kioc
+ 			     loff_t offset, get_block_t get_block,
+ 			     dio_iodone_t end_io, dio_submit_t submit_io,
+ 			     int flags);
 +#else
 +static inline void dio_end_io(struct bio *bio, int error)
 +{
 +}
-+static inline ssize_t __blockdev_direct_IO(int rw, struct kiocb *iocb, struct inode *inode,
++static inline ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
 +	struct block_device *bdev, struct iov_iter *iter, loff_t offset,
 +	get_block_t get_block, dio_iodone_t end_io,
 +	dio_submit_t submit_io,	int flags)
@@ -50,8 +51,8 @@
 +}
 +#endif
  
- static inline ssize_t blockdev_direct_IO(int rw, struct kiocb *iocb,
- 		struct inode *inode, struct iov_iter *iter, loff_t offset,
+ static inline ssize_t blockdev_direct_IO(struct kiocb *iocb,
+ 					 struct inode *inode,
 --- a/fs/fcntl.c
 +++ b/fs/fcntl.c
 @@ -52,8 +52,10 @@ static int setfl(int fd, struct file * f
@@ -67,7 +68,7 @@
  
 --- a/fs/open.c
 +++ b/fs/open.c
-@@ -667,7 +667,9 @@ int open_check_o_direct(struct file *f)
+@@ -671,7 +671,9 @@ int open_check_o_direct(struct file *f)
  {
  	/* NB: we're sure to have correct a_ops only after f_op->open */
  	if (f->f_flags & O_DIRECT) {
