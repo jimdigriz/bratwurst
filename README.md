@@ -107,7 +107,7 @@ Note that:
 
 ### SSH Server Keys
 
-To preserve the SSH server's keys across builds, you can copy the files `/etc/dropbear/dropbear_{rsa,dsa}_host_key` on the target into a directory called `dropbear` at the top of the BRatWuRsT project directory.
+To preserve the SSH server's keys across builds, you can copy the files `/etc/dropbear/dropbear_{rsa,dsa,ecdsa}_host_key` on the target into a directory called `dropbear` at the top of the BRatWuRsT project directory.
 
 Alternatively you might want to consider adding the following to your `~/.ssh/config`:
 
