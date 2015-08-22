@@ -87,7 +87,7 @@ distclean: clean-bratwurst
 .PHONY: bratwurst
 bratwurst: qemu/mipsel qemu
 
-VMLINUX	:= buildroot/output/images/vmlinux
+VMLINUX	:= buildroot/output/images/vmlinuz
 PFLASH	:= buildroot/output/images/pflash
 $(VMLINUX) $(PFLASH): world
 
