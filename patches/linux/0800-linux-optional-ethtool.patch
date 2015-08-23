@@ -443,15 +443,15 @@ diff -u -p a/drivers/net/ethernet/microchip/enc28j60.c b/drivers/net/ethernet/mi
 diff -u -p a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
 --- a/drivers/net/ethernet/lantiq_etop.c
 +++ b/drivers/net/ethernet/lantiq_etop.c
-@@ -740,7 +740,7 @@ ltq_etop_probe(struct platform_device *p
- 	}
- 	strcpy(dev->name, "eth%d");
- 	dev->netdev_ops = &ltq_eth_netdev_ops;
--	dev->ethtool_ops = &ltq_etop_ethtool_ops;
-+	SET_ETHTOOL_OPS(dev, &ltq_etop_ethtool_ops);
- 	priv = netdev_priv(dev);
- 	priv->res = res;
- 	priv->pdev = pdev;
+@@ -861,7 +861,7 @@ ltq_etop_init(struct net_device *dev)
+ 
+ 	ltq_etop_set_multicast_list(dev);
+ 	if (!ltq_etop_mdio_init(dev))
+-		dev->ethtool_ops = &ltq_etop_ethtool_ops;
++		SET_ETHTOOL_OPS(dev, &ltq_etop_ethtool_ops);
+ 	else
+ 		pr_warn("etop: mdio probe failed\n");;
+ 	return 0;
 diff -u -p a/drivers/net/ethernet/octeon/octeon_mgmt.c b/drivers/net/ethernet/octeon/octeon_mgmt.c
 --- a/drivers/net/ethernet/octeon/octeon_mgmt.c
 +++ b/drivers/net/ethernet/octeon/octeon_mgmt.c
@@ -801,6 +801,16 @@ diff -u -p a/drivers/net/ethernet/chelsio/cxgb4vf/cxgb4vf_main.c b/drivers/net/e
  
  		/*
  		 * Initialize the hardware/software state for the port.
+diff -u -p a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ethtool.c
+@@ -911,5 +911,5 @@ static const struct ethtool_ops cxgb_eth
+ 
+ void cxgb4_set_ethtool_ops(struct net_device *netdev)
+ {
+-	netdev->ethtool_ops = &cxgb_ethtool_ops;
++	SET_ETHTOOL_OPS(netdev, &cxgb_ethtool_ops);
+ }
 diff -u -p a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
 --- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
 +++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
@@ -1721,6 +1731,35 @@ diff -u -p a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/
  }
  
  /**
+diff -u -p a/drivers/net/ethernet/cadence/macb.c b/drivers/net/ethernet/cadence/macb.c
+--- a/drivers/net/ethernet/cadence/macb.c
++++ b/drivers/net/ethernet/cadence/macb.c
+@@ -2317,14 +2317,14 @@ static int macb_init(struct platform_dev
+ 		bp->macbgem_ops.mog_free_rx_buffers = gem_free_rx_buffers;
+ 		bp->macbgem_ops.mog_init_rings = gem_init_rings;
+ 		bp->macbgem_ops.mog_rx = gem_rx;
+-		dev->ethtool_ops = &gem_ethtool_ops;
++		SET_ETHTOOL_OPS(dev, &gem_ethtool_ops);
+ 	} else {
+ 		bp->max_tx_length = MACB_MAX_TX_LEN;
+ 		bp->macbgem_ops.mog_alloc_rx_buffers = macb_alloc_rx_buffers;
+ 		bp->macbgem_ops.mog_free_rx_buffers = macb_free_rx_buffers;
+ 		bp->macbgem_ops.mog_init_rings = macb_init_rings;
+ 		bp->macbgem_ops.mog_rx = macb_rx;
+-		dev->ethtool_ops = &macb_ethtool_ops;
++		SET_ETHTOOL_OPS(dev, &macb_ethtool_ops);
+ 	}
+ 
+ 	/* Set features */
+@@ -2652,7 +2652,7 @@ static int at91ether_init(struct platfor
+ 	u32 reg;
+ 
+ 	dev->netdev_ops = &at91ether_netdev_ops;
+-	dev->ethtool_ops = &macb_ethtool_ops;
++	SET_ETHTOOL_OPS(dev, &macb_ethtool_ops);
+ 
+ 	err = devm_request_irq(&pdev->dev, dev->irq, at91ether_interrupt,
+ 			       0, dev->name, dev);
 diff -u -p a/drivers/net/ethernet/adi/bfin_mac.c b/drivers/net/ethernet/adi/bfin_mac.c
 --- a/drivers/net/ethernet/adi/bfin_mac.c
 +++ b/drivers/net/ethernet/adi/bfin_mac.c
@@ -1815,6 +1854,18 @@ diff -u -p a/drivers/net/ethernet/davicom/dm9000.c b/drivers/net/ethernet/davico
  
  	db->msg_enable       = NETIF_MSG_LINK;
  	db->mii.phy_id_mask  = 0x1f;
+diff -u -p a/drivers/net/ethernet/rocker/rocker.c b/drivers/net/ethernet/rocker/rocker.c
+--- a/drivers/net/ethernet/rocker/rocker.c
++++ b/drivers/net/ethernet/rocker/rocker.c
+@@ -4624,7 +4624,7 @@ static int rocker_probe_port(struct rock
+ 
+ 	rocker_port_dev_addr_init(rocker, rocker_port);
+ 	dev->netdev_ops = &rocker_port_netdev_ops;
+-	dev->ethtool_ops = &rocker_port_ethtool_ops;
++	SET_ETHTOOL_OPS(dev, &rocker_port_ethtool_ops);
+ 	dev->swdev_ops = &rocker_port_swdev_ops;
+ 	netif_napi_add(dev, &rocker_port->napi_tx, rocker_port_poll_tx,
+ 		       NAPI_POLL_WEIGHT);
 diff -u -p a/drivers/net/ethernet/xircom/xirc2ps_cs.c b/drivers/net/ethernet/xircom/xirc2ps_cs.c
 --- a/drivers/net/ethernet/xircom/xirc2ps_cs.c
 +++ b/drivers/net/ethernet/xircom/xirc2ps_cs.c

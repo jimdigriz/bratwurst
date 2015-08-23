@@ -1,0 +1,60 @@
+--- a/drivers/net/ethernet/lantiq_xrx200.c	2015-08-23 12:48:00.926630828 +0100
++++ b/drivers/net/ethernet/lantiq_xrx200.c	2015-08-23 13:04:07.578597166 +0100
+@@ -16,7 +16,6 @@
+  *   Copyright (C) 2012 John Crispin <blogic@openwrt.org>
+  */
+ 
+-#include <linux/switch.h>
+ #include <linux/etherdevice.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+@@ -34,9 +33,13 @@
+ #include "lantiq_pce.h"
+ #include "lantiq_xrx200_sw.h"
+ 
++#ifdef CONFIG_SWCONFIG
++#include <linux/switch.h>
++
+ #define SW_POLLING
+ #define SW_ROUTING
+ #define SW_PORTMAP
++#endif
+ 
+ #ifdef SW_ROUTING
+   #ifdef SW_PORTMAP
+@@ -232,7 +235,9 @@
+ 
+ 	spinlock_t lock;
+ 
++#ifdef CONFIG_SWCONFIG
+ 	struct switch_dev swdev;
++#endif
+ };
+ 
+ struct xrx200_priv {
+@@ -274,6 +279,7 @@
+ #define ltq_pmac_w32_mask(x, y, z) \
+ 			ltq_w32_mask(x, y, xrx200_pmac_membase + (z))
+ 
++#ifdef CONFIG_SWCONFIG
+ #define XRX200_GLOBAL_REGATTR(reg) \
+ 	.id = reg, \
+ 	.type = SWITCH_TYPE_INT, \
+@@ -852,6 +858,7 @@
+ 	}
+ 	return 0;
+ }
++#endif
+ 
+ static int xrx200_open(struct net_device *dev)
+ {
+@@ -1730,7 +1737,9 @@
+ 		return -ENOENT;
+ 	}
+ 
++#ifdef CONFIG_SWCONFIG
+ 	xrx200sw_init(&xrx200_hw);
++#endif
+ 
+ 	/* set wan port mask */
+ 	ltq_pmac_w32(xrx200_hw.wan_map, PMAC_EWAN);

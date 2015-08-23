@@ -1,18 +1,16 @@
-diff --git a/arch/mips/boot/dts/tdw8980.dts b/arch/mips/boot/dts/tdw8980.dts
-new file mode 100644
-index 0000000..34627c2
---- /dev/null
-+++ b/arch/mips/boot/dts/lantiq/tdw8980.dts
-@@ -0,0 +1,268 @@
+diff -u -N -r a/arch/mips/boot/dts/lantiq/tdw8970.dts b/arch/mips/boot/dts/lantiq/tdw8970.dts
+--- a/arch/mips/boot/dts/lantiq/tdw8970.dts	1970-01-01 01:00:00.000000000 +0100
++++ b/arch/mips/boot/dts/lantiq/tdw8970.dts	2015-08-23 11:17:31.870037691 +0100
+@@ -0,0 +1,256 @@
 +/dts-v1/;
 +
 +/include/ "vr9.dtsi"
 +
 +/ {
-+	model = "TDW8980 - TP-LINK TD-W8980";
++	model = "TDW8970 - TP-LINK TD-W8970";
 +
 +	chosen {
-+		bootargs = "console=ttyLTQ0,115200 earlyprintk";
++		bootargs = "console=ttyLTQ0,115200 init=/etc/preinit";
 +	};
 +
 +	memory@0 {
@@ -77,7 +75,7 @@ index 0000000..34627c2
 +				#address-cells = <1>;
 +				#size-cells = <0>;
 +				reg = <0>;
-+				mtd-mac-address = <&xrx200_net 0xf100>;
++				mtd-mac-address = <&ath9k_cal 0xf100>;
 +				lantiq,switch;
 +
 +				ethernet@0 {
@@ -174,49 +172,37 @@ index 0000000..34627c2
 +
 +			partition@0 {
 +				reg = <0x0 0x20000>;
-+				label = "uboot";
++				label = "u-boot";
 +				read-only;
 +			};
 +
 +			partition@20000 {
-+				reg = <0x20000 0x140000>;
-+				label = "linux";
++				reg = <0x20000 0x6a0000>;
++				label = "firmware";
 +			};
 +
-+			partition@160000 {
-+				reg = <0x160000 0x660000>;
-+				label = "rootfs";
++			partition@6c0000 {
++				reg = <0x6c0000 0x100000>;
++				label = "dsl_fw";
 +			};
 +
 +			partition@7c0000 {
 +				reg = <0x7c0000 0x10000>;
-+				label = "uboot_env";
++				label = "config";
 +				read-only;
 +			};
 +
-+			xrx200_net: partition@7d0000 {
-+				reg = <0x7d0000 0x10000>;
-+				label = "romfile";
-+				read-only;
-+			};
-+
-+			partition@7e0000 {
-+				reg = <0x7e0000 0x10000>;
-+				label = "rom";
-+				read-only;
-+			};
-+
-+			ath9k_cal: partition@7f0000 {
-+				reg = <0x7f0000 0x10000>;
-+				label = "radio";
++			ath9k_cal: partition@7d0000 {
++				reg = <0x7d0000 0x30000>;
++				label = "boardconfig";
 +				read-only;
 +			};
 +		};
 +	};
-+
++	
 +	ath9k_eep {
 +		compatible = "ath9k,eeprom";
-+		ath,eep-flash = <&ath9k_cal 0x1000>;
++		ath,eep-flash = <&ath9k_cal 0x21000>;
 +		ath,mac-offset = <0xf100>;
 +		ath,mac-increment;
 +		ath,led-pin = <0>;
@@ -272,12 +258,10 @@ index 0000000..34627c2
 +		};
 +	};
 +};
-diff --git a/arch/mips/boot/dts/vr9.dtsi b/arch/mips/boot/dts/vr9.dtsi
-new file mode 100644
-index 0000000..bdb1270
---- /dev/null
-+++ b/arch/mips/boot/dts/vr9.dtsi
-@@ -0,0 +1,192 @@
+diff -u -N -r a/arch/mips/boot/dts/lantiq/vr9.dtsi b/arch/mips/boot/dts/lantiq/vr9.dtsi
+--- a/arch/mips/boot/dts/lantiq/vr9.dtsi	1970-01-01 01:00:00.000000000 +0100
++++ b/arch/mips/boot/dts/lantiq/vr9.dtsi	2015-08-23 11:17:39.922037394 +0100
+@@ -0,0 +1,193 @@
 +/ {
 +	#address-cells = <1>;
 +	#size-cells = <1>;
@@ -435,6 +419,7 @@ index 0000000..bdb1270
 +
 +		mei@E116000 {
 +			compatible = "lantiq,mei-xrx200";
++			reg = <0xE116000 0x9c>;
 +			interrupt-parent = <&icu0>;
 +			interrupts = <63>;
 +		};
@@ -470,19 +455,27 @@ index 0000000..bdb1270
 +		compatible = "lantiq,vdsl-vrx200";
 +	};
 +};
-diff --git a/arch/mips/lantiq/Kconfig b/arch/mips/lantiq/Kconfig
-index e10d333..a2d92a3 100644
---- a/arch/mips/lantiq/Kconfig
-+++ b/arch/mips/lantiq/Kconfig
-@@ -31,6 +31,11 @@ config DT_EASY50712
+diff -u -N -r a/arch/mips/lantiq/Kconfig b/arch/mips/lantiq/Kconfig
+--- a/arch/mips/lantiq/Kconfig	2015-08-23 11:15:35.086041998 +0100
++++ b/arch/mips/lantiq/Kconfig	2015-08-23 11:16:15.318040515 +0100
+@@ -32,7 +32,12 @@
+ config DT_EASY50712
  	bool "Easy50712"
  	depends on SOC_XWAY
- 	select BUILTIN_DTB
+	select BUILTIN_DTB
 +
-+config DT_TDW8980
-+	bool "TP-Link TD-W8980"
++config DT_TDW8970
++	bool "TP-Link TD-W8970"
 +	depends on SOC_XWAY
 +	select BUILTIN_DTB
  endchoice
  
  config PCI_LANTIQ
+--- a/arch/mips/boot/dts/lantiq/Makefile	2015-08-23 13:38:50.890524616 +0100
++++ b/arch/mips/boot/dts/lantiq/Makefile	2015-08-23 13:38:51.718524587 +0100
+@@ -1,4 +1,5 @@
+ dtb-$(CONFIG_DT_EASY50712)	+= easy50712.dtb
++dtb-$(CONFIG_DT_TDW8970)	+= tdw8970.dtb
+ 
+ obj-y				+= $(patsubst %.dtb, %.dtb.o, $(dtb-y))
+ 

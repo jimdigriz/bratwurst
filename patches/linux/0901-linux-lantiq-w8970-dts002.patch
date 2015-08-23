@@ -1,0 +1,63 @@
+--- a/arch/mips/boot/dts/lantiq/tdw8970.dts	2015-08-23 15:51:59.792235398 +0100
++++ b/arch/mips/boot/dts/lantiq/tdw8970.dts	2015-08-23 16:28:20.548159455 +0100
+@@ -6,7 +6,7 @@
+ 	model = "TDW8970 - TP-LINK TD-W8970";
+ 
+ 	chosen {
+-		bootargs = "console=ttyLTQ0,115200 init=/etc/preinit";
++		bootargs = "console=ttyLTQ0,115200 earlyprintk";
+ 	};
+ 
+ 	memory@0 {
+@@ -168,29 +168,41 @@
+ 
+ 			partition@0 {
+ 				reg = <0x0 0x20000>;
+-				label = "u-boot";
++				label = "uboot";
+ 				read-only;
+ 			};
+ 
+ 			partition@20000 {
+-				reg = <0x20000 0x6a0000>;
+-				label = "firmware";
++				reg = <0x20000 0x140000>;
++				label = "linux";
+ 			};
+ 
+-			partition@6c0000 {
+-				reg = <0x6c0000 0x100000>;
+-				label = "dsl_fw";
++			partition@160000 {
++				reg = <0x160000 0x660000>;
++				label = "rootfs";
+ 			};
+ 
+ 			partition@7c0000 {
+ 				reg = <0x7c0000 0x10000>;
+-				label = "config";
++				label = "uboot_env";
++				read-only;
++			};
++
++			partition@7d0000 {
++				reg = <0x7d0000 0x10000>;
++				label = "romfile";
++				read-only;
++			};
++
++			partition@7e0000 {
++				reg = <0x7e0000 0x10000>;
++				label = "rom";
+ 				read-only;
+ 			};
+ 
+-			ath9k_cal: partition@7d0000 {
+-				reg = <0x7d0000 0x30000>;
+-				label = "boardconfig";
++ 			ath9k_cal: partition@7f0000 {
++ 				reg = <0x7f0000 0x10000>;
++				label = "ath9k_cal";
+ 				read-only;
+ 			};
+ 		};
