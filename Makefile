@@ -141,6 +141,7 @@ buildroot-update-defconfig:
 		BUSYBOX_CONFIG_FILE="$(CURDIR)/config/busybox"
 	sed -n 's/^config \(.*\)/\1/ p' buildroot/arch/* | sort | uniq > .list
 	echo BR2_LINUX_KERNEL_VMLINU >> .list
+	echo BR2_LINUX_KERNEL_IMAGE_ >> .list
 	echo BR2_PACKAGE_AR7_ATM >> .list
 	echo BR2_PACKAGE_HOST_SRECORD >> .list
 	echo BR2_PACKAGE_HOST_SREC2BIN >> .list
