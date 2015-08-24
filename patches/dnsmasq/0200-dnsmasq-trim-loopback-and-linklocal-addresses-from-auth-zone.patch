@@ -1,0 +1,31 @@
+From b709a7891088fd1fd6782b206578be971936ab90 Mon Sep 17 00:00:00 2001
+From: Alexander Clouter <aclouter@telemetry.com>
+Date: Sun, 23 Aug 2015 20:13:15 +0100
+Subject: [PATCH 1/2] trim loopback and linklocal addresses from auth zone
+
+---
+ src/network.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/network.c b/src/network.c
+index a1d90c8..0197dae 100644
+--- a/src/network.c
++++ b/src/network.c
+@@ -298,10 +298,12 @@ static int iface_allowed(struct iface_param *param, int if_index, char *label,
+ #endif
+ 	}
+     }
+-  
++
++  if ((addr->sa.sa_family == AF_INET && !((ntohl(addr->in.sin_addr.s_addr) & 0xFF000000) == 0x7F000000) && !((ntohl(addr->in.sin_addr.s_addr) & 0xFFFF0000) == 0xA9FE0000))
+ #ifdef HAVE_IPV6
+-  if (addr->sa.sa_family != AF_INET6 || !IN6_IS_ADDR_LINKLOCAL(&addr->in6.sin6_addr))
++    || (addr->sa.sa_family == AF_INET6 && !IN6_IS_ADDR_LOOPBACK(&addr->in6.sin6_addr) && !IN6_IS_ADDR_LINKLOCAL(&addr->in6.sin6_addr))
+ #endif
++    )
+     {
+       struct interface_name *int_name;
+       struct addrlist *al;
+-- 
+2.1.4
+

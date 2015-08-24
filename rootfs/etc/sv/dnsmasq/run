@@ -13,7 +13,7 @@ if [ "${DOMAIN:-localnet}" != "localnet" ]; then
 			--interface-name=${HOSTNAME:-bratwurst}.$DOMAIN,$IFNAME
 			--interface-name=$DOMAIN,lo
 			--interface-name=$DOMAIN,$IFNAME
-			--auth-zone=$DOMAIN,lo,$IFNAME,br0"
+			--auth-zone=$DOMAIN,lo,$IFNAME,br0,exclude:fd00::/8"
 fi
 
 exec 2>&1
