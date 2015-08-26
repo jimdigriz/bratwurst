@@ -1,5 +1,5 @@
 127.0.0.1	localhost
-127.1.0.1	fakeisp.eduroam.test	fakeisp
+127.1.0.1	fakeisp.localnet	fakeisp
 
 # The following lines are desirable for IPv6 capable hosts
 ::1		localhost ip6-localhost ip6-loopback
