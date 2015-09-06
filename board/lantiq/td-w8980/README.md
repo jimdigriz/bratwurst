@@ -84,6 +84,8 @@ The JTAG 'port' can be found to the left of the CPU/SoC where you will find six 
 
 ...
 
+ * [de-bricking Tp-Link td-w8970 with flashrom and soic clip](https://forum.openwrt.org/viewtopic.php?pid=279395)
+
 ## Kernel Cooking Notes
 
 A list of issues and hints I have found with the kernel:
