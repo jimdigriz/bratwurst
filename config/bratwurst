@@ -29,3 +29,6 @@
 
 # optional: IPv6 ULA subnet (default: automatically generated)
 #ULA=fd00:dead:beef
+
+# optional: additional settings to pass to dnsmasq
+#OPTIONS_DNSMASQ=
