@@ -28,7 +28,6 @@ exec /usr/sbin/dnsmasq ${OPTIONS:-} \
 	--bogus-priv \
 	--stop-dns-rebind \
 	--rebind-localhost-ok \
-	--clear-on-reload \
 	--domain-needed \
 	--server=/${DOMAIN:-localnet}/ \
 	--dhcp-range=192.168.1.64,192.168.1.255 \
