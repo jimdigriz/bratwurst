@@ -30,7 +30,8 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
   * when making `8250` a module, the serial console is not properly detected or configured
   * get interupt pacing working on the `tiatm` driver, [the AWOL `avalanche_request_pacing()` seems to be in the original 2.4 codebase](http://www.mit.edu/afs.new/sipb/project/merakidev/src/openwrt-meraki/openwrt/target/linux/ar7-2.4/patches/000-ar7_support.patch)
   * we have GPIOs to control the LEDs, we should probably use them
-  * port the ar7_wdt driver to watchdog_core
+  * port the `ar7_wdt` driver to `watchdog_core`
+  * `/sbin/modprobe tiatm trellis=1 bitswap=1` - maybe better options
  * create an SSHFP record for the router using [dnsmasq's dns-rr](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2012q2/005941.html) feature
  * supporting straight Ethernet with DHCP (a la cable)
  * improve firewalling
