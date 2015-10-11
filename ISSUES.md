@@ -26,14 +26,18 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * look at the [Homenet WG](http://tools.ietf.org/wg/homenet/) docs, especially [RFC7368](http://tools.ietf.org/html/rfc7368)
  * fix `atmtcp` connection where we see the following errors `invalid QOS "ubr,aal5:..."`; seems to have non-printable characters in there
  * disabling sysfs causes an unaligned access in the `ipv6_addrconf` kernel workqueue during PPP just before sending `IPV6CP ConfReq`
- * for AR7, when making `8250` a module, the serial console is not properly detected or configured
+ * AR7 related:
+  * when making `8250` a module, the serial console is not properly detected or configured
+  * get interupt pacing working on the `tiatm` driver, [the AWOL `avalanche_request_pacing()` seems to be in the original 2.4 codebase](http://www.mit.edu/afs.new/sipb/project/merakidev/src/openwrt-meraki/openwrt/target/linux/ar7-2.4/patches/000-ar7_support.patch)
+  * we have GPIOs to control the LEDs, we should probably use them
+  * port the ar7_wdt driver to watchdog_core
  * create an SSHFP record for the router using [dnsmasq's dns-rr](http://lists.thekelleys.org.uk/pipermail/dnsmasq-discuss/2012q2/005941.html) feature
- * the WAG54G has GPIOs to control the LEDs, we should probably use them
  * supporting straight Ethernet with DHCP (a la cable)
  * improve firewalling
   * better use of the nftables run-parts, flush to only cleans its own sections
   * make use of the inet nftable (icmpx, etc) now we are using a 3.18+ kernel
  * wireless
+  * `mac80211_hwsim` between two QEMU VM's...?
  * QoS
  * in place firmware upgrade
   * ...without losing config and customisations?
@@ -43,7 +47,6 @@ Here is a list of outstanding tasks and thoughts on the direction the project is
  * fakeisp really could do with IPv6 on the uplink, we could accomplish this with:
   * extending the QEMU user mode networking to support IPv6
   * much simpler is to probably use an IPv6-over-UDP4 tunnelling technology such as Teredo
- * port the ar7_wdt driver to watchdog_core
  * take another stab at getting [Link-Time-Optimisations (LTO) working on the kernel](https://github.com/andikleen/linux-misc/tree/lto-4.0)
   * [MIPS: Make declarations and definitions of tlbmiss_handler_setup_pgd match](http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=0bfbf6a256348b1543e638c7d7b2f3004b289fdb) partly fixes the problem but unfortunately [MIPS: Move generated code to .text for microMIPS](http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6ba045f9fbdafb48da42aa8576ea7a3980443136) reverted it (seemingly accidently)
 
