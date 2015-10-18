@@ -106,9 +106,27 @@ You can tell this is working as a row of stars will start to show on the screen;
 
 ### SPI Banging with a SOIC Clip
 
-Alternatively, if you have something that can talk SPI directly, for example a Raspberry Pi or a [Bus Pirate SPI](http://dangerousprototypes.com/docs/Bus_Pirate), then you can buy cheaply a [SOIC clip](http://www.amazon.com/Signstek-SOIC8-Socket-Adpter-Programmer/dp/B00V9QNAC4/) and reflash the flash directly.
+Alternatively, if you have something that can talk SPI directly, for example a Raspberry Pi or a [Bus Pirate SPI](http://dangerousprototypes.com/docs/Bus_Pirate), then you can buy cheaply a [SOIC clip](http://www.amazon.com/Signstek-SOIC8-Socket-Adpter-Programmer/dp/B00V9QNAC4/) and reflash the [EN25Q64](http://www.eonssi.com/upfile/p2009111114954.pdf) chip directly.
 
 The process is described on the OpenWRT forum post titled [de-bricking Tp-Link td-w8970 with flashrom and soic clip](https://forum.openwrt.org/viewtopic.php?pid=279395).
+
+    RPI     SPI
+    25      VSS (4)
+    24      CS# (1)
+    23      CLK (6)
+    21      DO (2)
+    19      DI (5)
+    17      VCC (8) + NC (3) + WP (7)
+
+**N.B.** Raspian users have will have to enable SPI in `config.txt`
+
+To download a backup:
+
+    sudo flashrom/flashrom -p linux_spi:dev=/dev/spidev0.0 -r ./backup.rom
+
+To begin flashing:
+
+    sudo flashrom/flashrom -p linux_spi:dev=/dev/spidev0.0 -w ./mtd_full.bin
 
 ## JTAG
 
