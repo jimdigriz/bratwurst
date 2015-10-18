@@ -74,17 +74,49 @@ Once all hooked up, you should use [minicom](http://alioth.debian.org/projects/m
 
 **N.B.** press `t` on the console to interrupt U-Boot autobooting
 
+## Resurrecting a Brick
+
+TODO, how to build a suitable image!
+
+By far the easiest, and the only approach I have used, is to put the unit into its "boot from serial" and send a suitable image (typically u-boot) over the serial port that it then boots and you can recover from.
+
+This is done by shorting the right side of `R225` to `GND` (for example to the shield on your serial port); I recommend using a length of un-used solder flex as it is soft and will not damage the pads through repeated use.
+
+![Photo of the pin to short for booting over UART](tp-link_w8980v1_boot_sel.jpg "Photo of the pin to short for booting over UART")
+
+If you are successful you will see on the serial port:
+
+    ROM VER: 1.1.4
+    CFG 04
+    EEPROM Data OK
+    UART
+
+**N.B.** you *must* keep the short in place for the duration of the upload!
+
+You can use one of these two methods to upload your image:
+
+ - if you are using `minicom`, you can `type Ctrl-A Y` and select the image to 'upload', it will begin to type the image for you
+ - open another terminal and send the image directly to the serial port with
+
+        cat u-boot.asc > /dev/ttyUSB0
+
+You can tell this is working as a row of stars will start to show on the screen; if instead you the contents of the image appearing on screen, your short of `R225` to `GND` is still not in place, you need to keep the short in place for the duration of the upload
+
+**N.B.** if you instead get 'corruption' appearing on your console or nothing seems to happen, then you should recheck that your soldering of the serial port is good
+
+### SPI Banging with a SOIC Clip
+
+Alternatively, if you have something that can talk SPI directly, for example a Raspberry Pi or a [Bus Pirate SPI](http://dangerousprototypes.com/docs/Bus_Pirate), then you can buy cheaply a [SOIC clip](http://www.amazon.com/Signstek-SOIC8-Socket-Adpter-Programmer/dp/B00V9QNAC4/) and reflash the flash directly.
+
+The process is described on the OpenWRT forum post titled [de-bricking Tp-Link td-w8970 with flashrom and soic clip](https://forum.openwrt.org/viewtopic.php?pid=279395).
+
 ## JTAG
+
+**N.B.** as the flash is on an SPI bus, it is far harder to to debrick your unit in this manner than with the other methods
 
 The JTAG 'port' can be found to the left of the CPU/SoC where you will find six labelled surface mount pads, although on my unit they were actually solder blobs.
 
 ![Photo of the CPU/SoC with Serial/JTAG Pins](guts.jpeg "Photo of the CPU/SoC with Serial/JTAG Pins")
-
-### Resurrecting a Brick
-
-...
-
- * [de-bricking Tp-Link td-w8970 with flashrom and soic clip](https://forum.openwrt.org/viewtopic.php?pid=279395)
 
 ## Kernel Cooking Notes
 
