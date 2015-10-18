@@ -91,7 +91,7 @@ If you are successful you will see on the serial port:
     EEPROM Data OK
     UART
 
-**N.B.** you *must* keep the short in place for the duration of the upload!
+**N.B.** you *must* keep the short in place for the duration of the upload, whilst you use the u-boot image, and during the *whole* reflashing process where you are debricking!  Only once you have reflashed your router, you can disconnect the short.
 
 You can use one of these two methods to upload your image:
 
